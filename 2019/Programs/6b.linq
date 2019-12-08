@@ -3,8 +3,8 @@
 void Main()
 {
 	var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-	//var inputs = System.IO.File.ReadAllLines(@"C:\Users\cbour\Documents\Code\AdventOfCode\2019\Inputs\6.txt");
-
+	var inputs = System.IO.File.ReadAllLines(@"C:\Users\cbour\Documents\Code\AdventOfCode\2019\Inputs\6.txt");
+/*
 	var inputs = @"COM)B
 B)C
 C)D
@@ -17,7 +17,7 @@ E)J
 J)K
 K)L
 K)YOU
-I)SAN".Split('\n');
+I)SAN".Split('\n');/**/
 
 	Planetoid COM = new Planetoid();
 	Dictionary<string, Planetoid> AllPlanets = new Dictionary<string, UserQuery.Planetoid>();
