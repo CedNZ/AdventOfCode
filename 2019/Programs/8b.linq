@@ -1,14 +1,14 @@
 <Query Kind="Program" />
 
-const int WIDTH = 2;
-const int HEIGHT = 2;
+const int WIDTH = 25;
+const int HEIGHT = 6;
 const int PIXELS = WIDTH * HEIGHT;
 
 void Main()
 {
 	var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-	//var input = System.IO.File.ReadAllText(@"C:\Users\cbour\Documents\Code\AdventOfCode\2019\Inputs\8.txt");
-	var input = "0222112222120000";
+	var input = System.IO.File.ReadAllText(@"C:\Users\cbour\Documents\Code\AdventOfCode\2019\Inputs\8.txt");
+	//var input = "0222112222120000";
 	var counter = 0;
 	var numLayers = input.Length / PIXELS;
 
@@ -71,7 +71,7 @@ void Draw(List<Pixel> layer, int layerNum = 0)
 	{
 		for (int x = 0; x < WIDTH; x++)
 		{
-			output += layer.First(p => p.X == x && p.Y == y).Value;
+			output += layer.First(p => p.X == x && p.Y == y).Value == 1 ? "█" : " ";
 		}
 
 		output += "\n";
