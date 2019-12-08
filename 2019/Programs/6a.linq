@@ -36,7 +36,7 @@ void Main()
 			}
 			else
 			{
-				var first = new Planetoid(orbits[0], COM);
+				var first = COM.AddMoon(orbits[0]);
 				var second = first.AddMoon(orbits[1]);
 				AllPlanets.Add(first.Name, first);
 				AllPlanets.Add(second.Name, second);				
@@ -47,6 +47,7 @@ void Main()
 	AllPlanets.Dump();
 	
 	AllPlanets.Sum(x => x.Value.Distance).Dump();
+	AllPlanets.Sum(x => x.Value.Distance2).Dump();
 	stopwatch.Stop();
 	stopwatch.Elapsed.Dump();
 	
@@ -71,6 +72,11 @@ class Planetoid
 		get => _distance;
 	}
 	
+	public int Distance2
+	{
+		get => _distance - 1;
+	}
+	
 	public Planetoid(string name, Planetoid parent)
 	{
 		Name = name;
@@ -83,13 +89,15 @@ class Planetoid
 	{
 		Name = name;
 		_parent = parent;
-		_distance = moon.Distance;
-		moon._distance++;
-		
+		_distance = parent.Distance;
+				
 		moon._parent._moons.Remove(moon);
+		_moons = new List<Planetoid> { moon };
+		
+		ShiftOut(1);
 		
 		moon._parent = this;		
-		_moons = new List<Planetoid> { moon };
+		parent._moons.Add(this);		
 	}
 	
 	public Planetoid()
@@ -109,11 +117,21 @@ class Planetoid
 	
 	public void AddMoon(Planetoid moon)
 	{
+		moon._parent = this;
+		moon.ShiftOut(_distance);
 		_moons.Add(moon);
 	}
 	
 	public Planetoid Orbits(string name, Planetoid COM)
 	{
-		return new Planetoid(name, COM, this);
+		var planet = new Planetoid(name, COM, this);
+		return planet;
+	}
+	
+	public void ShiftOut(int distance)
+	{
+		_distance += distance;
+		if (_moons != null)
+			_moons.ForEach(x => x.ShiftOut(distance));
 	}
 }
