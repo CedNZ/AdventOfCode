@@ -1,23 +1,32 @@
-
 void Main()
 {
 	var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-	//var input = System.IO.File.ReadAllText(@"C:\Users\cBourneville\Downloads\Advent of Code\Inputs\7.txt");	
-	var input = @"3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0";
+	var input = System.IO.File.ReadAllText(@"C:\Users\cBourneville\Downloads\Advent of Code\Inputs\7.txt");	
+	//var input = @"3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0";
 	var numArray = input.Split(',').Select(x => int.Parse(x)).ToArray();
 
 	var programInputInstruction = 0;
-	var phases = new int[] { 4, 3, 2, 1, 0};
-	
-	for (int i = 0; i < 5; i++) {
-		var program = numArray.ToArray();
-		programInputInstruction = RunAmp(phases[i], programInputInstruction, program);
+	var maxOutput = 0;
+	var maxPhase = "";
+
+	foreach (var phaseInputs in MyExtensions.Permutate("01234"))
+	{
+		programInputInstruction = 0;
+		for (int i = 0; i < 5; i++)
+		{
+			var program = numArray.ToArray();
+			programInputInstruction = RunAmp(int.Parse(phaseInputs.ElementAt(i).ToString()), programInputInstruction, program);
+		}
+		if (programInputInstruction > maxOutput)
+		{
+			maxOutput = programInputInstruction;
+			maxPhase = phaseInputs;
+		}
 	}
-	
-	
+
 	stopwatch.Stop();
-	$"Elapsed: {stopwatch.Elapsed}".Dump();
-	numArray.Dump();
+	$"Largest output: {maxOutput}, Phase: {maxPhase}, Elapsed: {stopwatch.Elapsed}".Dump();
+	//numArray.Dump();
 }
 
 // Define other methods and classes here
@@ -99,7 +108,7 @@ void three(int input, int position, int[] numArray)
 int four(int position, int[] numArray, int mode)
 {
 	var answer = mode > 0 ? position : numArray[position];
-	$"4: Outputting - {answer}".Dump();
+	//$"4: Outputting - {answer}".Dump();
 	return answer;
 }
 
