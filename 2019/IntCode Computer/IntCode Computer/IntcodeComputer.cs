@@ -17,6 +17,8 @@ namespace IntCode_Computer
 			_programCounter = 0;
 			_inputs = new Queue<int>();
 			_outputs = new Queue<int>();
+			Processing = true;
+			AwaitingInput = false;
 
 			if (phase.HasValue)
 			{
@@ -24,7 +26,13 @@ namespace IntCode_Computer
 			}
 		}
 
-		public void QueueInput(int input)
+		public bool HasOutput => _outputs.Count > 0;
+
+        public bool AwaitingInput { get; private set; }
+
+		public bool Processing { get; private set; }
+
+        public void QueueInput(int input)
 		{
 			_inputs.Enqueue(input);
 		}
@@ -49,8 +57,11 @@ namespace IntCode_Computer
 						two();
 						break;
 					case 3:
-						if (_inputs.Count > 0)
+						AwaitingInput = true;
+						if(_inputs.Count > 0)
+						{							
 							three();
+						}
 						break;
 					case 4:
 						four();
@@ -69,6 +80,7 @@ namespace IntCode_Computer
 						break;
 					case 99:
 						_programCounter = _program.Length + 1;
+						Processing = false;
 						break;
 				}
 			}
@@ -76,7 +88,6 @@ namespace IntCode_Computer
 		}
 
 		int Mode => _program[_programCounter] / 100;
-
 		int Var1 => _program[_programCounter + 1];
 		int Var2 => _program[_programCounter + 2];
 		int Var3 => _program[_programCounter + 3];
@@ -110,6 +121,8 @@ namespace IntCode_Computer
 			_program[Var1] = _inputs.Dequeue();
 
 			_programCounter += 2;
+
+			AwaitingInput = false;
 
 			return;
 		}

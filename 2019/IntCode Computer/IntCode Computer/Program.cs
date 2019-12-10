@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace IntCode_Computer
 {
@@ -7,19 +8,56 @@ namespace IntCode_Computer
 	{
 		static void Main(string[] args)
 		{
-			var input = System.IO.File.ReadAllText(@"C:\Users\cBourneville\Code\AdventOfCode\2019\Inputs\5.txt");
-			//var input = @"3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99";
+			//var input = System.IO.File.ReadAllText(@"..\..\..\..\..\Inputs\7.txt");
+			var input = @"3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5";
 			var program = input.Split(',').Select(x => int.Parse(x)).ToArray();
 
-			IntcodeComputer computer = new IntcodeComputer(program);
+			IntcodeComputer[] amps = new IntcodeComputer[5];
 
-			computer.QueueInput(1);
+			int maxOutput = 0;
+			string maxPhase = "";
 
-			computer.Run();
+			foreach(var phaseInputs in Permutate("56789")) 
+			{
+				int nextInput = 0;
 
-			var output = computer.GetOutput();
+				for(int i = 0; i < phaseInputs.Length; i++)
+				{
+					if(amps[i] == null)
+					{
+						amps[i] = new IntcodeComputer(program, int.Parse(phaseInputs[i].ToString()));
+					}
+					if(amps[i].Processing)
+					{
+						amps[i].QueueInput(nextInput);
+						amps[i].Run();
+						if(amps[i].HasOutput)
+						{
+							nextInput = amps[i].GetOutput();
+						}
+					}
+				}
 
-			Console.WriteLine(output);
+				Console.WriteLine($"Phase: {phaseInputs}, Output: {nextInput}");
+
+				if(nextInput > maxOutput) {
+					maxOutput = nextInput;
+					maxPhase = phaseInputs;
+				}
+			}
+
+			Console.WriteLine($"Max Output: {maxOutput}, Phase: {maxPhase}");
 		}
-	}
+
+		private static IEnumerable<string> Permutate(string source) 
+		{
+			if(source.Length == 1) return new List<string> { source };
+
+			var permutations = from c in source
+							   from p in Permutate(new String(source.Where(x => x != c).ToArray()))
+							   select c + p;
+
+			return permutations;
+		}
+	}	
 }
