@@ -10,27 +10,35 @@ namespace IntCode_Computer
 		private int _programCounter;
 		private Queue<int> _inputs;
 		private Queue<int> _outputs;
+		private int _phase;
+		private string _name;
 
-		public IntcodeComputer(int[] program, int? phase = null)
+		public IntcodeComputer(int[] program, string name, int? phase = null)
 		{
+			_name = name;
 			_program = program;
 			_programCounter = 0;
 			_inputs = new Queue<int>();
 			_outputs = new Queue<int>();
-			Processing = true;
+			Halted = false;
 			AwaitingInput = false;
 
-			if (phase.HasValue)
-			{
-				_inputs.Enqueue(phase.Value);
-			}
+			_phase = phase.GetValueOrDefault();
+
+			_inputs.Enqueue(_phase);
 		}
+
+		public string Name => _name;
+
+		public int Phase => _phase;
 
 		public bool HasOutput => _outputs.Count > 0;
 
         public bool AwaitingInput { get; private set; }
 
-		public bool Processing { get; private set; }
+		public bool Halted { get; private set; }
+
+		public bool Processing => !Halted;
 
         public void QueueInput(int input)
 		{
@@ -44,9 +52,14 @@ namespace IntCode_Computer
 
 		public void Run()
 		{
-			while (_programCounter < _program.Length)
+			Halted = false;
+			AwaitingInput = false;
+
+			while (Processing && !AwaitingInput)
 			{
 				var instruction = _program[_programCounter];
+
+				Console.WriteLine($"    Amp {Name} Executing instuction {instruction} at {_programCounter}");
 
 				switch (instruction % 100)
 				{
@@ -57,10 +70,12 @@ namespace IntCode_Computer
 						two();
 						break;
 					case 3:
-						AwaitingInput = true;
 						if(_inputs.Count > 0)
 						{							
 							three();
+						} else
+						{
+							AwaitingInput = true;
 						}
 						break;
 					case 4:
@@ -79,12 +94,10 @@ namespace IntCode_Computer
 						eight();
 						break;
 					case 99:
-						_programCounter = _program.Length + 1;
-						Processing = false;
+						Halted = true;
 						break;
 				}
 			}
-
 		}
 
 		int Mode => _program[_programCounter] / 100;
@@ -118,7 +131,10 @@ namespace IntCode_Computer
 
 		private void three()
 		{
-			_program[Var1] = _inputs.Dequeue();
+			var input = _inputs.Dequeue();
+			_program[Var1] = input;
+
+			Console.WriteLine($"      Amp {Name} Inserting {input} at {Var1}");
 
 			_programCounter += 2;
 
@@ -132,6 +148,8 @@ namespace IntCode_Computer
 			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
 
 			_outputs.Enqueue(param1);
+
+			Console.WriteLine($"      Amp {Name} Outputting {param1}");
 
 			_programCounter += 2;
 
