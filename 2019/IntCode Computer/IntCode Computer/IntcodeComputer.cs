@@ -6,26 +6,37 @@ namespace IntCode_Computer
 {
 	public class IntcodeComputer
 	{
-		private int[] _program;
+		private double[] _program;
 		private int _programCounter;
-		private Queue<int> _inputs;
-		private Queue<int> _outputs;
+		private Queue<double> _inputs;
+		private Queue<double> _outputs;
 		private int _phase;
 		private string _name;
+		private int _relativeBase;
 
-		public IntcodeComputer(int[] program, string name, int? phase = null)
+		public IntcodeComputer(double[] program, string name, int? phase = null)
 		{
 			_name = name;
-			_program = (int[])program.Clone();
+			_program = new double[2056];
+			for (int i = 0; i < _program.Length; i++)
+			{
+				_program[i] = i < program.Length 
+					? program[i] 
+					: 0;
+			}
+
 			_programCounter = 0;
-			_inputs = new Queue<int>();
-			_outputs = new Queue<int>();
+			_inputs = new Queue<double>();
+			_outputs = new Queue<double>();
 			Halted = false;
 			AwaitingInput = false;
+			_relativeBase = 0;
 
 			_phase = phase.GetValueOrDefault();
 
-			_inputs.Enqueue(_phase);
+			if (phase.HasValue)
+				_inputs.Enqueue(_phase);
+
 			Paused = false;
 		}
 
@@ -43,12 +54,12 @@ namespace IntCode_Computer
 
 		public bool Paused;
 
-        public void QueueInput(int input)
+        public void QueueInput(double input)
 		{
 			_inputs.Enqueue(input);
 		}
 
-		public int GetOutput()
+		public double GetOutput()
 		{
 			return _outputs.Dequeue();
 		}
@@ -97,6 +108,9 @@ namespace IntCode_Computer
 					case 8:
 						eight();
 						break;
+					case 9:
+						nine();
+						break;
 					case 99:
 						Halted = true;
 						break;
@@ -104,17 +118,26 @@ namespace IntCode_Computer
 			}
 		}
 
-		int Mode => _program[_programCounter] / 100;
-		int Var1 => _program[_programCounter + 1];
-		int Var2 => _program[_programCounter + 2];
-		int Var3 => _program[_programCounter + 3];
+		string Mode => ((int)(_program[_programCounter] / 100)).ToString();
+		double Var1 => _program[_programCounter + 1];
+		double Var2 => _program[_programCounter + 2];
+		double Var3 => _program[_programCounter + 3];
+
+		double param1 => (Mode[^1]) == '1' 
+			? Var1 
+			: (Mode[^1]) == '2' 
+				? _program[(int)Var1 + _relativeBase]
+				: _program[(int)Var1];
+
+		double param2 => (Mode[^2]) == '1' 
+			? Var2 
+			: (Mode[^2]) == '2' 
+				? _program[(int)Var2 + _relativeBase]
+				:_program[(int)Var2];
 
 		private void one()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_program[Var3] = param1 + param2;
+			_program[(int)Var3] = param1 + param2;
 
 			_programCounter += 4;
 
@@ -123,10 +146,7 @@ namespace IntCode_Computer
 
 		private void two()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_program[Var3] = param1 * param2;
+			_program[(int)Var3] = param1 * param2;
 
 			_programCounter += 4;
 
@@ -136,9 +156,9 @@ namespace IntCode_Computer
 		private void three()
 		{
 			var input = _inputs.Dequeue();
-			_program[Var1] = input;
+			_program[(int)Var1] = input;
 
-			Console.WriteLine($"      Amp {Name} Inserting {input} at {Var1}");
+			//Console.WriteLine($"      Amp {Name} Inserting {input} at {Var1}");
 
 			_programCounter += 2;
 
@@ -149,55 +169,34 @@ namespace IntCode_Computer
 
 		private void four()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-
 			_outputs.Enqueue(param1);
 
-			Console.WriteLine($"      Amp {Name} Outputting {param1}");
+			//Console.WriteLine($"      Amp {Name} Outputting {param1}");
 
 			_programCounter += 2;
 
-			Paused = true;
+			//Paused = true;
 
 			return;
 		}
 
 		private void five()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_programCounter += 3;
-
-			if (param1 != 0)
-			{
-				_programCounter = param2;
-			}
+			_programCounter = param1 != 0 ? (int)param2 : _programCounter + 3;
 
 			return;
 		}
 
 		private void six()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_programCounter += 3;
-
-			if(param1 == 0)
-			{
-				_programCounter = param2;
-			}
-
+			_programCounter = param1 == 0 ? (int)param2 : _programCounter + 3;
+			
 			return;
 		}
 
 		private void seven()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_program[Var3] = param1 < param2 ? 1 : 0;
+			_program[(int)Var3] = param1 < param2 ? 1 : 0;
 
 			_programCounter += 4;
 
@@ -206,12 +205,18 @@ namespace IntCode_Computer
 
 		private void eight()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_program[Var3] = param1 == param2 ? 1 : 0;
+			_program[(int)Var3] = param1 == param2 ? 1 : 0;
 
 			_programCounter += 4;
+
+			return;
+		}
+
+		private void nine()
+		{
+			_relativeBase += (int)Var1;
+
+			_programCounter += 2;
 
 			return;
 		}
