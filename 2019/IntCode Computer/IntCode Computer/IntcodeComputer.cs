@@ -16,7 +16,7 @@ namespace IntCode_Computer
 		public IntcodeComputer(int[] program, string name, int? phase = null)
 		{
 			_name = name;
-			_program = program;
+			_program = (int[])program.Clone();
 			_programCounter = 0;
 			_inputs = new Queue<int>();
 			_outputs = new Queue<int>();
@@ -26,6 +26,7 @@ namespace IntCode_Computer
 			_phase = phase.GetValueOrDefault();
 
 			_inputs.Enqueue(_phase);
+			Paused = false;
 		}
 
 		public string Name => _name;
@@ -39,6 +40,8 @@ namespace IntCode_Computer
 		public bool Halted { get; private set; }
 
 		public bool Processing => !Halted;
+
+		public bool Paused;
 
         public void QueueInput(int input)
 		{
@@ -54,8 +57,9 @@ namespace IntCode_Computer
 		{
 			Halted = false;
 			AwaitingInput = false;
+			Paused = false;
 
-			while (Processing && !AwaitingInput)
+			while (!Paused && !AwaitingInput && !Halted)
 			{
 				var instruction = _program[_programCounter];
 
@@ -153,6 +157,8 @@ namespace IntCode_Computer
 
 			_programCounter += 2;
 
+			Paused = true;
+
 			return;
 		}
 
@@ -161,9 +167,13 @@ namespace IntCode_Computer
 			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
 			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
 
-			_programCounter = param1 != 0
-				? param2
-				: _programCounter + 3;
+			_programCounter += 3;
+
+			if (param1 != 0)
+			{
+				_programCounter = param2;
+			}
+
 			return;
 		}
 
@@ -172,9 +182,13 @@ namespace IntCode_Computer
 			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
 			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
 
-			_programCounter = param1 == 0
-				? param2
-				: _programCounter + 3;
+			_programCounter += 3;
+
+			if(param1 == 0)
+			{
+				_programCounter = param2;
+			}
+
 			return;
 		}
 

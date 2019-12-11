@@ -10,8 +10,8 @@ namespace IntCode_Computer
 		{
 			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-			//var input = System.IO.File.ReadAllText(@"..\..\..\..\..\Inputs\7.txt");
-			var input = @"3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5";
+			var input = System.IO.File.ReadAllText(@"..\..\..\..\..\Inputs\7.txt");
+			//var input = @"3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5";
 			var program = input.Split(',').Select(x => int.Parse(x)).ToArray();
 
 			var permutationSeed = "56789";
@@ -35,7 +35,7 @@ namespace IntCode_Computer
 				int nextInput = 0;
 				amps = new IntcodeComputer[phaseInputs.Length];
 
-				while(amps.All(x => x == null) || !amps[^1].Halted)
+				while(amps.All(x => x == null) || amps.Any(a => !a.Halted))
 				{
 					for(int i = 0; i < phaseInputs.Length; i++)
 					{
