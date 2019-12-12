@@ -52,7 +52,7 @@ namespace Day7
 							amps[i].Run();
 							if (amps[i].HasOutput)
 							{
-								nextInput = amps[i].GetOutput();
+								nextInput = (int)amps[i].GetOutput();
 								Console.WriteLine($"Retreieved {nextInput} from Amp {ampNames[i]}");
 							}
 						}

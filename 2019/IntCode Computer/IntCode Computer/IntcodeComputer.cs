@@ -13,6 +13,7 @@ namespace IntCode_Computer
 		private int _phase;
 		private string _name;
 		private int _relativeBase;
+		private Modes[] _modes;
 
 		public IntcodeComputer(double[] program, string name, int? phase = null)
 		{
@@ -31,6 +32,7 @@ namespace IntCode_Computer
 			Halted = false;
 			AwaitingInput = false;
 			_relativeBase = 0;
+			_modes = new Modes[3];
 
 			_phase = phase.GetValueOrDefault();
 
@@ -64,6 +66,16 @@ namespace IntCode_Computer
 			return _outputs.Dequeue();
 		}
 
+		public void PopulateModes(double instruction)
+		{
+			_modes = new Modes[] { Modes.Null, Modes.Null, Modes.Null };
+			var modeString = ((int)instruction / 100).ToString();
+			for (int i = 0; i < modeString.Length; i++)
+			{
+				_modes[i] = (Modes)int.Parse(modeString[^(i+1)].ToString());
+			}
+		}
+
 		public void Run()
 		{
 			Halted = false;
@@ -76,42 +88,46 @@ namespace IntCode_Computer
 
 				Console.WriteLine($"    Amp {Name} Executing instuction {instruction} at {_programCounter}, with params {Var1}, {Var2}, {Var3}");
 
-				switch (instruction % 100)
+				var intOp = (IntOps)(instruction % 100);
+
+				PopulateModes(instruction);
+
+				switch (intOp)
 				{
-					case 1:
-						one();
+					case IntOps.Add:
+						Add();
 						break;
-					case 2:
-						two();
+					case IntOps.Multiply:
+						Multiply();
 						break;
-					case 3:
+					case IntOps.Input:
 						if(_inputs.Count > 0)
 						{							
-							three();
+							Input();
 						} else
 						{
 							AwaitingInput = true;
 						}
 						break;
-					case 4:
-						four();
+					case IntOps.Output:
+						Output();
 						break;
-					case 5:
-						five();
+					case IntOps.JumpIfTrue:
+						JumpIfTrue();
 						break;
-					case 6:
-						six();
+					case IntOps.JumpIfFalse:
+						JumpIfFalse();
 						break;
-					case 7:
-						seven();
+					case IntOps.LessThan:
+						LessThan();
 						break;
-					case 8:
-						eight();
+					case IntOps.Equals:
+						Equals();
 						break;
-					case 9:
-						nine();
+					case IntOps.AdjustRelativeBase:
+						AdjustRelativeBase();
 						break;
-					case 99:
+					case IntOps.Halt:
 						Halted = true;
 						break;
 				}
@@ -123,33 +139,62 @@ namespace IntCode_Computer
 		double Var2 => _program[_programCounter + 2];
 		double Var3 => _program[_programCounter + 3];
 
-		double param1 => (Mode[^1]) == '1' 
-			? Var1 
-			: (Mode[^1]) == '2' 
-				? _program[(int)Var1 + _relativeBase]
-				: _program[(int)Var1];
+		double param1
+		{
+			get
+			{
+				switch(_modes[0])
+				{
+					case Modes.Null:
+					case Modes.Position:
+						return _program[(int)Var1];
+					case Modes.Immediate:
+						return Var1;
+					case Modes.Relative:
+						return _program[(int)Var1 + _relativeBase];
+				}
+				return 0;
+			}
+		}
 
-		double param2 => (Mode[^2]) == '1' 
-			? Var2 
-			: (Mode[^2]) == '2' 
-				? _program[(int)Var2 + _relativeBase]
-				:_program[(int)Var2];
+		double param2
+		{
+			get
+			{
+				switch(_modes[1])
+				{
+					case Modes.Null:
+					case Modes.Position:
+						return _program[(int)Var2];
+					case Modes.Immediate:
+						return Var1;
+					case Modes.Relative:
+						return _program[(int)Var2 + _relativeBase];
+				}
+				return 0;
+			}
+		}
 
 		double param3
 		{
 			get
 			{
-				if (Mode.Length < 3)
-					return Var3;
-				return (Mode[^3]) == '1'
-					? Var3
-					: (Mode[^3]) == '2'
-					   ? _program[(int)Var3 + _relativeBase]
-					   : _program[(int)Var3];
+				switch(_modes[2])
+				{
+					case Modes.Null:
+						return Var3;
+					case Modes.Position:
+						return _program[(int)Var3];
+					case Modes.Immediate:
+						return Var1;
+					case Modes.Relative:
+						return _program[(int)Var3 + _relativeBase];
+				}
+				return 0;
 			}
 		}
 
-		private void one()
+		private void Add()
 		{
 			_program[(int)param3] = param1 + param2;
 
@@ -158,7 +203,7 @@ namespace IntCode_Computer
 			return;
 		}
 
-		private void two()
+		private void Multiply()
 		{
 			_program[(int)param3] = param1 * param2;
 
@@ -167,7 +212,7 @@ namespace IntCode_Computer
 			return;
 		}
 
-		private void three()
+		private void Input()
 		{
 			var input = _inputs.Dequeue();
 
@@ -184,7 +229,7 @@ namespace IntCode_Computer
 			return;
 		}
 
-		private void four()
+		private void Output()
 		{
 			_outputs.Enqueue(param1);
 
@@ -197,21 +242,21 @@ namespace IntCode_Computer
 			return;
 		}
 
-		private void five()
+		private void JumpIfTrue()
 		{
 			_programCounter = param1 != 0 ? (int)param2 : _programCounter + 3;
 
 			return;
 		}
 
-		private void six()
+		private void JumpIfFalse()
 		{
 			_programCounter = param1 == 0 ? (int)param2 : _programCounter + 3;
 			
 			return;
 		}
 
-		private void seven()
+		private void LessThan()
 		{
 			_program[(int)param3] = param1 < param2 ? 1 : 0;
 
@@ -220,7 +265,7 @@ namespace IntCode_Computer
 			return;
 		}
 
-		private void eight()
+		private void Equals()
 		{
 			_program[(int)param3] = param1 == param2 ? 1 : 0;
 
@@ -229,7 +274,7 @@ namespace IntCode_Computer
 			return;
 		}
 
-		private void nine()
+		private void AdjustRelativeBase()
 		{
 			_relativeBase += (int)param1;
 
@@ -239,5 +284,27 @@ namespace IntCode_Computer
 
 			return;
 		}
+	}
+
+	public enum IntOps
+	{
+		Add							=	1,
+		Multiply					=	2,				
+		Input						=	3,
+		Output						=	4,
+		JumpIfTrue					=	5,
+		JumpIfFalse					=	6,
+		LessThan					=	7,
+		Equals						=	8,
+		AdjustRelativeBase			=	9,
+		Halt						=	99,
+	}
+
+	public enum Modes
+	{
+		Null = -1,
+		Position = 0,
+		Immediate = 1,
+		Relative = 2,
 	}
 }
