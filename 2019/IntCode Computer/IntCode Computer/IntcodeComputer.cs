@@ -74,7 +74,7 @@ namespace IntCode_Computer
 			{
 				var instruction = _program[_programCounter];
 
-				Console.WriteLine($"    Amp {Name} Executing instuction {instruction} at {_programCounter}");
+				Console.WriteLine($"    Amp {Name} Executing instuction {instruction} at {_programCounter}, with params {Var1}, {Var2}, {Var3}");
 
 				switch (instruction % 100)
 				{
@@ -135,9 +135,23 @@ namespace IntCode_Computer
 				? _program[(int)Var2 + _relativeBase]
 				:_program[(int)Var2];
 
+		double param3
+		{
+			get
+			{
+				if (Mode.Length < 3)
+					return Var3;
+				return (Mode[^3]) == '1'
+					? Var3
+					: (Mode[^3]) == '2'
+					   ? _program[(int)Var3 + _relativeBase]
+					   : _program[(int)Var3];
+			}
+		}
+
 		private void one()
 		{
-			_program[(int)Var3] = param1 + param2;
+			_program[(int)param3] = param1 + param2;
 
 			_programCounter += 4;
 
@@ -146,7 +160,7 @@ namespace IntCode_Computer
 
 		private void two()
 		{
-			_program[(int)Var3] = param1 * param2;
+			_program[(int)param3] = param1 * param2;
 
 			_programCounter += 4;
 
@@ -156,9 +170,12 @@ namespace IntCode_Computer
 		private void three()
 		{
 			var input = _inputs.Dequeue();
-			_program[(int)Var1] = input;
 
-			//Console.WriteLine($"      Amp {Name} Inserting {input} at {Var1}");
+			var position = (Mode[^1]) == '2' ? _relativeBase + (int)Var1 : (int)Var1;
+
+			_program[position] = input;
+
+			Console.WriteLine($"      Amp {Name} Inserting {input} at {param1}");
 
 			_programCounter += 2;
 
@@ -171,7 +188,7 @@ namespace IntCode_Computer
 		{
 			_outputs.Enqueue(param1);
 
-			//Console.WriteLine($"      Amp {Name} Outputting {param1}");
+			Console.WriteLine($"      Amp {Name} Outputting {param1}");
 
 			_programCounter += 2;
 
@@ -196,7 +213,7 @@ namespace IntCode_Computer
 
 		private void seven()
 		{
-			_program[(int)Var3] = param1 < param2 ? 1 : 0;
+			_program[(int)param3] = param1 < param2 ? 1 : 0;
 
 			_programCounter += 4;
 
@@ -205,7 +222,7 @@ namespace IntCode_Computer
 
 		private void eight()
 		{
-			_program[(int)Var3] = param1 == param2 ? 1 : 0;
+			_program[(int)param3] = param1 == param2 ? 1 : 0;
 
 			_programCounter += 4;
 
@@ -214,7 +231,9 @@ namespace IntCode_Computer
 
 		private void nine()
 		{
-			_relativeBase += (int)Var1;
+			_relativeBase += (int)param1;
+
+			Console.WriteLine($"Shift relative base to {_relativeBase}");
 
 			_programCounter += 2;
 

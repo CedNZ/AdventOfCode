@@ -18,6 +18,8 @@ namespace Day9
 
 			IntcodeComputer computer = new IntcodeComputer(program, "BOOST");
 
+			computer.QueueInput(1);
+
 			computer.Run();
 
 			var output = "";
