@@ -6,26 +6,40 @@ namespace IntCode_Computer
 {
 	public class IntcodeComputer
 	{
-		private int[] _program;
+		private double[] _program;
 		private int _programCounter;
-		private Queue<int> _inputs;
-		private Queue<int> _outputs;
+		private Queue<double> _inputs;
+		private Queue<double> _outputs;
 		private int _phase;
 		private string _name;
+		private int _relativeBase;
+		private Modes[] _modes;
+		private IntOps _intOp;
 
-		public IntcodeComputer(int[] program, string name, int? phase = null)
+		public IntcodeComputer(double[] program, string name, int? phase = null)
 		{
 			_name = name;
-			_program = (int[])program.Clone();
+			_program = new double[2056];
+			for (int i = 0; i < _program.Length; i++)
+			{
+				_program[i] = i < program.Length 
+					? program[i] 
+					: 0;
+			}
+
 			_programCounter = 0;
-			_inputs = new Queue<int>();
-			_outputs = new Queue<int>();
+			_inputs = new Queue<double>();
+			_outputs = new Queue<double>();
 			Halted = false;
 			AwaitingInput = false;
+			_relativeBase = 0;
+			_modes = new Modes[3];
 
 			_phase = phase.GetValueOrDefault();
 
-			_inputs.Enqueue(_phase);
+			if (phase.HasValue)
+				_inputs.Enqueue(_phase);
+
 			Paused = false;
 		}
 
@@ -43,14 +57,24 @@ namespace IntCode_Computer
 
 		public bool Paused;
 
-        public void QueueInput(int input)
+        public void QueueInput(double input)
 		{
 			_inputs.Enqueue(input);
 		}
 
-		public int GetOutput()
+		public double GetOutput()
 		{
 			return _outputs.Dequeue();
+		}
+
+		public void PopulateModes(double instruction)
+		{
+			_modes = new Modes[] { Modes.Null, Modes.Null, Modes.Null };
+			var modeString = ((int)instruction / 100).ToString();
+			for (int i = 0; i < modeString.Length; i++)
+			{
+				_modes[i] = (Modes)int.Parse(modeString[^(i+1)].ToString());
+			}
 		}
 
 		public void Run()
@@ -63,82 +87,143 @@ namespace IntCode_Computer
 			{
 				var instruction = _program[_programCounter];
 
-				Console.WriteLine($"    Amp {Name} Executing instuction {instruction} at {_programCounter}");
+				Console.WriteLine($"    Amp {Name} Executing instuction {instruction} at {_programCounter}, with params {Var1}, {Var2}, {Var3}");
 
-				switch (instruction % 100)
+				_intOp = (IntOps)(instruction % 100);
+
+				PopulateModes(instruction);
+
+				switch (_intOp)
 				{
-					case 1:
-						one();
+					case IntOps.Add:
+						Add();
 						break;
-					case 2:
-						two();
+					case IntOps.Multiply:
+						Multiply();
 						break;
-					case 3:
+					case IntOps.Input:
 						if(_inputs.Count > 0)
 						{							
-							three();
+							Input();
 						} else
 						{
 							AwaitingInput = true;
 						}
 						break;
-					case 4:
-						four();
+					case IntOps.Output:
+						Output();
 						break;
-					case 5:
-						five();
+					case IntOps.JumpIfTrue:
+						JumpIfTrue();
 						break;
-					case 6:
-						six();
+					case IntOps.JumpIfFalse:
+						JumpIfFalse();
 						break;
-					case 7:
-						seven();
+					case IntOps.LessThan:
+						LessThan();
 						break;
-					case 8:
-						eight();
+					case IntOps.Equals:
+						Equals();
 						break;
-					case 99:
+					case IntOps.AdjustRelativeBase:
+						AdjustRelativeBase();
+						break;
+					case IntOps.Halt:
 						Halted = true;
 						break;
 				}
 			}
 		}
 
-		int Mode => _program[_programCounter] / 100;
-		int Var1 => _program[_programCounter + 1];
-		int Var2 => _program[_programCounter + 2];
-		int Var3 => _program[_programCounter + 3];
+		string Mode => ((int)(_program[_programCounter] / 100)).ToString();
+		double Var1 => _program[_programCounter + 1];
+		double Var2 => _program[_programCounter + 2];
+		double Var3 => _program[_programCounter + 3];
 
-		private void one()
+		double param1
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
+			get
+			{
+				switch(_modes[0])
+				{
+					case Modes.Null:
+					case Modes.Position:
+						return _program[(int)Var1];
+					case Modes.Immediate:
+						return Var1;
+					case Modes.Relative:
+						if (_intOp == IntOps.Input)
+							return Var1 + _relativeBase;
+						return _program[(int)Var1 + _relativeBase];
+				}
+				return 0;
+			}
+		}
 
-			_program[Var3] = param1 + param2;
+		double param2
+		{
+			get
+			{
+				switch(_modes[1])
+				{
+					case Modes.Null:
+					case Modes.Position:
+						return _program[(int)Var2];
+					case Modes.Immediate:
+						return Var2;
+					case Modes.Relative:
+						return _program[(int)Var2 + _relativeBase];
+				}
+				return 0;
+			}
+		}
+
+		double param3
+		{
+			get
+			{
+				switch(_modes[2])
+				{
+					case Modes.Position:
+						return _program[(int)Var3];
+					case Modes.Null:
+					case Modes.Immediate:
+						return Var3;
+					case Modes.Relative:
+						return Var3 + _relativeBase;
+				}
+				return 0;
+			}
+		}
+
+		//	1
+		private void Add()
+		{
+			_program[(int)param3] = param1 + param2;
 
 			_programCounter += 4;
 
 			return;
 		}
 
-		private void two()
+		//	2
+		private void Multiply()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_program[Var3] = param1 * param2;
+			_program[(int)param3] = param1 * param2;
 
 			_programCounter += 4;
 
 			return;
 		}
 
-		private void three()
+		//	3
+		private void Input()
 		{
 			var input = _inputs.Dequeue();
-			_program[Var1] = input;
 
-			Console.WriteLine($"      Amp {Name} Inserting {input} at {Var1}");
+			_program[(int)param1] = input;
+
+			Console.WriteLine($"      Amp {Name} Inserting {input} at {param1}");
 
 			_programCounter += 2;
 
@@ -147,73 +232,88 @@ namespace IntCode_Computer
 			return;
 		}
 
-		private void four()
+		//	4
+		private void Output()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-
 			_outputs.Enqueue(param1);
 
 			Console.WriteLine($"      Amp {Name} Outputting {param1}");
 
 			_programCounter += 2;
 
-			Paused = true;
+			//Paused = true;
 
 			return;
 		}
 
-		private void five()
+		//	5
+		private void JumpIfTrue()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_programCounter += 3;
-
-			if (param1 != 0)
-			{
-				_programCounter = param2;
-			}
+			_programCounter = param1 != 0 ? (int)param2 : _programCounter + 3;
 
 			return;
 		}
 
-		private void six()
+		//	6
+		private void JumpIfFalse()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_programCounter += 3;
-
-			if(param1 == 0)
-			{
-				_programCounter = param2;
-			}
-
+			_programCounter = param1 == 0 ? (int)param2 : _programCounter + 3;
+			
 			return;
 		}
 
-		private void seven()
+		//	7
+		private void LessThan()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_program[Var3] = param1 < param2 ? 1 : 0;
+			_program[(int)param3] = param1 < param2 ? 1 : 0;
 
 			_programCounter += 4;
 
 			return;
 		}
 
-		private void eight()
+		//	8
+		private void Equals()
 		{
-			int param1 = (Mode & 1) > 0 ? Var1 : _program[Var1];
-			int param2 = (Mode & 10) > 0 ? Var2 : _program[Var2];
-
-			_program[Var3] = param1 == param2 ? 1 : 0;
+			_program[(int)param3] = param1 == param2 ? 1 : 0;
 
 			_programCounter += 4;
 
 			return;
 		}
+
+		//	9
+		private void AdjustRelativeBase()
+		{
+			_relativeBase += (int)param1;
+
+			Console.WriteLine($"Shift relative base to {_relativeBase}");
+
+			_programCounter += 2;
+
+			return;
+		}
+	}
+
+	public enum IntOps
+	{
+		Add							=	1,
+		Multiply					=	2,				
+		Input						=	3,
+		Output						=	4,
+		JumpIfTrue					=	5,
+		JumpIfFalse					=	6,
+		LessThan					=	7,
+		Equals						=	8,
+		AdjustRelativeBase			=	9,
+		Halt						=	99,
+	}
+
+	public enum Modes
+	{
+		Null = -1,
+		Position = 0,
+		Immediate = 1,
+		Relative = 2,
 	}
 }

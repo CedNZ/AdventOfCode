@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using IntCode_Computer;
 
-namespace IntCode_Computer
+namespace Day7
 {
 	class Program
 	{
@@ -26,32 +27,32 @@ namespace IntCode_Computer
 
 			IntcodeComputer[] amps;
 
-			double? maxOutput = null;
+			int? maxOutput = null;
 			string maxPhase = "";
 
-			foreach(var phaseInputs in Permutate(permutationSeed)) 
+			foreach (var phaseInputs in Permutate(permutationSeed))
 			{
 				Console.WriteLine($"Begin Run Phase: {phaseInputs}");
-				double nextInput = 0;
+				int nextInput = 0;
 				amps = new IntcodeComputer[phaseInputs.Length];
 
-				while(amps.All(x => x == null) || amps.Any(a => !a.Halted))
+				while (amps.All(x => x == null) || amps.Any(a => !a.Halted))
 				{
-					for(int i = 0; i < phaseInputs.Length; i++)
+					for (int i = 0; i < phaseInputs.Length; i++)
 					{
-						if(amps[i] == null)
+						if (amps[i] == null)
 						{
 							amps[i] = new IntcodeComputer(program, ampNames[i], int.Parse(phaseInputs[i].ToString()));
 							Console.WriteLine($"Created Amp {amps[i].Name}, with Phase: {amps[i].Phase}");
 						}
-						if(amps[i].Processing)
+						if (amps[i].Processing)
 						{
 							Console.WriteLine($"Running Amp {ampNames[i]}, Input: {nextInput}");
 							amps[i].QueueInput(nextInput);
 							amps[i].Run();
-							if(amps[i].HasOutput)
+							if (amps[i].HasOutput)
 							{
-								nextInput = amps[i].GetOutput();
+								nextInput = (int)amps[i].GetOutput();
 								Console.WriteLine($"Retreieved {nextInput} from Amp {ampNames[i]}");
 							}
 						}
@@ -61,7 +62,8 @@ namespace IntCode_Computer
 
 				Console.WriteLine($"Phase: {phaseInputs}, Output: {nextInput}");
 
-				if(maxOutput == null || nextInput > maxOutput) {
+				if (maxOutput == null || nextInput > maxOutput)
+				{
 					maxOutput = nextInput;
 					maxPhase = phaseInputs;
 				}
@@ -71,9 +73,9 @@ namespace IntCode_Computer
 			Console.WriteLine($"Max Output: {maxOutput}, Phase: {maxPhase}, Elapsed: {stopwatch.Elapsed}");
 		}
 
-		private static IEnumerable<string> Permutate(string source) 
+		private static IEnumerable<string> Permutate(string source)
 		{
-			if(source.Length == 1) return new List<string> { source };
+			if (source.Length == 1) return new List<string> { source };
 
 			var permutations = from c in source
 							   from p in Permutate(new String(source.Where(x => x != c).ToArray()))
@@ -81,5 +83,5 @@ namespace IntCode_Computer
 
 			return permutations;
 		}
-	}	
+	}
 }
