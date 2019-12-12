@@ -167,7 +167,7 @@ namespace IntCode_Computer
 					case Modes.Position:
 						return _program[(int)Var2];
 					case Modes.Immediate:
-						return Var1;
+						return Var2;
 					case Modes.Relative:
 						return _program[(int)Var2 + _relativeBase];
 				}
@@ -182,11 +182,9 @@ namespace IntCode_Computer
 				switch(_modes[2])
 				{
 					case Modes.Null:
-						return Var3;
 					case Modes.Position:
-						return _program[(int)Var3];
 					case Modes.Immediate:
-						return Var1;
+						return _program[(int)Var3];
 					case Modes.Relative:
 						return _program[(int)Var3 + _relativeBase];
 				}
@@ -216,9 +214,9 @@ namespace IntCode_Computer
 		{
 			var input = _inputs.Dequeue();
 
-			var position = (Mode[^1]) == '2' ? _relativeBase + (int)Var1 : (int)Var1;
+			var position = _modes[0] == Modes.Relative ? _relativeBase + (int)Var1 : (int)Var1;
 
-			_program[position] = input;
+			_program[(int)param1] = input;
 
 			Console.WriteLine($"      Amp {Name} Inserting {input} at {param1}");
 
