@@ -193,6 +193,7 @@ namespace IntCode_Computer
 			}
 		}
 
+		//	1
 		private void Add()
 		{
 			_program[(int)param3] = param1 + param2;
@@ -202,6 +203,7 @@ namespace IntCode_Computer
 			return;
 		}
 
+		//	2
 		private void Multiply()
 		{
 			_program[(int)param3] = param1 * param2;
@@ -211,6 +213,7 @@ namespace IntCode_Computer
 			return;
 		}
 
+		//	3
 		private void Input()
 		{
 			var input = _inputs.Dequeue();
@@ -228,6 +231,7 @@ namespace IntCode_Computer
 			return;
 		}
 
+		//	4
 		private void Output()
 		{
 			_outputs.Enqueue(param1);
@@ -241,6 +245,7 @@ namespace IntCode_Computer
 			return;
 		}
 
+		//	5
 		private void JumpIfTrue()
 		{
 			_programCounter = param1 != 0 ? (int)param2 : _programCounter + 3;
@@ -248,6 +253,7 @@ namespace IntCode_Computer
 			return;
 		}
 
+		//	6
 		private void JumpIfFalse()
 		{
 			_programCounter = param1 == 0 ? (int)param2 : _programCounter + 3;
@@ -255,6 +261,7 @@ namespace IntCode_Computer
 			return;
 		}
 
+		//	7
 		private void LessThan()
 		{
 			_program[(int)param3] = param1 < param2 ? 1 : 0;
@@ -264,6 +271,7 @@ namespace IntCode_Computer
 			return;
 		}
 
+		//	8
 		private void Equals()
 		{
 			_program[(int)param3] = param1 == param2 ? 1 : 0;
@@ -273,6 +281,7 @@ namespace IntCode_Computer
 			return;
 		}
 
+		//	9
 		private void AdjustRelativeBase()
 		{
 			_relativeBase += (int)param1;
