@@ -181,10 +181,11 @@ namespace IntCode_Computer
 			{
 				switch(_modes[2])
 				{
-					case Modes.Null:
 					case Modes.Position:
-					case Modes.Immediate:
 						return _program[(int)Var3];
+					case Modes.Null:
+					case Modes.Immediate:
+						return Var3;
 					case Modes.Relative:
 						return _program[(int)Var3 + _relativeBase];
 				}
