@@ -14,6 +14,7 @@ namespace IntCode_Computer
 		private string _name;
 		private int _relativeBase;
 		private Modes[] _modes;
+		private IntOps _intOp;
 
 		public IntcodeComputer(double[] program, string name, int? phase = null)
 		{
@@ -88,11 +89,11 @@ namespace IntCode_Computer
 
 				Console.WriteLine($"    Amp {Name} Executing instuction {instruction} at {_programCounter}, with params {Var1}, {Var2}, {Var3}");
 
-				var intOp = (IntOps)(instruction % 100);
+				_intOp = (IntOps)(instruction % 100);
 
 				PopulateModes(instruction);
 
-				switch (intOp)
+				switch (_intOp)
 				{
 					case IntOps.Add:
 						Add();
@@ -151,6 +152,8 @@ namespace IntCode_Computer
 					case Modes.Immediate:
 						return Var1;
 					case Modes.Relative:
+						if (_intOp == IntOps.Input)
+							return Var1 + _relativeBase;
 						return _program[(int)Var1 + _relativeBase];
 				}
 				return 0;
@@ -187,7 +190,7 @@ namespace IntCode_Computer
 					case Modes.Immediate:
 						return Var3;
 					case Modes.Relative:
-						return _program[(int)Var3 + _relativeBase];
+						return Var3 + _relativeBase;
 				}
 				return 0;
 			}
@@ -217,8 +220,6 @@ namespace IntCode_Computer
 		private void Input()
 		{
 			var input = _inputs.Dequeue();
-
-			var position = _modes[0] == Modes.Relative ? _relativeBase + (int)Var1 : (int)Var1;
 
 			_program[(int)param1] = input;
 

@@ -13,7 +13,7 @@ namespace Day9
 			var stopwatch = Stopwatch.StartNew();
 
 			var input = System.IO.File.ReadAllText(@"..\..\..\..\..\Inputs\9.txt");
-			//var input = @"104,1125899906842624,99";
+			//var input = @"109, 1, 3, 3, 204, 2, 99";
 			var program = input.Split(',').Select(x => double.Parse(x)).ToArray();
 
 			IntcodeComputer computer = new IntcodeComputer(program, "BOOST");
