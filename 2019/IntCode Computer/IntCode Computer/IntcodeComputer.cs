@@ -148,6 +148,8 @@ namespace IntCode_Computer
 				{
 					case Modes.Null:
 					case Modes.Position:
+						if(_intOp == IntOps.Input)
+							return Var1;
 						return _program[(int)Var1];
 					case Modes.Immediate:
 						return Var1;
