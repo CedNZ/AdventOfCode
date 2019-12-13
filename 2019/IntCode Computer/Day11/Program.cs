@@ -68,10 +68,10 @@ namespace Day11
 				painting[position.y, position.x] = hull[position];
 			}
 
-			for (int y = minY; y < maxY; y++)
+			for (int y = minY; y <= maxY; y++)
 			{
 				string row = "";
-				for (int x = minX; x < maxX; x++)
+				for (int x = minX; x <= maxX; x++)
 				{
 					if (painting[y, x] is Colour colour)
 					{
