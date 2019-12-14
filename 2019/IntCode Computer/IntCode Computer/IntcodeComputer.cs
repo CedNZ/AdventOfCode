@@ -15,11 +15,12 @@ namespace IntCode_Computer
 		private int _relativeBase;
 		private Modes[] _modes;
 		private IntOps _intOp;
+		private int _haltEveryNOutputs;
 
 		public IntcodeComputer(double[] program, string name, int? phase = null)
 		{
 			_name = name;
-			_program = new double[2056];
+			_program = new double[program.Length * 4];
 			for (int i = 0; i < _program.Length; i++)
 			{
 				_program[i] = i < program.Length 
@@ -41,6 +42,12 @@ namespace IntCode_Computer
 				_inputs.Enqueue(_phase);
 
 			Paused = false;
+
+			_haltEveryNOutputs = -1;
+			if (name == "ARCADE")
+			{
+				_haltEveryNOutputs = 3;
+			}
 		}
 
 		public string Name => _name;
@@ -243,7 +250,15 @@ namespace IntCode_Computer
 
 			_programCounter += 2;
 
-			//Paused = true;
+			if(_haltEveryNOutputs >= 0) {
+				_haltEveryNOutputs %= 3;
+				_haltEveryNOutputs++;
+			}
+
+			if(_haltEveryNOutputs == 3)
+			{
+				Paused = true;
+			}
 
 			return;
 		}
