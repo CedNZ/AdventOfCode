@@ -24,17 +24,20 @@ namespace Day13
             {
                 computer.Run();
 
-                var x = (int)computer.GetOutput();
-                var y = (int)computer.GetOutput();
-                var tileId = (TileId)((int)computer.GetOutput());
+                if(computer.HasOutput)
+                {
+                    var x = (int)computer.GetOutput();
+                    var y = (int)computer.GetOutput();
+                    var tileId = (TileId)((int)computer.GetOutput());
 
-                if (screen.ContainsKey((x, y)))
-                {
-                    screen[(x, y)] = tileId;
-                }
-                else
-                {
-                    screen.Add((x, y), tileId);
+                    if(screen.ContainsKey((x, y)))
+                    {
+                        screen[(x, y)] = tileId;
+                    }
+                    else
+                    {
+                        screen.Add((x, y), tileId);
+                    }
                 }
             }
 
