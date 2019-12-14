@@ -246,7 +246,7 @@ namespace IntCode_Computer
 		{
 			_outputs.Enqueue(param1);
 
-			Console.WriteLine($"      {Name} Outputting {param1}");
+			//Console.WriteLine($"      {Name} Outputting {param1}");
 
 			_programCounter += 2;
 
