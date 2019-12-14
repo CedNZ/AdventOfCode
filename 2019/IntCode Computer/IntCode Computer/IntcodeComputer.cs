@@ -87,7 +87,7 @@ namespace IntCode_Computer
 			{
 				var instruction = _program[_programCounter];
 
-				Console.WriteLine($"    Amp {Name} Executing instuction {instruction} at {_programCounter}, with params {Var1}, {Var2}, {Var3}");
+				//Console.WriteLine($"    {Name} Executing instuction {instruction} at {_programCounter}, with params {Var1}, {Var2}, {Var3}");
 
 				_intOp = (IntOps)(instruction % 100);
 
@@ -148,6 +148,8 @@ namespace IntCode_Computer
 				{
 					case Modes.Null:
 					case Modes.Position:
+						if(_intOp == IntOps.Input)
+							return Var1;
 						return _program[(int)Var1];
 					case Modes.Immediate:
 						return Var1;
@@ -223,7 +225,7 @@ namespace IntCode_Computer
 
 			_program[(int)param1] = input;
 
-			Console.WriteLine($"      Amp {Name} Inserting {input} at {param1}");
+			//Console.WriteLine($"      {Name} Inserting {input} at {param1}");
 
 			_programCounter += 2;
 
@@ -237,7 +239,7 @@ namespace IntCode_Computer
 		{
 			_outputs.Enqueue(param1);
 
-			Console.WriteLine($"      Amp {Name} Outputting {param1}");
+			//Console.WriteLine($"      {Name} Outputting {param1}");
 
 			_programCounter += 2;
 
@@ -287,7 +289,7 @@ namespace IntCode_Computer
 		{
 			_relativeBase += (int)param1;
 
-			Console.WriteLine($"Shift relative base to {_relativeBase}");
+			//Console.WriteLine($"Shift relative base to {_relativeBase}");
 
 			_programCounter += 2;
 
