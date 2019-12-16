@@ -31,6 +31,12 @@ namespace Day15
 			while (searching)
 			{
 				var directionToCheck = currentPath.GetNextDirection();
+				if (directionToCheck == Direction.Nowhere)
+				{
+					searching = false;
+					break;
+				}
+
 				//Console.WriteLine($"Moving {directionToCheck.ToString()}");
 				robot.QueueInput((int)directionToCheck);
 				robot.Run();
@@ -85,38 +91,59 @@ namespace Day15
 						robotX++;
 					if (directionToCheck == Direction.West)
 						robotX--;
-					searching = false;
+					//searching = false;var previousPath = currentPath;
+					var previousPath = currentPath;
+					currentPath = visitedPaths.FirstOrDefault(x => x.X == robotX && x.Y == robotY) ?? new Path(robotX, robotY, previousPath, true);
+
+					if (directionToCheck == Direction.North)
+						previousPath.North = currentPath;
+					if (directionToCheck == Direction.South)
+						previousPath.South = currentPath;
+					if (directionToCheck == Direction.East)
+						previousPath.East = currentPath;
+					if (directionToCheck == Direction.West)
+						previousPath.West = currentPath;
+
+					if (!visitedPaths.Contains(currentPath))
+					{
+						visitedPaths.Add(currentPath);
+					}
 					Console.WriteLine($"Found exit at {robotX}:{robotY}, depth of {currentPath.Distance + 1}");
 				}
 			}
+
+			Paint(visitedPaths);
+
 			stopwatch.Stop();
 			Console.WriteLine($"Elapsed: {stopwatch.Elapsed}");
 		}
 
-		public static void Paint<T>(Dictionary<(int x, int y), T> pixels) where T : Enum
+		public static void Paint(List<Path> mazePath)
 		{
-			int minX = pixels.Keys.Min(p => p.x);
-			int maxX = pixels.Keys.Max(p => p.x);
-			int minY = pixels.Keys.Min(p => p.y);
-			int maxY = pixels.Keys.Max(p => p.y);
+			int minX = mazePath.Min(p => p.X);
+			int maxX = mazePath.Max(p => p.X);
+			int minY = mazePath.Min(p => p.Y);
+			int maxY = mazePath.Max(p => p.Y);
 
 			//Console.WriteLine($"minX: {minX}, minY: {minY}\nmaxX: {maxX}, maxY: {maxY}");
+			int width = Math.Abs(minX) + maxX + 1;
+			int height = Math.Abs(minY) + maxY + 1;
 
-			T[,] painting = new T[maxY + 1, maxX + 1];
+			char[,] painting = new char[height, width];
 
-			foreach (var position in pixels.Keys)
+			foreach (var path in mazePath)
 			{
-				painting[position.y, position.x] = pixels[position];
+				painting[path.Y, path.X] = '#';
 			}
 
 			Console.Clear();
 			string maze = "";
-			for (int y = 0; y <= maxY; y++)
+			for (int y = 0; y <= height; y++)
 			{
 				string row = "";
-				for (int x = 0; x <= maxX; x++)
+				for (int x = 0; x <= width; x++)
 				{
-					if (painting[y, x] != null)
+					if (painting[y, x] == '#')
 					{
 						row += painting[y, x];
 					}
@@ -150,6 +177,7 @@ namespace Day15
 		Path Parent;
 		public Path North, South, East, West;
 		public bool wallNorth, wallSouth, wallEast, wallWest;
+		public bool IsSource;
 
 		public Path(int x, int y, Path parent)
 		{
@@ -157,6 +185,11 @@ namespace Day15
 			Y = y;
 			Parent = parent;
 			Distance = parent.Distance + 1;
+		}
+
+		public Path(int x, int y, Path parent, bool isSource): this(x, y, parent) 
+		{
+			IsSource = isSource;
 		}
 
 		public Path(int x, int y)
