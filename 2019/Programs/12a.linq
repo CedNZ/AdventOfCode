@@ -2,6 +2,7 @@
 
 void Main()
 {
+	var stopwatch = Stopwatch.StartNew();
 	/*
 	<x=-1, y=0, z=2>
 	<x=2, y=-10, z=-7>
@@ -9,10 +10,10 @@ void Main()
 	<x=3, y=5, z=-1>	
 	*/
 	
-	Moon Io = new Moon(-1, 0, 2, "Io");
-	Moon Europa = new Moon(2, -10, -7, "Europa");
-	Moon Ganymede = new Moon(4, -8, 8, "Ganymede");
-	Moon Callisto = new Moon(3, 5, -1, "Callisto");
+	Moon Io = new Moon(-8, -10, 0, "Io");
+	Moon Europa = new Moon(5, 5, 10, "Europa");
+	Moon Ganymede = new Moon(2, -7, 3, "Ganymede");
+	Moon Callisto = new Moon(9, -8, -3, "Callisto");
 
 	List<Moon> moons = new List<Moon> { Io, Europa, Ganymede, Callisto };
 	
@@ -20,8 +21,14 @@ void Main()
 				from otherMoon in moons.Where(m => m != moon)
 				select (moon, otherMoon);
 	
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 100; i++)
 	{
+		if (i % 10 == 0)
+		{
+			$"After {i} steps:".Dump();
+			moons.Dump();
+		}
+		
 		foreach (var moonPair in pairs)
 		{
 			moonPair.moon.ApplyGravity(moonPair.otherMoon);
@@ -31,9 +38,11 @@ void Main()
 		{
 			moon.Move();
 		}
-		
-		moons.Dump();
 	}
+	
+	var totalEnergy = moons.Sum(m => m.Energy);
+	stopwatch.Stop();
+	$"Total Energy at end: {totalEnergy}\nElapsed: {stopwatch.Elapsed}".Dump();
 }
 
 // Define other methods, classes and namespaces here
@@ -81,5 +90,11 @@ class Moon
 		Y += vY;
 		Z += vZ;
 	}
+	
+	public int PotentialEnergy => Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
+	
+	public int KineticEnergy => Math.Abs(vX) + Math.Abs(vY) + Math.Abs(vZ);
+	
+	public int Energy => PotentialEnergy * KineticEnergy;
 }
 
