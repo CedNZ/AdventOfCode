@@ -4,16 +4,16 @@ void Main()
 {
 	var stopwatch = Stopwatch.StartNew();
 	/*
-	<x=-1, y=0, z=2>
-	<x=2, y=-10, z=-7>
-	<x=4, y=-8, z=8>
-	<x=3, y=5, z=-1>	
+	<x=14, y=15, z=-2>
+	<x=17, y=-3, z=4>
+	<x=6, y=12, z=-13>
+	<x=-2, y=10, z=-8>
 	*/
 	
-	Moon Io = new Moon(-8, -10, 0, "Io");
-	Moon Europa = new Moon(5, 5, 10, "Europa");
-	Moon Ganymede = new Moon(2, -7, 3, "Ganymede");
-	Moon Callisto = new Moon(9, -8, -3, "Callisto");
+	Moon Io = new Moon(14, 15, -2, "Io");
+	Moon Europa = new Moon(17, -3, 4, "Europa");
+	Moon Ganymede = new Moon(6, 12, -13, "Ganymede");
+	Moon Callisto = new Moon(-2, 10, -8, "Callisto");
 
 	List<Moon> moons = new List<Moon> { Io, Europa, Ganymede, Callisto };
 	
@@ -21,7 +21,7 @@ void Main()
 				from otherMoon in moons.Where(m => m != moon)
 				select (moon, otherMoon);
 	
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 		if (i % 10 == 0)
 		{
