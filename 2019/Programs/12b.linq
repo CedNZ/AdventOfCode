@@ -9,19 +9,30 @@ void Main()
 	<x=6, y=12, z=-13>
 	<x=-2, y=10, z=-8>
 	*/
+	/**/
+	//Example 1
 	Moon Io = new Moon(-1, 0, 2, "Io");
 	Moon Europa = new Moon(2, -10, -7, "Europa");
 	Moon Ganymede = new Moon(4, -8, 8, "Ganymede");
 	Moon Callisto = new Moon(3, 5, -1, "Callisto");
+	/**/
 	/*
+	//Example 2
+	Moon Io = new Moon(-8, -10, 0, "Io");
+	Moon Europa = new Moon(5, 5, 10, "Europa");
+	Moon Ganymede = new Moon(2, -7, 3, "Ganymede");
+	Moon Callisto = new Moon(9, -8, -3, "Callisto");
+	/**/
+	/*
+	// Real Input
 	Moon Io = new Moon(14, 15, -2, "Io");
 	Moon Europa = new Moon(17, -3, 4, "Europa");
 	Moon Ganymede = new Moon(6, 12, -13, "Ganymede");
 	Moon Callisto = new Moon(-2, 10, -8, "Callisto");
-	*/
+	/**/
 
 	List<Moon> moons = new List<Moon> { Io, Europa, Ganymede, Callisto };
-	List<string> history = new List<string>();
+	Dictionary<double, List<string>> states = new Dictionary<double, System.Collections.Generic.List<string>>();
 	
 	var pairs = from moon in moons
 				from otherMoon in moons.Where(m => m != moon)
@@ -29,24 +40,100 @@ void Main()
 
 	Func<string> moonState = () => $"{Io.ToString()}\n{Europa.ToString()}\n{Ganymede.ToString()}\n{Callisto.ToString()}";
 	int count = 0;
+	var totalEnergy = moons.Sum(m => m.Energy);
 	
-	while (!history.Contains(moonState()))
+	var foundState = false;
+	int countX = 0;
+	int countY = 0;
+	int countZ = 0;
+	bool foundX = false;
+	bool foundY = false;
+	bool foundZ = false;
+	Dimension? currentDimension = null;
+	
+	while (!foundX || !foundY || !foundZ)
 	{
-		count++;
-		history.Add(moonState());
+		currentDimension = !foundX 
+			? Dimension.X
+			: !foundY 
+				? Dimension.Y
+				: Dimension.Z;
+		
+		totalEnergy = moons.Sum(m => m.Energy);
+		
+		var state = moonState();
+		
+		if (states.ContainsKey(totalEnergy)) {
+			if (states[totalEnergy].Contains(state))
+			{
+				Io = new Moon(-1, 0, 2, "Io");
+				Europa = new Moon(2, -10, -7, "Europa");
+				Ganymede = new Moon(4, -8, 8, "Ganymede");
+				Callisto = new Moon(3, 5, -1, "Callisto");
+				
+				states = new Dictionary<double, System.Collections.Generic.List<string>>();
+				states.Add(totalEnergy, new List<string> { state });
+				
+				$"Repeated state:\n{state}\n".Dump();
+				switch (currentDimension)
+				{
+					case Dimension.X:
+						foundX = true;
+						break;
+					case Dimension.Y:
+						foundY = true;
+						break;
+					case Dimension.Z:
+						foundZ = true;
+						break;
+					default:
+						count++;
+						break;
+				}
+				continue;
+			}
+			states[totalEnergy].Add(state);
+		}
+		else
+		{
+			states.Add(totalEnergy, new List<string> { state });
+		}
+
+		//moonState().Dump();
+		//$"Total Energy: {moons.Sum(m => m.Energy)}".Dump();
+		//$"----------------------------------------------{count}----------------------------------------------".Dump();
 		
 		foreach (var moonPair in pairs)
 		{
-			moonPair.moon.ApplyGravity(moonPair.otherMoon);
+			moonPair.moon.ApplyGravity(moonPair.otherMoon, currentDimension);
 		}
 
 		foreach (var moon in moons)
 		{
-			moon.Move();
+			moon.Move(currentDimension);
 		}
+		
+		switch (currentDimension) 
+		{
+			case Dimension.X:
+				countX++;
+				break;
+			case Dimension.Y:
+				countY++;
+				break;
+			case Dimension.Z:
+				countZ++;
+				break;
+			default:
+				count++;
+				break;
+		}
+		$"CountX : {countX}, CountY : {countY}, CountZ: {countZ}".Dump();
 	}
 	
-	var totalEnergy = moons.Sum(m => m.Energy);
+	$"X repeats in {countX}\nY repeats in {countY}\nZ repeats in {countZ}\nLCM: {LCM(countX, LCM(countY, countZ))}".Dump();
+	
+	
 	stopwatch.Stop();
 	$"Total Energy at end: {totalEnergy}\nRepeats at: {count}\nElapsed: {stopwatch.Elapsed}".Dump();
 }
@@ -54,8 +141,8 @@ void Main()
 // Define other methods, classes and namespaces here
 class Moon
 {
-	public int X, Y, Z;
-	public int vX, vY, vZ;
+	public double X, Y, Z;
+	public double vX, vY, vZ;
 	public string Name;
 	
 	public Moon(int x, int y, int z, string name)
@@ -71,41 +158,78 @@ class Moon
 		vZ = 0;
 	}
 	
-	public void ApplyGravity(Moon other)
+	public void ApplyGravity(Moon other, Dimension? dimension = null)
 	{
-		if (X > other.X)
-			vX--;
-		if (X < other.X)
-			vX++;
+		if (dimension == null || dimension == Dimension.X)
+		{
+			if (X > other.X)
+				vX--;
+			if (X < other.X)
+				vX++;
+		}
 
-		if (Y > other.Y)
-			vY--;
-		if (Y < other.Y)
-			vY++;
+		if (dimension == null || dimension == Dimension.Y)
+		{
+			if (Y > other.Y)
+				vY--;
+			if (Y < other.Y)
+				vY++;
+		}
 
-		if (Z > other.Z)
-			vZ--;
-		if (Z < other.Z)
-			vZ++;
-
+		if (dimension == null || dimension == Dimension.Z)
+		{
+			if (Z > other.Z)
+				vZ--;
+			if (Z < other.Z)
+				vZ++;
+		}
 	}
 	
-	public void Move()
+	public void Move(Dimension? dimension = null)
 	{
-		X += vX;
-		Y += vY;
-		Z += vZ;
-	}
+		if (dimension == null || dimension == Dimension.X)
+		{
+			X += vX;
+		}
+
+		if (dimension == null || dimension == Dimension.X)
+		{
+			Y += vY;
+		}
+
+		if (dimension == null || dimension == Dimension.X)
+		{
+			Z += vZ;
+		}
+		}
 	
-	public int PotentialEnergy => Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
+	public double PotentialEnergy => Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
 	
-	public int KineticEnergy => Math.Abs(vX) + Math.Abs(vY) + Math.Abs(vZ);
+	public double KineticEnergy => Math.Abs(vX) + Math.Abs(vY) + Math.Abs(vZ);
 	
-	public int Energy => PotentialEnergy * KineticEnergy;
+	public double Energy => PotentialEnergy * KineticEnergy;
 
 	public override string ToString()
 	{
-		return $"pos=<x= {X}, y=  {Y}, z=  {Z}>, vel=<x=  {vX}, y=  {vY}, z=  {vZ}>";
+		return $"pos=<x= {X}, y=  {Y}, z=  {Z}>, vel=<x=  {vX}, y=  {vY}, z=  {vZ}>, energy=<pot= {PotentialEnergy}, kin= {KineticEnergy}, tot= {Energy}>";
 	}
+}
+
+static int GCD(int a, int b)
+{
+	if (a % b == 0) return b;
+	return GCD(b, a % b);
+}
+
+static int LCM(int a, int b)
+{
+	return a * b / GCD(a, b);
+}
+
+enum Dimension
+{
+	X = 1,
+	Y = 2,
+	Z = 3
 }
 
