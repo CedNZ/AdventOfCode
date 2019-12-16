@@ -115,6 +115,7 @@ namespace Day13
                 Console.WriteLine(row);
             }
         }
+
         public static string Tile(TileId tile) => tile switch
         {
             TileId.Empty    => " ",
