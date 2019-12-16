@@ -110,15 +110,48 @@ namespace Day15
 					}
 					Console.WriteLine($"Found exit at {robotX}:{robotY}, depth of {currentPath.Distance + 1}");
 				}
+				Paint(visitedPaths, robotX, robotY);
 			}
 
-			Paint(visitedPaths);
+			Paint(visitedPaths, robotX, robotY);
+			int mins = 0;
+
+			while(visitedPaths.Any(x => !x.Oxygenated))
+			{
+				mins++;
+				var oxygenated = visitedPaths.Where(x => x.Oxygenated).ToList();
+				foreach(var path in oxygenated)
+				{
+					if(path.Parent != null)
+					{
+						path.Parent.Oxygenated = true;
+					}
+					if(path.North != null)
+					{
+						path.North.Oxygenated = true;
+					}
+					if(path.South != null)
+					{
+						path.South.Oxygenated = true;
+					}
+					if(path.East != null)
+					{
+						path.East.Oxygenated = true;
+					}
+					if(path.West != null)
+					{
+						path.West.Oxygenated = true;
+					}
+				}
+				Paint(visitedPaths, robotX, robotY);
+			}
+
 
 			stopwatch.Stop();
-			Console.WriteLine($"Elapsed: {stopwatch.Elapsed}");
+			Console.WriteLine($"Minutes to fill with air: {mins}\nElapsed: {stopwatch.Elapsed}");
 		}
 
-		public static void Paint(List<Path> mazePath)
+		public static void Paint(List<Path> mazePath, int robotX, int robotY)
 		{
 			int minX = mazePath.Min(p => p.X);
 			int maxX = mazePath.Max(p => p.X);
@@ -133,28 +166,35 @@ namespace Day15
 
 			foreach (var path in mazePath)
 			{
-				painting[path.Y, path.X] = '#';
+				painting[path.Y + Math.Abs(minY), path.X + Math.Abs(minX)] = path.Oxygenated ? '░' : '╬';
 			}
-
-			Console.Clear();
+			
 			string maze = "";
-			for (int y = 0; y <= height; y++)
+			for (int y = 0; y < height; y++)
 			{
 				string row = "";
-				for (int x = 0; x <= width; x++)
+				for (int x = 0; x < width; x++)
 				{
-					if (painting[y, x] == '#')
+					if (x == robotX + Math.Abs(minX) && y == robotY + Math.Abs(minY))
 					{
-						row += painting[y, x];
+						row += "o";
 					}
 					else
 					{
-						row += " ";
+						if(painting[y, x] != 0)
+						{
+							row += painting[y, x];
+						}
+						else
+						{
+							row += " ";
+						}
 					}
 				}
 				maze += row;
 				maze += "\n";
 			}
+			Console.Clear();
 			Console.Write(maze);
 		}
 	}
@@ -174,10 +214,11 @@ namespace Day15
 		public int Y;
 		bool Deadend;
 		public int Distance;
-		Path Parent;
+		public Path Parent;
 		public Path North, South, East, West;
 		public bool wallNorth, wallSouth, wallEast, wallWest;
 		public bool IsSource;
+		public bool Oxygenated;
 
 		public Path(int x, int y, Path parent)
 		{
@@ -190,6 +231,7 @@ namespace Day15
 		public Path(int x, int y, Path parent, bool isSource): this(x, y, parent) 
 		{
 			IsSource = isSource;
+			Oxygenated = true;
 		}
 
 		public Path(int x, int y)
