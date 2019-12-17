@@ -216,12 +216,12 @@ class Moon
 			X += vX;
 		}
 
-		if (dimension == null || dimension == Dimension.X)
+		if (dimension == null || dimension == Dimension.Y)
 		{
 			Y += vY;
 		}
 
-		if (dimension == null || dimension == Dimension.X)
+		if (dimension == null || dimension == Dimension.Y)
 		{
 			Z += vZ;
 		}
@@ -256,4 +256,3 @@ enum Dimension
 	Y = 2,
 	Z = 3
 }
-
