@@ -90,8 +90,16 @@ void Main()
 
 				states = new Dictionary<double, System.Collections.Generic.List<string>>();
 				states.Add(totalEnergy, new List<string> { moonState() });
+				currentDimension = !foundX
+					? Dimension.X
+					: !foundY
+						? Dimension.Y
+						: Dimension.Z;
 			}
-			states[totalEnergy].Add(state);
+			else
+			{
+				states[totalEnergy].Add(state);
+			}
 		}
 		else
 		{
@@ -130,7 +138,8 @@ void Main()
 		$"CountX : {countX}, CountY : {countY}, CountZ: {countZ}".Dump();
 	}
 	
-	$"X repeats in {countX}\nY repeats in {countY}\nZ repeats in {countZ}\nLCM: {LCM(countX, LCM(countY, countZ))}".Dump();
+	$"X repeats in {countX}\nY repeats in {countY}\nZ repeats in {countZ}".Dump();
+	$"LCM: {LCM(countX, LCM(countY, countZ))}".Dump();
 	
 	
 	stopwatch.Stop();
