@@ -221,7 +221,7 @@ class Moon
 			Y += vY;
 		}
 
-		if (dimension == null || dimension == Dimension.Y)
+		if (dimension == null || dimension == Dimension.Z)
 		{
 			Z += vZ;
 		}
