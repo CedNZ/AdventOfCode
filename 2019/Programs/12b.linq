@@ -26,19 +26,21 @@ void Main()
 	/**/
 
 	List<Moon> moons = new List<Moon> { Io, Europa, Ganymede, Callisto };
-	List<string> history = new List<string>();
 	
 	var pairs = from moon in moons
 				from otherMoon in moons.Where(m => m != moon)
 				select (moon, otherMoon);
 
-	Func<string> moonState = () => $"{Io.ToString()}\n{Europa.ToString()}\n{Ganymede.ToString()}\n{Callisto.ToString()}";
 	int count = 0;
+	bool searching = true;
 	
-	while (!history.Contains(moonState()))
+	int cycleX = -1;
+	int cycleY = -1;
+	int cycleZ = -1;
+	
+	while (searching)
 	{
 		count++;
-		history.Add(moonState());
 		
 		foreach (var moonPair in pairs)
 		{
@@ -49,9 +51,28 @@ void Main()
 		{
 			moon.Move();
 		}
+		
+		if (cycleX == -1 && moons.All(m => m.vX == 0))
+		{
+			cycleX = count * 2;
+		}
+		if (cycleY == -1 && moons.All(m => m.vY == 0))
+		{
+			cycleY = count * 2;
+		}
+		if (cycleZ == -1 && moons.All(m => m.vZ == 0))
+		{
+			cycleZ = count * 2;
+		}
+		
+		if (cycleX > 0 && cycleY > 0 && cycleZ > 0)
+		{
+			searching = false;
+		}
 	}
-	
+
 	var totalEnergy = moons.Sum(m => m.Energy);
+	$"Repeats at X: {cycleX}, Y: {cycleY}, Z: {cycleZ}\nLCM: {LCM(cycleX, LCM(cycleY, cycleZ))}".Dump();
 	stopwatch.Stop();
 	$"Total Energy at end: {totalEnergy}\nRepeats at: {count}\nElapsed: {stopwatch.Elapsed}".Dump();
 }
