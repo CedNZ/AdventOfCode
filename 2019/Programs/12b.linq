@@ -65,15 +65,7 @@ void Main()
 		
 		if (states.ContainsKey(totalEnergy)) {
 			if (states[totalEnergy].Contains(state))
-			{
-				Io = new Moon(-1, 0, 2, "Io");
-				Europa = new Moon(2, -10, -7, "Europa");
-				Ganymede = new Moon(4, -8, 8, "Ganymede");
-				Callisto = new Moon(3, 5, -1, "Callisto");
-				
-				states = new Dictionary<double, System.Collections.Generic.List<string>>();
-				states.Add(totalEnergy, new List<string> { state });
-				
+			{				
 				$"Repeated state:\n{state}\n".Dump();
 				switch (currentDimension)
 				{
@@ -90,7 +82,14 @@ void Main()
 						count++;
 						break;
 				}
-				continue;
+
+				Io.Reset();
+				Europa.Reset();
+				Ganymede.Reset();
+				Callisto.Reset();
+
+				states = new Dictionary<double, System.Collections.Generic.List<string>>();
+				states.Add(totalEnergy, new List<string> { moonState() });
 			}
 			states[totalEnergy].Add(state);
 		}
@@ -144,6 +143,7 @@ class Moon
 	public double X, Y, Z;
 	public double vX, vY, vZ;
 	public string Name;
+	private readonly double initialX, initialY, initialZ;
 	
 	public Moon(int x, int y, int z, string name)
 	{
@@ -152,6 +152,21 @@ class Moon
 		Z = z;
 		
 		Name = name;
+
+		vX = 0;
+		vY = 0;
+		vZ = 0;
+		
+		initialX = x;
+		initialY = y;
+		initialZ = z;		
+	}
+	
+	public void Reset() 
+	{
+		X = initialX;
+		Y = initialY;
+		Z = initialZ;
 
 		vX = 0;
 		vY = 0;
