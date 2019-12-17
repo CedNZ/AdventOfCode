@@ -3,22 +3,27 @@
 void Main()
 {
 	var stopwatch = Stopwatch.StartNew();
-	/*
-	<x=14, y=15, z=-2>
-	<x=17, y=-3, z=4>
-	<x=6, y=12, z=-13>
-	<x=-2, y=10, z=-8>
-	*/
+	/**/
+	//Example 1
 	Moon Io = new Moon(-1, 0, 2, "Io");
 	Moon Europa = new Moon(2, -10, -7, "Europa");
 	Moon Ganymede = new Moon(4, -8, 8, "Ganymede");
 	Moon Callisto = new Moon(3, 5, -1, "Callisto");
+	/**/
 	/*
+	//Example 2
+	Moon Io = new Moon(-8, -10, 0, "Io");
+	Moon Europa = new Moon(5, 5, 10, "Europa");
+	Moon Ganymede = new Moon(2, -7, 3, "Ganymede");
+	Moon Callisto = new Moon(9, -8, -3, "Callisto");
+	/**/
+	/*
+	// Real Input
 	Moon Io = new Moon(14, 15, -2, "Io");
 	Moon Europa = new Moon(17, -3, 4, "Europa");
 	Moon Ganymede = new Moon(6, 12, -13, "Ganymede");
 	Moon Callisto = new Moon(-2, 10, -8, "Callisto");
-	*/
+	/**/
 
 	List<Moon> moons = new List<Moon> { Io, Europa, Ganymede, Callisto };
 	List<string> history = new List<string>();
@@ -107,4 +112,15 @@ class Moon
 	{
 		return $"pos=<x= {X}, y=  {Y}, z=  {Z}>, vel=<x=  {vX}, y=  {vY}, z=  {vZ}>";
 	}
+}
+
+static int GCD(int a, int b)
+{
+	if (a % b == 0) return b;
+	return GCD(b, a % b);
+}
+
+static int LCM(int a, int b)
+{
+	return a * b / GCD(a, b);
 }
