@@ -3,14 +3,14 @@
 void Main()
 {
 	var stopwatch = Stopwatch.StartNew();
-	/**/
+	/*
 	//Example 1
 	Moon Io = new Moon(-1, 0, 2, "Io");
 	Moon Europa = new Moon(2, -10, -7, "Europa");
 	Moon Ganymede = new Moon(4, -8, 8, "Ganymede");
 	Moon Callisto = new Moon(3, 5, -1, "Callisto");
 	/**/
-	/*
+	/**/
 	//Example 2
 	Moon Io = new Moon(-8, -10, 0, "Io");
 	Moon Europa = new Moon(5, 5, 10, "Europa");
@@ -34,9 +34,9 @@ void Main()
 	int count = 0;
 	bool searching = true;
 	
-	int cycleX = -1;
-	int cycleY = -1;
-	int cycleZ = -1;
+	double cycleX = -1;
+	double cycleY = -1;
+	double cycleZ = -1;
 	
 	while (searching)
 	{
@@ -135,13 +135,13 @@ class Moon
 	}
 }
 
-static int GCD(int a, int b)
+static double GCD(double a, double b)
 {
 	if (a % b == 0) return b;
 	return GCD(b, a % b);
 }
 
-static int LCM(int a, int b)
+static double LCM(double a, double b)
 {
 	return a * b / GCD(a, b);
 }
