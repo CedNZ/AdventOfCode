@@ -194,6 +194,7 @@ namespace Day15
 				maze += row;
 				maze += "\n";
 			}
+			System.Threading.Thread.Sleep(25);
 			Console.Clear();
 			Console.Write(maze);
 		}

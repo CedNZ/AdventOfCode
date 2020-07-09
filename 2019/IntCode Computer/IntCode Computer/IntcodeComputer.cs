@@ -80,6 +80,8 @@ namespace IntCode_Computer
 			var modeString = ((int)instruction / 100).ToString();
 			for (int i = 0; i < modeString.Length; i++)
 			{
+				//parse the string in reverse order
+				// i = 0; ^(1) => last character
 				_modes[i] = (Modes)int.Parse(modeString[^(i+1)].ToString());
 			}
 		}
@@ -280,6 +282,7 @@ namespace IntCode_Computer
 		}
 
 		//	7
+		// Writes 1 to position given by param3 if param1 is less than param2
 		private void LessThan()
 		{
 			_program[(int)param3] = param1 < param2 ? 1 : 0;
@@ -290,6 +293,7 @@ namespace IntCode_Computer
 		}
 
 		//	8
+		// Writes 1 to position given by param3 if param1 is equal too param2
 		private void Equals()
 		{
 			_program[(int)param3] = param1 == param2 ? 1 : 0;
@@ -300,6 +304,7 @@ namespace IntCode_Computer
 		}
 
 		//	9
+		//Relative Base is the offset at which to access memory positions, in Relative mode
 		private void AdjustRelativeBase()
 		{
 			_relativeBase += (int)param1;
