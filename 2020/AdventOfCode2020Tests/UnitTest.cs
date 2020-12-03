@@ -51,5 +51,35 @@ namespace AdventOfCode2020Tests
             else
                 Assert.Equal(1, day.B(inputs));
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Day3_Test(bool partOne)
+        {
+            Day3 day = new Day3();
+
+            var testCase = new[]
+            {
+                "..##.......",
+                "#...#...#..",
+                ".#....#..#.",
+                "..#.#...#.#",
+                ".#...##..#.",
+                "..#.##.....",
+                ".#.#.#....#",
+                ".#........#",
+                "#.##...#...",
+                "#...##....#",
+                ".#..#...#.#",
+            };
+
+            var inputs = day.SetupInputs(testCase);
+
+            if(partOne)
+                Assert.Equal(7, day.A(inputs));
+            else
+                Assert.Equal(1, day.B(inputs));
+        }
     }
 }
