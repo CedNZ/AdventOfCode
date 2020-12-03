@@ -32,9 +32,39 @@ namespace AdventOfCode2020
             return treeCount;
         }
 
-        public int B(List<string> inputs)
+        public long B(List<string> inputs)
         {
-            return -1;
+            List<(int deltaX, int deltaY)> slopes = new List<(int deltaX, int deltaY)>
+            {
+                (1, 1),
+                (3, 1),
+                (5, 1),
+                (7, 1),
+                (1, 2)
+            };
+
+            List<long> treeCounts = new List<long>();
+
+            foreach(var item in slopes)
+            {
+                int deltaX = item.deltaX;
+                int deltaY = item.deltaY;
+
+                int treeCount = 0;
+
+                for(int i = 0; i < inputs.Count(); i += deltaY)
+                {
+                    int lineLength = inputs[i].Length;
+                    if(inputs[i][(deltaX * (i / deltaY)) % lineLength] == '#')
+                    {
+                        treeCount++;
+                    }
+                }
+
+                treeCounts.Add(treeCount);
+            }
+
+            return treeCounts.Aggregate((agg, next) => agg * next);
         }
     }
 }

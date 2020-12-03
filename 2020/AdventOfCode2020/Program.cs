@@ -40,7 +40,23 @@ namespace AdventOfCode2020
             return (outputA, outputB);
         }
 
-        static (int A, int B) RunOther(int dayNum)
+        static (long A, long B) RunStringDay(int dayNum)
+        {
+            IDay<string> day = dayNum switch
+            {
+               3 => new Day3(),
+                _ => throw new NotImplementedException(),
+            };
+
+            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
+
+            var outputA = day.A(inputs);
+            var outputB = day.B(inputs);
+
+            return (outputA, outputB);
+        }
+
+        static (long A, long B) RunOther(int dayNum)
         {
             IDay<(int min, int max, char letter, string password)> day = new Day2();
 
