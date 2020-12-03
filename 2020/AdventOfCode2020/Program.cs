@@ -12,20 +12,44 @@ namespace AdventOfCode2020
             Console.WriteLine("Enter day number: ");
             var dayNum = int.Parse(Console.ReadLine());
 
-            IDay day = dayNum switch
+            (int A, int B) result = dayNum switch
             {
-                1 => new Day1(),
-                _ => null
+                1 => RunIntDay(dayNum),
+                2 => RunOther(dayNum),
+                _ => (-1, -1),
             };
 
-            var inputs = System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt").Select(int.Parse).ToList();
+            Console.WriteLine($"Day {dayNum} Answer A: {result.A}");
+            Console.WriteLine($"Day {dayNum} Answer B: {result.B}");
+            Console.Read();
+        }
+
+        static (int A, int B) RunIntDay(int dayNum)
+        {
+            IDay<int> day = dayNum switch
+            {
+                1 => new Day1(),
+                _ => throw new NotImplementedException(),
+            };
+
+            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
 
             var outputA = day.A(inputs);
             var outputB = day.B(inputs);
 
-            Console.WriteLine($"Day {dayNum} Answer A: {outputA}");
-            Console.WriteLine($"Day {dayNum} Answer B: {outputB}");
-            Console.Read();
+            return (outputA, outputB);
+        }
+
+        static (int A, int B) RunOther(int dayNum)
+        {
+            IDay<(int min, int max, char letter, string password)> day = new Day2();
+
+            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
+
+            var outputA = day.A(inputs);
+            var outputB = day.B(inputs);
+
+            return (outputA, outputB);
         }
     }
 }
