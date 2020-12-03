@@ -13,7 +13,7 @@ namespace AdventOfCode2020
         }
 
 
-        public int A(List<int> inputs)
+        public long A(List<int> inputs)
         {
             for(int i = 0; i < inputs.Count(); i++)
             {
@@ -28,7 +28,7 @@ namespace AdventOfCode2020
             return -1;
         }
 
-        public int B(List<int> inputs)
+        public long B(List<int> inputs)
         {
             foreach(int number in inputs)
             {

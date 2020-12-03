@@ -7,7 +7,7 @@ namespace AdventOfCode2020
     public interface IDay<T>
     {
         public List<T> SetupInputs(string[] inputs);
-        public int A(List<T> inputs);
-        public int B(List<T> inputs);
+        public long A(List<T> inputs);
+        public long B(List<T> inputs);
     }
 }

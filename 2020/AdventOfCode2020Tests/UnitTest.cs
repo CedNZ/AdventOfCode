@@ -79,7 +79,7 @@ namespace AdventOfCode2020Tests
             if(partOne)
                 Assert.Equal(7, day.A(inputs));
             else
-                Assert.Equal(1, day.B(inputs));
+                Assert.Equal(336, day.B(inputs));
         }
     }
 }

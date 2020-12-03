@@ -12,10 +12,11 @@ namespace AdventOfCode2020
             Console.WriteLine("Enter day number: ");
             var dayNum = int.Parse(Console.ReadLine());
 
-            (int A, int B) result = dayNum switch
+            (long A, long B) result = dayNum switch
             {
                 1 => RunIntDay(dayNum),
                 2 => RunOther(dayNum),
+                3 => RunStringDay(dayNum),
                 _ => (-1, -1),
             };
 
@@ -24,7 +25,7 @@ namespace AdventOfCode2020
             Console.Read();
         }
 
-        static (int A, int B) RunIntDay(int dayNum)
+        static (long A, long B) RunIntDay(int dayNum)
         {
             IDay<int> day = dayNum switch
             {

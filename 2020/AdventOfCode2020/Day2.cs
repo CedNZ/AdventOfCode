@@ -28,7 +28,7 @@ namespace AdventOfCode2020
             return result;
         }
 
-        public int A(List<(int min, int max, char letter, string password)> inputs)
+        public long A(List<(int min, int max, char letter, string password)> inputs)
         {
             int validPasswords = 0;
             foreach(var input in inputs)
@@ -42,7 +42,7 @@ namespace AdventOfCode2020
             return validPasswords;
         }
 
-        public int B(List<(int min, int max, char letter, string password)> inputs)
+        public long B(List<(int min, int max, char letter, string password)> inputs)
         {
             int validPasswords = 0;
             foreach(var input in inputs)

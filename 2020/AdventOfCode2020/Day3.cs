@@ -13,7 +13,7 @@ namespace AdventOfCode2020
             return inputs.ToList();
         }
 
-        public int A(List<string> inputs)
+        public long A(List<string> inputs)
         {
             int deltaX = 3;
             int deltaY = 1;
