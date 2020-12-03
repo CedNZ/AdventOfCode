@@ -44,7 +44,19 @@ namespace AdventOfCode2020
 
         public int B(List<(int min, int max, char letter, string password)> inputs)
         {
-            return -1;
+            int validPasswords = 0;
+            foreach(var input in inputs)
+            {
+                if (input.password[input.min - 1] == input.letter 
+                     || input.password[input.max - 1] == input.letter)
+                {
+                    if(input.password[input.min - 1] != input.password[input.max - 1])
+                    {
+                        validPasswords++;
+                    }
+                }
+            }
+            return validPasswords;
         }
     }
 }
