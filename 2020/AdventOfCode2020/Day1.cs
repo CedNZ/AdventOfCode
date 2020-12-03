@@ -5,8 +5,14 @@ using System.Text;
 
 namespace AdventOfCode2020
 {
-    public class Day1 : IDay
+    public class Day1 : IDay<int>
     {
+        public List<int> SetupInputs(string[] inputs)
+        {
+            return inputs.Select(int.Parse).ToList();
+        }
+
+
         public int A(List<int> inputs)
         {
             for(int i = 0; i < inputs.Count(); i++)
