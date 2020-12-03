@@ -24,7 +24,17 @@ namespace AdventOfCode2020
 
         public int B(List<int> inputs)
         {
-            throw new NotImplementedException();
+            foreach(int number in inputs)
+            {
+                foreach(var number2 in inputs.Where(x => x + number < 2020))
+                {
+                    foreach (var number3 in inputs.Where(x => x + number + number2 == 2020))
+                    {
+                        return number * number2 * number3;
+                    }
+                }
+            }
+            return -1;
         }
     }
 }

@@ -21,9 +21,10 @@ namespace AdventOfCode2020
             var inputs = System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt").Select(int.Parse).ToList();
 
             var outputA = day.A(inputs);
-
+            var outputB = day.B(inputs);
 
             Console.WriteLine($"Day {dayNum} Answer A: {outputA}");
+            Console.WriteLine($"Day {dayNum} Answer B: {outputB}");
             Console.Read();
         }
     }
