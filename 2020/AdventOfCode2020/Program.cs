@@ -17,6 +17,7 @@ namespace AdventOfCode2020
                 1 => RunIntDay(dayNum),
                 2 => RunOther(dayNum),
                 3 => RunStringDay(dayNum),
+                4 => RunCustom(dayNum),
                 _ => (-1, -1),
             };
 
@@ -60,6 +61,18 @@ namespace AdventOfCode2020
         static (long A, long B) RunOther(int dayNum)
         {
             IDay<(int min, int max, char letter, string password)> day = new Day2();
+
+            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
+
+            var outputA = day.A(inputs);
+            var outputB = day.B(inputs);
+
+            return (outputA, outputB);
+        }
+
+        static (long A, long B) RunCustom(int dayNum)
+        {
+            IDay<Passport> day = new Day4();
 
             var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
 
