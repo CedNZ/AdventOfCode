@@ -52,7 +52,20 @@ namespace AdventOfCode2020
 
         public long B(List<string> inputs)
         {
-            throw new NotImplementedException();
+            List<int> seatIds = new List<int>();
+
+            foreach(var input in inputs)
+            {
+                seatIds.Add((int)A(new[] { input }.ToList()));
+            }
+
+            seatIds = seatIds.OrderBy(x => x).ToList();
+
+            var seatPairs = seatIds.Zip(seatIds.Skip(1), (a, b) => (a, b)).ToList();
+
+            var adjacentSeats = seatPairs.Where(p => p.b - p.a == 2).First();
+
+            return adjacentSeats.a + 1;
         }        
     }
 }

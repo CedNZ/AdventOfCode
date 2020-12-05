@@ -18,6 +18,7 @@ namespace AdventOfCode2020
                 2 => RunOther(dayNum),
                 3 => RunStringDay(dayNum),
                 4 => RunCustom(dayNum),
+                5 => RunStringDay(dayNum),
                 _ => (-1, -1),
             };
 
@@ -47,6 +48,7 @@ namespace AdventOfCode2020
             IDay<string> day = dayNum switch
             {
                3 => new Day3(),
+               5 => new Day5(),
                 _ => throw new NotImplementedException(),
             };
 
