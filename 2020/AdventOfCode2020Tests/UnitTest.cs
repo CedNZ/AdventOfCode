@@ -184,5 +184,23 @@ namespace AdventOfCode2020Tests
             Assert.Equal(4, day.B(inputs));
         }
 
+        [Theory]
+        [InlineData("FBFBBFFRLR", 357)]
+        [InlineData("BFFFBBFRRR", 567)]
+        [InlineData("FFFBBBFRRR", 119)]
+        [InlineData("BBFFBBFRLL", 820)]
+        public void Day5_Part1_Test(string seat, int expectedId)
+        {
+            Day5 day = new Day5();
+
+            var testCase = new[]
+            {
+                seat
+            };
+
+            var inputs = day.SetupInputs(testCase);
+
+            Assert.Equal(expectedId, day.A(inputs));
+        }
     }
 }
