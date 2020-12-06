@@ -19,6 +19,7 @@ namespace AdventOfCode2020
                 3 => RunStringDay(dayNum),
                 4 => RunCustom(dayNum),
                 5 => RunStringDay(dayNum),
+                6 => RunStringDay(dayNum),
                 _ => (-1, -1),
             };
 
@@ -49,6 +50,7 @@ namespace AdventOfCode2020
             {
                3 => new Day3(),
                5 => new Day5(),
+               6 => new Day6(),
                 _ => throw new NotImplementedException(),
             };
 
