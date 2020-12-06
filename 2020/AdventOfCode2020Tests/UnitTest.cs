@@ -234,7 +234,7 @@ namespace AdventOfCode2020Tests
             if(partOne)
                 Assert.Equal(11, day.A(inputs));
             else
-                Assert.Equal(-1, day.B(inputs));
+                Assert.Equal(6, day.B(inputs));
         }
     }
 }

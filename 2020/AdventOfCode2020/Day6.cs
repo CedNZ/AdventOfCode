@@ -20,7 +20,11 @@ namespace AdventOfCode2020
 
         public long B(List<string> inputs)
         {
-            return -1;
+            return inputs.Select(s => s.Split('\n')
+             .Where(x => !string.IsNullOrWhiteSpace(x))
+             .Aggregate((curr, next) => string.Concat(curr.Intersect(next))))
+             .Select(x => x.Count())
+             .Sum();
         }
 
         private IEnumerable<string> GroupsUntilWhiteSpace(string[] inputs)
