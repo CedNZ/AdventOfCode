@@ -70,7 +70,14 @@ namespace AdventOfCode2020
 
         public long B(List<Bag> inputs)
         {
-            return -1;
+            var shinyGold = inputs.First(x => x.Name == "shiny gold");
+
+            return RecursiveBagCount(shinyGold) - 1;
+        }
+
+        public int RecursiveBagCount(Bag bag)
+        {
+            return 1 + (bag.Children.Sum(c => RecursiveBagCount(c.Key) * c.Value));
         }
 
     }

@@ -262,7 +262,28 @@ namespace AdventOfCode2020Tests
             if(partOne)
                 Assert.Equal(4, day.A(inputs));
             else
-                Assert.Equal(6, day.B(inputs));
+                Assert.Equal(32, day.B(inputs));
+        }
+
+        [Fact]
+        public void Day7_Part2()
+        {
+            Day7 day = new Day7();
+
+            var testCase = new[]
+            {
+                "shiny gold bags contain 2 dark red bags.",
+                "dark red bags contain 2 dark orange bags.",
+                "dark orange bags contain 2 dark yellow bags.",
+                "dark yellow bags contain 2 dark green bags.",
+                "dark green bags contain 2 dark blue bags.",
+                "dark blue bags contain 2 dark violet bags.",
+                "dark violet bags contain no other bags.",
+            };
+
+            var inputs = day.SetupInputs(testCase);
+
+            Assert.Equal(126, day.B(inputs));
         }
     }
 }
