@@ -236,5 +236,33 @@ namespace AdventOfCode2020Tests
             else
                 Assert.Equal(6, day.B(inputs));
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Day7_Test(bool partOne)
+        {
+            Day7 day = new Day7();
+
+            var testCase = new[]
+            {
+                "light red bags contain 1 bright white bag, 2 muted yellow bags.",
+                "dark orange bags contain 3 bright white bags, 4 muted yellow bags.",
+                "bright white bags contain 1 shiny gold bag.",
+                "muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.",
+                "shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.",
+                "dark olive bags contain 3 faded blue bags, 4 dotted black bags.",
+                "vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.",
+                "faded blue bags contain no other bags.",
+                "dotted black bags contain no other bags.",
+            };
+
+            var inputs = day.SetupInputs(testCase);
+
+            if(partOne)
+                Assert.Equal(4, day.A(inputs));
+            else
+                Assert.Equal(6, day.B(inputs));
+        }
     }
 }

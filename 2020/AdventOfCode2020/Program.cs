@@ -15,11 +15,12 @@ namespace AdventOfCode2020
             (long A, long B) result = dayNum switch
             {
                 1 => RunIntDay(dayNum),
-                2 => RunOther(dayNum),
+                2 => RunDay2(dayNum),
                 3 => RunStringDay(dayNum),
-                4 => RunCustom(dayNum),
+                4 => RunDay4(dayNum),
                 5 => RunStringDay(dayNum),
                 6 => RunStringDay(dayNum),
+                7 => RunDay7(dayNum),
                 _ => (-1, -1),
             };
 
@@ -62,7 +63,7 @@ namespace AdventOfCode2020
             return (outputA, outputB);
         }
 
-        static (long A, long B) RunOther(int dayNum)
+        static (long A, long B) RunDay2(int dayNum)
         {
             IDay<(int min, int max, char letter, string password)> day = new Day2();
 
@@ -74,9 +75,21 @@ namespace AdventOfCode2020
             return (outputA, outputB);
         }
 
-        static (long A, long B) RunCustom(int dayNum)
+        static (long A, long B) RunDay4(int dayNum)
         {
             IDay<Passport> day = new Day4();
+
+            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
+
+            var outputA = day.A(inputs);
+            var outputB = day.B(inputs);
+
+            return (outputA, outputB);
+        }
+
+        static (long A, long B) RunDay7(int dayNum)
+        {
+            IDay<Bag> day = new Day7();
 
             var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
 
