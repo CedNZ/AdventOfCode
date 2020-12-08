@@ -8,9 +8,10 @@ namespace AdventOfCode2020.GameConsole
 {
     public class GameConsole
     {
-        List<(string instruction, int hitCount)> _instructions;
+        public List<(string instruction, int hitCount)> Instructions;
 
         public int Accumulator;
+        public bool Looped;
 
         private int _instructionPointer;
         private int _previousInstructionPointer;
@@ -29,21 +30,27 @@ namespace AdventOfCode2020.GameConsole
         {
             Accumulator = 0;
             InstructionPointer = 0;
+            Instructions = BuildInstructions(inputs);
+            Looped = false;
+        }
 
-            _instructions = new List<(string, int)>(inputs.Count());
+        public List<(string, int)> BuildInstructions(IEnumerable<string> inputs)
+        {
+            var instructions = new List<(string, int)>(inputs.Count());
 
             foreach(var input in inputs)
             {
-                _instructions.Add((input, 0));
+                instructions.Add((input, 0));
             }
+            return instructions;
         }
 
-        public int Run()
+        public virtual int Run()
         {
             var result = 0;
             do
             {
-                result = ParseInstruction(_instructions);
+                result = ParseInstruction(Instructions);
             } while(result == 0);
 
             return result;
@@ -59,6 +66,7 @@ namespace AdventOfCode2020.GameConsole
 
             if (instrInfo.hitCount >= 2)
             {
+                Looped = true;
                 return Accumulator;
             }
 

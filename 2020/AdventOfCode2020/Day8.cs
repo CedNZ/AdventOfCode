@@ -23,7 +23,9 @@ namespace AdventOfCode2020
 
         public long B(List<string> inputs)
         {
-            return -1;
+            var gameConsole = new GameConsole.GameConsole(inputs);
+
+            return gameConsole.Run(true);
         }
     }
 }
