@@ -285,5 +285,33 @@ namespace AdventOfCode2020Tests
 
             Assert.Equal(126, day.B(inputs));
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Day8_Test(bool partOne)
+        {
+            Day8 day = new Day8();
+
+            var testCase = new[]
+            {
+                "nop +0",
+                "acc +1",
+                "jmp +4",
+                "acc +3",
+                "jmp -3",
+                "acc -99",
+                "acc +1",
+                "jmp -4",
+                "acc +6"
+            };
+
+            var inputs = day.SetupInputs(testCase);
+
+            if(partOne)
+                Assert.Equal(5, day.A(inputs));
+            else
+                Assert.Equal(-1, day.B(inputs));
+        }
     }
 }
