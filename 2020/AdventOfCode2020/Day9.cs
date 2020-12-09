@@ -8,32 +8,32 @@ namespace AdventOfCode2020
 {
     public class Day9 : IDay<long>
     {
+        private int preambleLength = 25;
+
         public List<long> SetupInputs(string[] inputs)
         {
             var returnList = inputs.Select(long.Parse).ToList();
-
-            var preambleLength = 25;
 
             if (inputs.Length < 50)
             {
                 preambleLength = 5;
             }
 
-            returnList.Insert(0, preambleLength);
-
             return returnList;
         }
 
         public long A(List<long> inputs)
         {
-            var preambleLength = (int)inputs.First();
-            inputs.RemoveAt(0);
+            return FindWeakness(inputs);
+        }
 
+        private long FindWeakness(List<long> inputs)
+        {
             Queue<long> preamble = new Queue<long>(preambleLength);
             for(int i = 0; i < inputs.Count(); i++)
             {
                 var number = inputs[i];
-                if (i <= preambleLength)
+                if(i <= preambleLength)
                 {
                     preamble.Enqueue(number);
                     continue;
@@ -41,7 +41,7 @@ namespace AdventOfCode2020
 
                 var combos = Combinations(preamble);
 
-                if (combos.Select(x => x.Item1 + x.Item2).Any(x => x == number))
+                if(combos.Select(x => x.Item1 + x.Item2).Any(x => x == number))
                 {
                     preamble.Enqueue(number);
                     _ = preamble.Dequeue();
@@ -56,7 +56,36 @@ namespace AdventOfCode2020
 
         public long B(List<long> inputs)
         {
-            return -1;
+            var weakness = FindWeakness(inputs);
+
+            var windowStart = 0;
+            var windowFinish = 1;
+
+            while(inputs.Take(windowFinish).Sum() < weakness)
+            {
+                windowFinish++;
+            }
+
+            var windowSum = inputs.Skip(windowStart).Take(windowFinish).Sum();
+
+            while(windowSum != weakness && windowFinish < inputs.Count())
+            {
+                if (windowSum > weakness)
+                {
+                    windowStart++;
+                    windowFinish--;
+                }
+                else
+                {
+                    windowFinish++;
+                }
+                windowSum = inputs.Skip(windowStart).Take(windowFinish).Sum();
+            }
+
+
+            var window = inputs.Skip(windowStart).Take(windowFinish).OrderBy(x => x).ToList();
+
+            return window.First() + window.Last();
         }
 
         public IEnumerable<(long, long)> Combinations(IEnumerable<long> all)
