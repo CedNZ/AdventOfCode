@@ -14,14 +14,15 @@ namespace AdventOfCode2020
 
             (long A, long B) result = dayNum switch
             {
-                1 => RunIntDay(dayNum),
-                2 => RunDay2(dayNum),
-                3 => RunStringDay(dayNum),
-                4 => RunDay4(dayNum),
-                5 => RunStringDay(dayNum),
-                6 => RunStringDay(dayNum),
-                7 => RunDay7(dayNum),
-                8 => RunStringDay(dayNum),
+                1 => RunDay(dayNum, () => new Day1()),
+                2 => RunDay(dayNum, () => new Day2()),
+                3 => RunDay(dayNum, () => new Day3()),
+                4 => RunDay(dayNum, () => new Day4()),
+                5 => RunDay(dayNum, () => new Day5()),
+                6 => RunDay(dayNum, () => new Day6()),
+                7 => RunDay(dayNum, () => new Day7()),
+                8 => RunDay(dayNum, () => new Day8()),
+                9 => RunDay(dayNum, () => new Day9()),
                 _ => (-1, -1),
             };
 
@@ -30,68 +31,9 @@ namespace AdventOfCode2020
             Console.Read();
         }
 
-        static (long A, long B) RunIntDay(int dayNum)
+        static (long A, long B) RunDay<T>(int dayNum, Func<IDay<T>> GetDay)
         {
-            IDay<int> day = dayNum switch
-            {
-                1 => new Day1(),
-                _ => throw new NotImplementedException(),
-            };
-
-            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
-
-            var outputA = day.A(inputs);
-            var outputB = day.B(inputs);
-
-            return (outputA, outputB);
-        }
-
-        static (long A, long B) RunStringDay(int dayNum)
-        {
-            IDay<string> day = dayNum switch
-            {
-               3 => new Day3(),
-               5 => new Day5(),
-               6 => new Day6(),
-               8 => new Day8(),
-                _ => throw new NotImplementedException(),
-            };
-
-            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
-
-            var outputA = day.A(inputs);
-            var outputB = day.B(inputs);
-
-            return (outputA, outputB);
-        }
-
-        static (long A, long B) RunDay2(int dayNum)
-        {
-            IDay<(int min, int max, char letter, string password)> day = new Day2();
-
-            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
-
-            var outputA = day.A(inputs);
-            var outputB = day.B(inputs);
-
-            return (outputA, outputB);
-        }
-
-        static (long A, long B) RunDay4(int dayNum)
-        {
-            IDay<Passport> day = new Day4();
-
-            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
-
-            var outputA = day.A(inputs);
-            var outputB = day.B(inputs);
-
-            return (outputA, outputB);
-        }
-
-        static (long A, long B) RunDay7(int dayNum)
-        {
-            IDay<Bag> day = new Day7();
+            IDay<T> day = GetDay();
 
             var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
 
