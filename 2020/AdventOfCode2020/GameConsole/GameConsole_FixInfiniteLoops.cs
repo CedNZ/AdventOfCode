@@ -1,42 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode2020.GameConsole
 {
     public class GameConsole_FixInfiniteLoops : GameConsole
     {
-        public List<(string instruction, int hitCount)> BackupInstructions;
+        public List<Instruction> BackupInstructions;
         public int AttemptedFixIndex;
 
-        public GameConsole_FixInfiniteLoops(IEnumerable<string> inputs) : base(inputs)
+        public GameConsole_FixInfiniteLoops(IEnumerable<Instruction> instructions) : base(instructions)
         {
-            Accumulator = 0;
-            InstructionPointer = 0;
-            Instructions = BuildInstructions(inputs);
-            BackupInstructions = BuildInstructions(inputs);
+            Instructions = instructions.ToList().Clone().ToList();
+            BackupInstructions = instructions.ToList().Clone().ToList();
             AttemptedFixIndex = Instructions.Count();
+            Init();
         }
 
         public override int Run()
         {
-            var result = 0;
+            bool solved = false;
+            int result;
             do
             {
-                result = ParseInstruction(Instructions);
-            } while(result == 0);
-
-            if (Looped)
-            {
-                Instructions = new List<(string instruction, int hitCount)>(BackupInstructions);
-
-                for (int i = AttemptedFixIndex; i >= 0; i--)
+                do
                 {
-                    if 
+                    result = HandleInstruction();
+                } while(result == 0);
+
+                if(Looped)
+                {
+                    Instructions = BackupInstructions.Clone().ToList();
+
+                    for(int i = AttemptedFixIndex - 1; i >= 0; i--)
+                    {
+                        if(Instructions[i].Op == Op.jmp || Instructions[i].Op == Op.nop)
+                        {
+                            AttemptedFixIndex = i;
+
+                            Looped = false;
+                            if(Instructions[i].Op == Op.nop)
+                            {
+                                Instructions[i].Op = Op.jmp;
+                            }
+                            else
+                            {
+                                Instructions[i].Op = Op.nop;
+                            }
+
+                            Init();
+
+                            break;
+                        }
+                    }
                 }
-            }
+                else
+                {
+                    solved = true;
+                }
+            } while(!solved);
 
             return result;
         }

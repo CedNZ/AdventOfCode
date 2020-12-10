@@ -8,85 +8,70 @@ namespace AdventOfCode2020.GameConsole
 {
     public class GameConsole
     {
-        public List<(string instruction, int hitCount)> Instructions;
+        public List<Instruction> Instructions;
+        private List<int> _visitedInstructions;
 
         public int Accumulator;
         public bool Looped;
 
-        private int _instructionPointer;
-        private int _previousInstructionPointer;
+        public int InstructionPointer;
 
-        public int InstructionPointer
+        public GameConsole(IEnumerable<Instruction> instructions)
         {
-            get => _instructionPointer;
-            set
-            {
-                _previousInstructionPointer = _instructionPointer;
-                _instructionPointer = value;
-            }
+            Instructions = new List<Instruction>(instructions);
+            _visitedInstructions = new List<int>();
+            Init();
         }
 
-        public GameConsole(IEnumerable<string> inputs)
+        public void Init()
         {
             Accumulator = 0;
             InstructionPointer = 0;
-            Instructions = BuildInstructions(inputs);
             Looped = false;
-        }
-
-        public List<(string, int)> BuildInstructions(IEnumerable<string> inputs)
-        {
-            var instructions = new List<(string, int)>(inputs.Count());
-
-            foreach(var input in inputs)
-            {
-                instructions.Add((input, 0));
-            }
-            return instructions;
+            _visitedInstructions.Clear();
         }
 
         public virtual int Run()
         {
-            var result = 0;
+            int result;
             do
             {
-                result = ParseInstruction(Instructions);
+                result = HandleInstruction();
             } while(result == 0);
 
             return result;
         }
 
-        public int ParseInstruction(List<(string instruction, int hitCount)> instructions)
+        public int HandleInstruction()
         {
-            var instrInfo = instructions[InstructionPointer];
+            if(InstructionPointer >= Instructions.Count())
+            {
+                return Accumulator;
+            }
 
-            instrInfo.hitCount++;
-
-            instructions[InstructionPointer] = instrInfo;
-
-            if (instrInfo.hitCount >= 2)
+            if(_visitedInstructions.Contains(InstructionPointer))
             {
                 Looped = true;
                 return Accumulator;
             }
 
-            var instructionParts = instrInfo.instruction.Split(' ');
+            _visitedInstructions.Add(InstructionPointer);
 
-            var operation = instructionParts[0];
-            var argument = int.Parse(instructionParts[1]);
+            var instruction = Instructions[InstructionPointer];
 
-            if (operation == "acc")
+            switch (instruction.Op)
             {
-                Accumulate(argument);
+                case Op.acc:
+                    Accumulate(instruction.Arg);
+                    break;
+                case Op.jmp:
+                    Jump(instruction.Arg);
+                    break;
+                case Op.nop:
+                    Nop(instruction.Arg);
+                    break;
             }
-            if (operation == "jmp")
-            {
-                Jump(argument);
-            }
-            if (operation == "nop")
-            {
-                InstructionPointer++;
-            }
+
             return 0;
         }
 
@@ -100,6 +85,57 @@ namespace AdventOfCode2020.GameConsole
         public void Jump(int argument)
         {
             InstructionPointer += argument;
+        }
+
+        public void Nop(int argument)
+        {
+            InstructionPointer++;
+        }
+    }
+
+    public enum Op
+    {
+        nop,
+        acc,
+        jmp
+    }
+
+    public class Instruction : ICloneable
+    {
+        public Op Op;
+        public int Arg;
+
+        public Instruction(Op op, int arg)
+        {
+            Op = op;
+            Arg = arg;
+        }
+
+        public Instruction(string instrInfo)
+        {
+            var instructionParts = instrInfo.Split(' ');
+
+            var operation = instructionParts[0];
+            Arg = int.Parse(instructionParts[1]);
+
+            Op = operation switch
+            {
+                "acc" => Op.acc,
+                "jmp" => Op.jmp,
+                _ => Op.nop,
+            };
+        }
+
+        public object Clone()
+        {
+            return new Instruction(Op, Arg);
+        }
+
+        public override string ToString()
+        {
+            var signChar = Arg >= 0 ? "+" : "";
+
+            return $"{Op} {signChar}{Arg}";
         }
     }
 }

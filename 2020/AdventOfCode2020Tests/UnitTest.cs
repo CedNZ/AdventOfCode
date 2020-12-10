@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using AdventOfCode2020;
+using AdventOfCode2020.GameConsole;
 using System.Collections.Generic;
 using System.Collections;
 
@@ -85,7 +86,7 @@ namespace AdventOfCode2020Tests
         Func<IDay<string>> getDay5 = () => new Day5();
         Func<IDay<string>> getDay6 = () => new Day6();
         Func<IDay<Bag>> getDay7 = () => new Day7();
-        Func<IDay<string>> getDay8 = () => new Day8();
+        Func<IDay<Instruction>> getDay8 = () => new Day8();
         Func<IDay<long>> getDay9 = () => new Day9();
 
 

@@ -7,25 +7,25 @@ using AdventOfCode2020.GameConsole;
 
 namespace AdventOfCode2020
 {
-    public class Day8 : IDay<string>
+    public class Day8 : IDay<Instruction>
     {
-        public List<string> SetupInputs(string[] inputs)
+        public List<Instruction> SetupInputs(string[] inputs)
         {
-            return inputs.ToList();
+            return inputs.Select(x => new Instruction(x)).ToList();
         }
 
-        public long A(List<string> inputs)
+        public long A(List<Instruction> inputs)
         {
             var gameConsole = new GameConsole.GameConsole(inputs);
 
             return gameConsole.Run();
         }
 
-        public long B(List<string> inputs)
+        public long B(List<Instruction> inputs)
         {
-            var gameConsole = new GameConsole.GameConsole(inputs);
+            var gameConsole = new GameConsole.GameConsole_FixInfiniteLoops(inputs);
 
-            return gameConsole.Run(true);
+            return gameConsole.Run();
         }
     }
 }
