@@ -88,6 +88,7 @@ namespace AdventOfCode2020Tests
         Func<IDay<Bag>> getDay7 = () => new Day7();
         Func<IDay<Instruction>> getDay8 = () => new Day8();
         Func<IDay<long>> getDay9 = () => new Day9();
+        Func<IDay<int>> getDay10 = () => new Day10();
 
 
         public IEnumerator<object[]> GetEnumerator()
@@ -117,6 +118,9 @@ namespace AdventOfCode2020Tests
 
             yield return new object[] {"9", getDay9, 127, true };
             yield return new object[] {"9", getDay9, 62, false };
+
+            yield return new object[] { "10", getDay10, 220, true };
+            yield return new object[] { "10", getDay10, -1, false };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
