@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace AdventOfCode2020
 {
     class Program
     {
+        private static Stopwatch stopwatch;
+        private static TimeSpan runtimeA;
+        private static TimeSpan runtimeB;
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Advent of Code 2020");
@@ -26,8 +31,8 @@ namespace AdventOfCode2020
                 _ => (-1, -1),
             };
 
-            Console.WriteLine($"Day {dayNum} Answer A: {result.A}");
-            Console.WriteLine($"Day {dayNum} Answer B: {result.B}");
+            Console.WriteLine($"Day {dayNum} Answer A: {result.A}\nCompleted in {runtimeA}");
+            Console.WriteLine($"Day {dayNum} Answer B: {result.B}\nCompleted in {runtimeB}");
             Console.Read();
         }
 
@@ -37,8 +42,15 @@ namespace AdventOfCode2020
 
             var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
 
+            stopwatch = Stopwatch.StartNew();
+
             var outputA = day.A(inputs);
+            runtimeA = stopwatch.Elapsed;
+
             var outputB = day.B(inputs);
+            runtimeB = stopwatch.Elapsed;
+
+            stopwatch.Stop();
 
             return (outputA, outputB);
         }
