@@ -29,6 +29,7 @@ namespace AdventOfCode2020
                 8 => RunDay(dayNum, () => new Day8()),
                 9 => RunDay(dayNum, () => new Day9()),
                 10 => RunDay(dayNum, () => new Day10()),
+                11 => RunDay(dayNum, () => new Day11()),
                 _ => (-1, -1),
             };
 
@@ -41,14 +42,15 @@ namespace AdventOfCode2020
         {
             IDay<T> day = GetDay();
 
-            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
+            var inputsA = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
+            var inputsB = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
 
             stopwatch = Stopwatch.StartNew();
 
-            var outputA = day.A(inputs);
+            var outputA = day.A(inputsA);
             runtimeA = stopwatch.Elapsed;
 
-            var outputB = day.B(inputs);
+            var outputB = day.B(inputsB);
             runtimeB = stopwatch.Elapsed;
 
             stopwatch.Stop();
