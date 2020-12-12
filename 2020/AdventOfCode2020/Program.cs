@@ -52,7 +52,7 @@ namespace AdventOfCode2020
             runtimeA = stopwatch.Elapsed;
 
             var outputB = day.B(inputsB);
-            runtimeB = stopwatch.Elapsed;
+            runtimeB = stopwatch.Elapsed - runtimeA;
 
             stopwatch.Stop();
 
