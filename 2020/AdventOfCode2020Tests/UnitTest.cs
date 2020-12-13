@@ -75,6 +75,31 @@ namespace AdventOfCode2020Tests
 
             Assert.Equal(expectedId, results);
         }
+
+        [Fact]
+        public void Day10_Part2_Easy()
+        {
+            Day10 day = new Day10();
+
+            var inputData = new[]
+            {
+                "16",
+                "10",
+                "15",
+                "5",
+                "1",
+                "11",
+                "7",
+                "19",
+                "6",
+                "12",
+                "4",
+            };
+
+            var inputs = day.SetupInputs(inputData);
+
+            Assert.Equal(8, day.B(inputs));
+        }
     }
 
     public class DayTestData : IEnumerable<object[]>
