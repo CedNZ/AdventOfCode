@@ -161,7 +161,7 @@ namespace AdventOfCode2020Tests
             yield return new object[] { "13", getDay13, -1, false };
             
             yield return new object[] { "14", getDay14, 165, true };
-            yield return new object[] { "14", getDay14, -1, false };
+            yield return new object[] { "14b", getDay14, 208, false };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
