@@ -15,40 +15,56 @@ namespace AdventOfCode2020
 
         public long A(List<int> inputs)
         {
-            List<int> numbers = new List<int>(2020);
+            return PlayGame(inputs, 2020);
+        }
 
-            var lastNumber = 0;
+        public long PlayGame(List<int> inputs, int limit)
+        {
+            Dictionary<int, (int, int)> numbers = new Dictionary<int, (int, int)>();
 
-            for (int i = 0; i < 2020; i++)
+            int nextNumber = 0;
+            (int, int) lastIndex = (0, 0);
+
+            for(int i = 0; i < limit; i++)
             {
                 if(i < inputs.Count())
                 {
-                    numbers.Add(inputs[i]);
-                    
+                    nextNumber = inputs[i];
+                    lastIndex = (-1, i);
+                    numbers[nextNumber] = lastIndex;
                 }
                 else
                 {
-                    if (numbers.Count(x => x == lastNumber) > 1)
+                    if(lastIndex.Item1 < 0)
                     {
-                        var mostRecentIndex = numbers.LastIndexOf(lastNumber);
-                        var indexBefore = numbers.LastIndexOf(lastNumber, mostRecentIndex - 1);
-
-                        numbers.Add((mostRecentIndex + 1)- (indexBefore + 1));
+                        nextNumber = 0;
                     }
                     else
                     {
-                        numbers.Add(0);
+                        nextNumber = (lastIndex.Item2 + 1) - (lastIndex.Item1 + 1);
                     }
+
+                    if(numbers.ContainsKey(nextNumber))
+                    {
+                        lastIndex = numbers[nextNumber];
+                        lastIndex.Item1 = lastIndex.Item2;
+                        lastIndex.Item2 = i;
+                    }
+                    else
+                    {
+                        lastIndex = (-1, i);
+                    }
+                    numbers[nextNumber] = lastIndex;
                 }
-                lastNumber = numbers.Last();
             }
 
-            return lastNumber;
+            return nextNumber;
         }
+
 
         public long B(List<int> inputs)
         {
-            return -1;
+            return PlayGame(inputs, 30000000);
         }
     }
 }
