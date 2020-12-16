@@ -34,6 +34,7 @@ namespace AdventOfCode2020
                 13 => RunDay(dayNum, () => new Day13()),
                 14 => RunDay(dayNum, () => new Day14()),
                 15 => RunDay(dayNum, () => new Day15()),
+                16 => RunDay(dayNum, () => new Day16()),
                 _ => (-1, -1),
             };
 
@@ -78,7 +79,7 @@ namespace AdventOfCode2020
             {
                 if(string.IsNullOrWhiteSpace(input))
                 {
-                    yield return output;
+                    yield return output.Trim();
                     output = "";
                 }
                 else
@@ -86,7 +87,7 @@ namespace AdventOfCode2020
                     output += input + "\n";
                 }
             }
-            yield return output;
+            yield return output.Trim();
         }
     }
 }
