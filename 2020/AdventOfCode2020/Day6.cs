@@ -10,7 +10,7 @@ namespace AdventOfCode2020
     {
         public List<string> SetupInputs(string[] inputs)
         {
-            return GroupsUntilWhiteSpace(inputs).ToList();
+            return inputs.GroupsUntilWhiteSpace().ToList();
         }
 
         public long A(List<string> inputs)
@@ -25,24 +25,6 @@ namespace AdventOfCode2020
              .Aggregate((curr, next) => string.Concat(curr.Intersect(next))))
              .Select(x => x.Count())
              .Sum();
-        }
-
-        private IEnumerable<string> GroupsUntilWhiteSpace(string[] inputs)
-        {
-            string output = "";
-            for(int i = 0; i < inputs.Count(); i++)
-            {
-                if(string.IsNullOrWhiteSpace(inputs[i]))
-                {
-                    yield return output;
-                    output = "";
-                }
-                else
-                {
-                    output += inputs[i] + "\n";
-                }
-            }
-            yield return output;
         }
     }
 }

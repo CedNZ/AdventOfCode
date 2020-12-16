@@ -69,5 +69,24 @@ namespace AdventOfCode2020
         {
             return listToClone.Select(item => (T)item.Clone()).ToList();
         }
+
+        public static IEnumerable<string> GroupsUntilWhiteSpace(this IEnumerable<string> inputs)
+        {
+            string output = "";
+
+            foreach(var input in inputs)
+            {
+                if(string.IsNullOrWhiteSpace(input))
+                {
+                    yield return output;
+                    output = "";
+                }
+                else
+                {
+                    output += input + "\n";
+                }
+            }
+            yield return output;
+        }
     }
 }

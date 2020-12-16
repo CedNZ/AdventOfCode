@@ -10,7 +10,7 @@ namespace AdventOfCode2020
     {
         public List<Passport> SetupInputs(string[] inputs)
         {
-            var inputGroups = GroupsUntilWhiteSpace(inputs).Select(x => x.Split(new[] { ' ', '\n' }).Where(x => !string.IsNullOrEmpty(x)));
+            var inputGroups = inputs.GroupsUntilWhiteSpace().Select(x => x.Split(new[] { ' ', '\n' }).Where(x => !string.IsNullOrEmpty(x)));
 
             List<Passport> passports = new List<Passport>(inputGroups.Count());
 
@@ -155,24 +155,6 @@ namespace AdventOfCode2020
                 .Where(IssueYearValid)
                 .Where(ExpiryYearValid)
                 .Count();
-        }
-
-        private IEnumerable<string> GroupsUntilWhiteSpace(string[] inputs)
-        {
-            string output = "";
-            for(int i = 0; i < inputs.Count(); i++)
-            {
-                if(string.IsNullOrWhiteSpace(inputs[i]))
-                {
-                    yield return output;
-                    output = "";
-                }
-                else
-                {
-                    output += inputs[i] + "\n";
-                }
-            }
-            yield return output;
         }
     }
 
