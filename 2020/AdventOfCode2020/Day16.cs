@@ -72,9 +72,51 @@ namespace AdventOfCode2020
             return invalidFields.Sum();
         }
 
+        public List<Ticket> RemoveInvalid(List<Ticket> tickets)
+        {
+            List<Ticket> validTickets = new List<Ticket>();
+
+            foreach(var ticket in tickets)
+            {
+                if (ticket.Fields.Any(f => !Rules.Any(r => r.Value(f.Value))))
+                {
+                    continue;
+                }
+                validTickets.Add(ticket);
+            }
+
+            return validTickets;
+        }
+
         public long B(List<Ticket> inputs)
         {
-            return -1;
+            Dictionary<string, int> ticketFields = new Dictionary<string, int>();
+            Ticket myTicket = inputs.First();
+
+            var tickets = RemoveInvalid(inputs.Skip(1).ToList());
+
+            var fieldIndexOffset = 0;
+
+            while (Rules.Any() && fieldIndexOffset < myTicket.Fields.Count())
+            {
+                var field = myTicket.Fields.Skip(fieldIndexOffset).First();
+
+                var matchingRule = Rules.Where(r => tickets.All(t => r.Value(t.Fields[field.Key])));
+
+                if(matchingRule.Count() == 1 && matchingRule.First().Value != null)
+                {
+                    ticketFields.Add(matchingRule.First().Key, field.Value);
+                    Rules.Remove(matchingRule.First().Key);
+                    myTicket.Fields.Remove(field.Key);
+                    fieldIndexOffset = 0;
+                }
+                else
+                {
+                    fieldIndexOffset++;
+                }
+            }
+
+            return ticketFields.Where(t => t.Key.Contains("departure")).Select(t => (long)t.Value).Aggregate((curr, next) => curr * next);
         }
     }
 
