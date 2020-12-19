@@ -136,17 +136,18 @@ namespace AdventOfCode2020Tests
         }
 
         [Theory]
-        [InlineData("1 + 2 * 3 + 4 * 5 + 6", 71)]
-        [InlineData("1 + (2 * 3) + (4 * (5 + 6))", 51)]
-        [InlineData("2 * 3 + (4 * 5)", 26)]
-        [InlineData("5 + (8 * 3 + 9 + 3 * 4 * 3)", 437)]
-        [InlineData("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))", 12240)]
-        [InlineData("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", 13632)]
-        public void Day18_Part1_Tests(string input, int expectedAnswer)
+        [InlineData("1 + 2 * 3 + 4 * 5 + 6", 71, 231)]
+        [InlineData("1 + (2 * 3) + (4 * (5 + 6))", 51, 51)]
+        [InlineData("2 * 3 + (4 * 5)", 26, 46)]
+        [InlineData("5 + (8 * 3 + 9 + 3 * 4 * 3)", 437, 1445)]
+        [InlineData("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))", 12240, 669060)]
+        [InlineData("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", 13632, 23340)]
+        public void Day18_Tests(string input, int expectedAnswerA, int expectedAnswerB)
         {
             Day18 day = new Day18();
 
-            Assert.Equal(expectedAnswer, day.A(new List<string> { input }));
+            Assert.Equal(expectedAnswerA, day.A(new List<string> { input }));
+            Assert.Equal(expectedAnswerB, day.B(new List<string> { input }));
         }
     }
 
