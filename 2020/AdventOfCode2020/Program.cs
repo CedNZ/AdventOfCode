@@ -19,7 +19,7 @@ namespace AdventOfCode2020
                 Console.WriteLine("Enter day number: ");
                 var dayNum = int.Parse(Console.ReadLine());
 
-                (long A, long B) result = dayNum switch
+                (object A, object B) result = dayNum switch
                 {
                     1 => RunDay(dayNum, () => new Day1()),
                     2 => RunDay(dayNum, () => new Day2()),
@@ -51,9 +51,9 @@ namespace AdventOfCode2020
             }
         }
 
-        static (long A, long B) RunDay<T>(int dayNum, Func<IDay<T>> GetDay)
+        static (Tout A, Tout B) RunDay<Tin, Tout>(int dayNum, Func<IDayOut<Tin, Tout>> GetDay)
         {
-            IDay<T> day = GetDay();
+            IDayOut<Tin, Tout> day = GetDay();
 
             var inputsA = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
             var inputsB = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));

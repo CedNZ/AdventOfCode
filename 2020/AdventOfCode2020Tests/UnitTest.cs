@@ -14,13 +14,13 @@ namespace AdventOfCode2020Tests
 
         [Theory]
         [ClassData(typeof(DayTestData))]
-        public void DayTest<T>(string inputFile, Func<IDay<T>> GetDay, long expectedAnswer, bool partOne)
+        public void DayTest<Tin, Tout>(string inputFile, Func<IDayOut<Tin, Tout>> GetDay, Tout expectedAnswer, bool partOne)
         {
-            IDay<T> day = GetDay();
+            IDayOut<Tin, Tout> day = GetDay();
 
             var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\TestInput\\day{inputFile}.txt"));
 
-            long output;
+            Tout output;
             if(partOne)
             {
                 output = day.A(inputs);
