@@ -14,35 +14,41 @@ namespace AdventOfCode2020
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Advent of Code 2020");
-            Console.WriteLine("Enter day number: ");
-            var dayNum = int.Parse(Console.ReadLine());
+            var run = true;
+            while(run) {
+                Console.WriteLine("Enter day number: ");
+                var dayNum = int.Parse(Console.ReadLine());
 
-            (long A, long B) result = dayNum switch
-            {
-                1 => RunDay(dayNum, () => new Day1()),
-                2 => RunDay(dayNum, () => new Day2()),
-                3 => RunDay(dayNum, () => new Day3()),
-                4 => RunDay(dayNum, () => new Day4()),
-                5 => RunDay(dayNum, () => new Day5()),
-                6 => RunDay(dayNum, () => new Day6()),
-                7 => RunDay(dayNum, () => new Day7()),
-                8 => RunDay(dayNum, () => new Day8()),
-                9 => RunDay(dayNum, () => new Day9()),
-                10 => RunDay(dayNum, () => new Day10()),
-                11 => RunDay(dayNum, () => new Day11()),
-                12 => RunDay(dayNum, () => new Day12()),
-                13 => RunDay(dayNum, () => new Day13()),
-                14 => RunDay(dayNum, () => new Day14()),
-                15 => RunDay(dayNum, () => new Day15()),
-                16 => RunDay(dayNum, () => new Day16()),
-                //17 => RunDay(dayNum, () => new Day17()),
-                18 => RunDay(dayNum, () => new Day18()),
-                _ => (-1, -1),
-            };
+                (long A, long B) result = dayNum switch
+                {
+                    1 => RunDay(dayNum, () => new Day1()),
+                    2 => RunDay(dayNum, () => new Day2()),
+                    3 => RunDay(dayNum, () => new Day3()),
+                    4 => RunDay(dayNum, () => new Day4()),
+                    5 => RunDay(dayNum, () => new Day5()),
+                    6 => RunDay(dayNum, () => new Day6()),
+                    7 => RunDay(dayNum, () => new Day7()),
+                    8 => RunDay(dayNum, () => new Day8()),
+                    9 => RunDay(dayNum, () => new Day9()),
+                    10 => RunDay(dayNum, () => new Day10()),
+                    11 => RunDay(dayNum, () => new Day11()),
+                    12 => RunDay(dayNum, () => new Day12()),
+                    13 => RunDay(dayNum, () => new Day13()),
+                    14 => RunDay(dayNum, () => new Day14()),
+                    15 => RunDay(dayNum, () => new Day15()),
+                    16 => RunDay(dayNum, () => new Day16()),
+                    //17 => RunDay(dayNum, () => new Day17()),
+                    18 => RunDay(dayNum, () => new Day18()),
 
-            Console.WriteLine($"Day {dayNum} Answer A: {result.A}\nCompleted in {runtimeA}");
-            Console.WriteLine($"Day {dayNum} Answer B: {result.B}\nCompleted in {runtimeB}");
-            Console.Read();
+                    21 => RunDay(dayNum, () => new Day21()),
+                    _ => (-1, -1),
+                };
+
+                Console.WriteLine($"Day {dayNum} Answer A: {result.A}\nCompleted in {runtimeA}");
+                Console.WriteLine($"Day {dayNum} Answer B: {result.B}\nCompleted in {runtimeB}");
+                Console.WriteLine("\nRerun? y/N");
+                run = Console.ReadLine().ToUpper() == "Y";
+            }
         }
 
         static (long A, long B) RunDay<T>(int dayNum, Func<IDay<T>> GetDay)
