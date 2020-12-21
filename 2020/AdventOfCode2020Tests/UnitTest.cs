@@ -14,13 +14,13 @@ namespace AdventOfCode2020Tests
 
         [Theory]
         [ClassData(typeof(DayTestData))]
-        public void DayTest<Tin, Tout>(string inputFile, Func<IDayOut<Tin, Tout>> GetDay, Tout expectedAnswer, bool partOne)
+        public void DayTest<TIn, TOut>(string inputFile, Func<IDayOut<TIn, TOut>> GetDay, TOut expectedAnswer, bool partOne)
         {
-            IDayOut<Tin, Tout> day = GetDay();
+            IDayOut<TIn, TOut> day = GetDay();
 
             var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\TestInput\\day{inputFile}.txt"));
 
-            Tout output;
+            TOut output;
             if(partOne)
             {
                 output = day.A(inputs);
@@ -170,10 +170,12 @@ namespace AdventOfCode2020Tests
         Func<IDay<int>> getDay15 = () => new Day15();
         Func<IDay<Ticket>> getDay16 = () => new Day16();
 
-        Func<IDay<(List<string> Allergens, List<string> Ingredients)>> getDay21 = () => new Day21();
+        Func<IDayOut<(List<string> Allergens, List<string> Ingredients), string>> getDay21 = () => new Day21();
+
 
         public IEnumerator<object[]> GetEnumerator()
         {
+            
             yield return new object[] {"1", getDay1, 514579, true };
             yield return new object[] {"1", getDay1, 241861950, false };
 
@@ -219,6 +221,7 @@ namespace AdventOfCode2020Tests
             yield return new object[] { "16b", getDay16, -1, false };
 
             yield return new object[] { "21", getDay21, 5, true };
+            yield return new object[] { "21", getDay21, "mxmxvkd,sqjhc,fvjkl", false };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

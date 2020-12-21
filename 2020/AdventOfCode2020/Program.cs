@@ -51,9 +51,9 @@ namespace AdventOfCode2020
             }
         }
 
-        static (Tout A, Tout B) RunDay<Tin, Tout>(int dayNum, Func<IDayOut<Tin, Tout>> GetDay)
+        static (TOut A, TOut B) RunDay<TIn, TOut>(int dayNum, Func<IDayOut<TIn, TOut>> GetDay)
         {
-            IDayOut<Tin, Tout> day = GetDay();
+            IDayOut<TIn, TOut> day = GetDay();
 
             var inputsA = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));
             var inputsB = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\Inputs\\day{dayNum}.txt"));

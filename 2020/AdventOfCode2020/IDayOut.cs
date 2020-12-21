@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2020
 {
-    public interface IDayOut<Tin, Tout>
+    public interface IDayOut<TIn, TOut>
     {
-        public List<Tin> SetupInputs(string[] inputs);
-        public Tout A(List<Tin> inputs);
-        public Tout B(List<Tin> inputs);
+        public List<TIn> SetupInputs(string[] inputs);
+        public TOut A(List<TIn> inputs);
+        public TOut B(List<TIn> inputs);
     }
 }
