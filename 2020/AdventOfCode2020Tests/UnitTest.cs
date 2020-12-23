@@ -172,6 +172,7 @@ namespace AdventOfCode2020Tests
 
         Func<IDayOut<(List<string> Allergens, List<string> Ingredients), string>> getDay21 = () => new Day21();
         Func<IDay<List<int>>> getDay22 = () => new Day22();
+        Func<IDay<int>> getDay23 = () => new Day23();
 
         public IEnumerator<object[]> GetEnumerator()
         {
@@ -225,6 +226,9 @@ namespace AdventOfCode2020Tests
 
             //yield return new object[] { "22", getDay22, 306, true };
             yield return new object[] { "22", getDay22, 291, false };
+            /**/
+            yield return new object[] { "23", getDay23, 67384529, true };
+            //yield return new object[] { "22", getDay22, 291, false };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

@@ -42,6 +42,7 @@ namespace AdventOfCode2020
 
                     21 => RunDay(dayNum, () => new Day21()),
                     22 => RunDay(dayNum, () => new Day22()),
+                    23 => RunDay(dayNum, () => new Day23()),
                     _ => (-1, -1),
                 };
 
