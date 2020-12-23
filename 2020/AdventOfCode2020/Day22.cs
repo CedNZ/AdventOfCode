@@ -65,7 +65,6 @@ namespace AdventOfCode2020
 
         public long B(List<List<int>> inputs)
         {
-            Depth = 0;
             Queue<int> player1 = new Queue<int>(inputs[0]);
             Queue<int> player2 = new Queue<int>(inputs[1]);
 
@@ -82,13 +81,8 @@ namespace AdventOfCode2020
             });
         }
 
-        public static int Depth;
-        public static int TotalGames;
-
         public bool PlayRecursive(Queue<int> player1, Queue<int> player2)
         {
-            int gamesThisRound = 0;
-            System.Diagnostics.Debug.WriteLine($"Game: {Depth++}, Round: {gamesThisRound}, Total: {TotalGames}");
             List<(int[], int[])> seenCards = new List<(int[], int[])>();
             while(player1.Count() > 0 && player2.Count() > 0)
             {
@@ -104,7 +98,6 @@ namespace AdventOfCode2020
                 if(card1 <= player1.Count() && card2 <= player2.Count())
                 {
                     var player1Won = PlayRecursive(new Queue<int>(player1.Take(card1)), new Queue<int>(player2.Take(card2)));
-                    System.Diagnostics.Debug.WriteLine($"Game: {Depth--}, Round: {gamesThisRound}, Total: {TotalGames}");
 
                     if(player1Won)
                     {
@@ -130,8 +123,6 @@ namespace AdventOfCode2020
                         player2.Enqueue(card1);
                     }
                 }
-                gamesThisRound++;
-                TotalGames++;
             }
             return player1.Count() > player2.Count();
         }
