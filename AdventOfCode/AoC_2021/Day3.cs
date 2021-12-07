@@ -15,7 +15,7 @@ namespace AoC_2021
 
             for (int i = 0; i < inputs.First().Length; i++)
             {
-                gamma[i] = MostCommonBit(inputs, i);
+                gamma[i] = MostCommonBit(inputs, i).GetValueOrDefault();
             }
 
             bool[] epsilon = gamma.Select(x => !x).ToArray();
@@ -23,11 +23,18 @@ namespace AoC_2021
             return BoolArrayToDecimal(epsilon) * BoolArrayToDecimal(gamma);
         }
 
-        public bool MostCommonBit(IEnumerable<string> inputs, int index)
+        public bool? MostCommonBit(IEnumerable<string> inputs, int index)
         {
             var oneCount = inputs.Select(x => x[index]).Count(x => x == '1');
 
-            return oneCount > inputs.Count() / 2;
+            var zeroCount = inputs.Count() - oneCount;
+
+            if (oneCount == zeroCount)
+            { 
+                return null;
+            }    
+
+            return oneCount > zeroCount;
         }
 
         public int BoolArrayToDecimal(bool[] bools)
@@ -37,10 +44,34 @@ namespace AoC_2021
             return sum;
         }
 
+        public bool[] StringToBoolArray(string s)
+        {
+            return s.Select(c => c == '1').ToArray();
+        }
+
         public long B(List<string> inputs)
         {
+            var oxygenCandidates = inputs.ToList();
+            var carbonCandidates = inputs.ToList();
 
-            return default;
+            int index = 0;
+            while (oxygenCandidates.Count > 1)
+            {
+                var mcb = MostCommonBit(oxygenCandidates, index).GetValueOrDefault(true);
+                oxygenCandidates = oxygenCandidates.Where(x => (x[index] == '1') == mcb).ToList();
+                index++;
+            }
+
+            index = 0;
+            while (carbonCandidates.Count > 1)
+            {
+                var mcb = MostCommonBit(carbonCandidates, index).GetValueOrDefault(true);
+                carbonCandidates = carbonCandidates.Where(x => (x[index] == '0') == mcb).ToList();
+                index++;
+            }
+
+            return BoolArrayToDecimal(StringToBoolArray(oxygenCandidates.Single())) 
+                * BoolArrayToDecimal(StringToBoolArray(carbonCandidates.Single()));
         }
 
         public List<string> SetupInputs(string[] inputs)
