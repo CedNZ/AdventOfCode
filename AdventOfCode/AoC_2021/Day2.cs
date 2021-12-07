@@ -19,7 +19,7 @@ namespace AoC_2021
                         coords.Y += command.Item2;
                         break;
                     case "up":
-                        coords.Y += command.Item2;
+                        coords.Y -= command.Item2;
                         break;
                 }
             }
@@ -29,7 +29,7 @@ namespace AoC_2021
 
         public long B(List<(string, int)> inputs)
         {
-            throw new NotImplementedException();
+            return default;
         }
 
         public List<(string, int)> SetupInputs(string[] inputs)
