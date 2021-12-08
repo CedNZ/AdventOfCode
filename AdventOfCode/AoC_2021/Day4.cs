@@ -10,6 +10,7 @@ namespace AoC_2021
     public class Day4 : IDay<int>
     {
         List<BingoBoard> bingoBoards = new();
+        List<BingoBoard> bingoBoardsB = new();
 
         public long A(List<int> inputs)
         {
@@ -29,6 +30,24 @@ namespace AoC_2021
 
         public long B(List<int> inputs)
         {
+            foreach (var number in inputs)
+            {
+                for (int i = 0; i < bingoBoardsB.Count(); i++)
+                {
+                    var board = bingoBoardsB[i];
+                    if (board.CheckNumber(number))
+                    {
+                        bingoBoardsB.Remove(board);
+                        i--;
+
+                        if (!bingoBoardsB.Any())
+                        {
+                            return board.GetScore(number);
+                        }
+                    }
+                }
+            }
+
             return default;
         }
 
@@ -39,6 +58,7 @@ namespace AoC_2021
             for (int i = 2; i < inputs.Length; i += 6)
             {
                 bingoBoards.Add(new BingoBoard(inputs.Skip(i).Take(5).ToArray()));
+                bingoBoardsB.Add(new BingoBoard(inputs.Skip(i).Take(5).ToArray()));
             }
 
             return ints.Split(',').Select(int.Parse).ToList();
