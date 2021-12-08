@@ -59,12 +59,13 @@ namespace AoC_2021
             var line = lines.First().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             for (int i = 0; i < board.Length; i++)
-            {
-                board[i] = int.Parse(line[i % 5]);
+            {             
                 if (i > 0 && i % 5 == 0)
                 {
                     line = lines[i / 5].Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 }
+                board[i] = int.Parse(line[i % 5]);
+   
             }
         }
 
@@ -105,7 +106,7 @@ namespace AoC_2021
             return false;
         }
 
-        public int GetScore(int drawnNumber)
+        public long GetScore(int drawnNumber)
         {
             var unseen = board.Except(seenNumbers.Keys);
             return unseen.Sum() * drawnNumber;
