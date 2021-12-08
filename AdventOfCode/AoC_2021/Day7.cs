@@ -34,7 +34,29 @@ namespace AoC_2021
 
         public long B(List<int> inputs)
         {
-            return default;
+            var mode = inputs.GroupBy(x => x).OrderByDescending(g => g.Count()).First().Key;
+            var average = (int)Math.Ceiling(inputs.Average());
+
+            var min = Math.Min(mode, average);
+            var max = Math.Max(mode, average);
+
+            var lowest = int.MaxValue;
+
+            for (int i = min; i <= max; i++)
+            {
+                var sum = inputs.Sum(x =>
+                {
+                    var distance = Math.Abs(x - i);
+                    return (distance * (distance + 1)) / 2;
+                });
+
+                if (sum < lowest)
+                {
+                    lowest = sum;
+                }
+            }
+
+            return lowest;
         }
 
         public List<int> SetupInputs(string[] inputs)
