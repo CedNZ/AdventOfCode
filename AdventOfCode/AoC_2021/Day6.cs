@@ -37,7 +37,29 @@ namespace AoC_2021
 
         public long B(List<int> inputs)
         {
-            return default;
+            Dictionary<int, long> dict = new Dictionary<int, long>();
+            long sum = 0;
+
+            foreach (var item in inputs)
+            {
+                if (dict.TryGetValue(item, out var count))
+                {
+                    sum += count;
+                    continue;
+                }
+                List<int> fish = new List<int> { item };
+                for (int i = 0; i < 256; i++)
+                {
+                    GoFish(fish);
+                }
+
+                count = fish.Count();
+                sum += count;
+
+                dict.Add(item, count);
+            }
+
+            return sum;
         }
 
         public List<int> SetupInputs(string[] inputs)
