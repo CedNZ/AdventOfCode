@@ -35,6 +35,19 @@ namespace AoC_2021
             return fish;
         }
 
+        private long GoFish(int fish, int day)
+        {
+            if (day >= 256)
+            {
+                return 1;
+            }
+            if (fish == 0)
+            {
+                return GoFish(0, day + 7) + GoFish(0, day + 9);
+            }
+            return GoFish(0, day + fish);
+        }
+
         public long B(List<int> inputs)
         {
             Dictionary<int, long> dict = new Dictionary<int, long>();
@@ -47,13 +60,9 @@ namespace AoC_2021
                     sum += count;
                     continue;
                 }
-                List<int> fish = new List<int> { item };
-                for (int i = 0; i < 256; i++)
-                {
-                    GoFish(fish);
-                }
 
-                count = fish.Count();
+                count = GoFish(item, 0);
+
                 sum += count;
 
                 dict.Add(item, count);
