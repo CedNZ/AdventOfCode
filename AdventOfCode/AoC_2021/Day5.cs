@@ -116,6 +116,7 @@ namespace AoC_2021
                         p.Y++;
                     }
                 }
+                map[line.Item2.X, line.Item2.Y]++;
             }
         }
     }
