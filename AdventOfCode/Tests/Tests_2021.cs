@@ -35,7 +35,7 @@ namespace Tests
     public class DayTestData : IEnumerable<object[]>
     {
         public IEnumerator<object[]> GetEnumerator()
-        {
+        {/*
             yield return new object[] { "1", () => new Day1(), 7, true };
             yield return new object[] { "1", () => new Day1(), 5, false };
             yield return new object[] { "2", () => new Day2(), 150, true };
@@ -51,7 +51,8 @@ namespace Tests
             yield return new object[] { "7", () => new Day7(), 37, true };
             yield return new object[] { "7", () => new Day7(), 168, false };
             yield return new object[] { "8", () => new Day8(), 26, true };
-            yield return new object[] { "8", () => new Day8(), 61229, false };
+            yield return new object[] { "8", () => new Day8(), 61229, false }; /**/
+            yield return new object[] { "9", () => new Day9(), 15, true };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
