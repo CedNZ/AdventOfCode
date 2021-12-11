@@ -74,12 +74,12 @@ namespace AoC_2021
                         {
                             try
                             {
-                                if (octopus[i, j] != 0)
+                                if (octopus[i, j] >= 0)
                                 {
                                     octopus[i, j]++;
                                     if (octopus[i, j] > 9)
                                     {
-                                        octopus[i, j] = 0;
+                                        octopus[i, j] = -1;
                                         flashed.Add((i, j));
                                     }
                                 }
@@ -95,7 +95,59 @@ namespace AoC_2021
 
         public long B(List<int> inputs)
         {
-            return default;
+            var squareSize = 10;
+            int[,] octopus = new int[squareSize, squareSize];
+
+            inputs.Select((x, i) => octopus[i / squareSize, i % squareSize] = x).ToList();
+
+            long flashCount = 0;
+
+            List<(int, int)> flashed;
+            int day = 0;
+            for (; ; day++)
+            {
+                flashed = new();
+                for (int i = 0; i < squareSize; i++)
+                {
+                    for (int j = 0; j < squareSize; j++)
+                    {
+                        if (octopus[i, j] >= 0)
+                        {
+                            octopus[i, j]++;
+                            if (octopus[i, j] > 9)
+                            {
+                                octopus[i, j] = -1;
+                                flashed.Add((i, j));
+                            }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < flashed.Count; i++)
+                {
+                    var newFlashed = FlashNeighbours(flashed[i], ref octopus);
+                    flashed.AddRange(newFlashed);
+                }
+
+                var syncCount = 0;
+                for (int i = 0; i < squareSize; i++)
+                {
+                    for (int j = 0; j < squareSize; j++)
+                    {
+                        if (octopus[i, j] < 0)
+                        {
+                            octopus[i, j] = 0;
+                            syncCount++;
+                        }
+                    }
+                }
+                if (syncCount >= 100)
+                {
+                    break;
+                }
+            }
+
+            return day + 1;
         }
 
         public List<int> SetupInputs(string[] inputs)
