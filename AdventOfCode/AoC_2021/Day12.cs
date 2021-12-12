@@ -32,31 +32,29 @@ namespace AoC_2021
             }
 
             var start = caves["start"];
-            var end = caves["end"];
 
-            Dictionary<Cave, int> visited = new();
+            List<Cave> visited = new();
 
 
             return FindPath(start, visited, true);
         }
 
-        public long FindPath(Cave from, Dictionary<Cave, int> visited, bool secondVisit = false)
+        public long FindPath(Cave from, List<Cave> visited, bool secondVisit = false)
         {
-            if (!visited.ContainsKey(from))
+            if (!visited.Contains(from))
             {
-                visited.Add(from, 1);
+                visited.Add(from);
             }
             else
             {
-                visited[from]++;
                 if (!from.BigCave)
                 {
                     secondVisit = true;
                 }
             }
 
-            var toVisit = secondVisit ? from.Connections.Except(visited.Where(x => !x.Key.BigCave || x.Value > 2).Select(x => x.Key))
-                                        : from.Connections.Except(visited.Where(x => !x.Key.BigCave).Select(x => x.Key));
+            var toVisit = secondVisit ? from.Connections.Except(visited.Where(x => !x.BigCave))
+                                        : from.Connections.Where(x => x.Name != "start");
             if (!toVisit.Any())
             {
                 return 0;
@@ -68,7 +66,7 @@ namespace AoC_2021
                 {
                     return 1;
                 }
-                return FindPath(cave, visited.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), secondVisit);
+                return FindPath(cave, visited.ToList(), secondVisit);
             });
         }
 
@@ -95,9 +93,8 @@ namespace AoC_2021
             }
 
             var start = caves["start"];
-            var end = caves["end"];
 
-            Dictionary<Cave, int> visited = new();
+            List<Cave> visited = new();
 
 
             return FindPath(start, visited);
@@ -128,6 +125,11 @@ namespace AoC_2021
         public void AddConnection(Cave other)
         {
             Connections.Add(other);
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} - {Connections.Count}";
         }
     }
 }
