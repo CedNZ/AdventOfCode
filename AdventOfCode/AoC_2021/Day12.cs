@@ -34,20 +34,29 @@ namespace AoC_2021
             var start = caves["start"];
             var end = caves["end"];
 
-            List<Cave> visited = new();
+            Dictionary<Cave, int> visited = new();
 
 
-            return FindPath(start, visited);
+            return FindPath(start, visited, true);
         }
 
-        public long FindPath(Cave from, List<Cave> visited)
+        public long FindPath(Cave from, Dictionary<Cave, int> visited, bool secondVisit = false)
         {
-            if (!visited.Contains(from))
+            if (!visited.ContainsKey(from))
             {
-                visited.Add(from);
+                visited.Add(from, 1);
+            }
+            else
+            {
+                visited[from]++;
+                if (!from.BigCave)
+                {
+                    secondVisit = true;
+                }
             }
 
-            var toVisit = from.Connections.Except(visited.Where(x => !x.BigCave));
+            var toVisit = secondVisit ? from.Connections.Except(visited.Where(x => !x.Key.BigCave || x.Value > 2).Select(x => x.Key))
+                                        : from.Connections.Except(visited.Where(x => !x.Key.BigCave).Select(x => x.Key));
             if (!toVisit.Any())
             {
                 return 0;
@@ -59,13 +68,39 @@ namespace AoC_2021
                 {
                     return 1;
                 }
-                return FindPath(cave, visited.ToList());
+                return FindPath(cave, visited.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), secondVisit);
             });
         }
 
         public long B(List<string> inputs)
         {
-            return default;
+            Dictionary<string, Cave> caves = new();
+
+            foreach (var line in inputs)
+            {
+                var parts = line.Split('-');
+                if (!caves.TryGetValue(parts[0], out var cave1))
+                {
+                    cave1 = new Cave(parts[0]);
+                    caves.Add(cave1.Name, cave1);
+                }
+                if (!caves.TryGetValue(parts[1], out var cave2))
+                {
+                    cave2 = new Cave(parts[1]);
+                    caves.Add(cave2.Name, cave2);
+                }
+
+                cave1.AddConnection(cave2);
+                cave2.AddConnection(cave1);
+            }
+
+            var start = caves["start"];
+            var end = caves["end"];
+
+            Dictionary<Cave, int> visited = new();
+
+
+            return FindPath(start, visited);
         }
 
         public List<string> SetupInputs(string[] inputs)
