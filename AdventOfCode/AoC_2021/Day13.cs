@@ -56,16 +56,17 @@ namespace AoC_2021
 
         public void Draw()
         {
-            Console.WriteLine(); Console.WriteLine(); Console.WriteLine();
+            Console.WriteLine();
             for (int i = 0; i <= paper.Max(p => p.y); i++)
             {
                 for (int j = 0; j <= paper.Max(p => p.x); j++)
                 {
-                    var output = paper.Contains((j, i)) ? "#" : ".";
+                    var output = paper.Contains((j, i)) ? "#" : " ";
                     Console.Write(output);
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine();
         }
 
         public long B(List<string> inputs)
