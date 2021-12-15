@@ -63,15 +63,15 @@ namespace Tests
             yield return new object[] { "12.2", () => new Day12(), 226, true };
             yield return new object[] { "12", () => new Day12(), 36, false };
             yield return new object[] { "12.1", () => new Day12(), 103, false };
-            yield return new object[] { "12.2", () => new Day12(), 3509, false };/**/
+            yield return new object[] { "12.2", () => new Day12(), 3509, false };/*
             //yield return new object[] { "13", () => new Day13(), 17, true };
             yield return new object[] { "14", () => new Day14(), 1588, true };
             yield return new object[] { "14", () => new Day14(), 2188189693529, false };
             yield return new object[] { "15", () => new Day15(), 40, true };
             yield return new object[] { "15.1", () => new Day15(), 40, true };
             yield return new object[] { "15.2", () => new Day15(), 10, true };
-            yield return new object[] { "15.3", () => new Day15(), 12, true };
-            yield return new object[] { "15", () => new Day15(), 0, false };
+            yield return new object[] { "15.3", () => new Day15(), 12, true };/**/
+            yield return new object[] { "15", () => new Day15(), 315, false };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
