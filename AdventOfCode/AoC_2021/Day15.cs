@@ -42,8 +42,8 @@ namespace AoC_2021
             Dictionary<(int col, int row), int> gScore = new();
             gScore.Add(start, 0);
 
-            int GScore((int, int) x) => gScore.TryGetValue(x, out var gscore) ? gscore : 1000000;
-            int h((int, int) x) => (((map.GetLength(0) - x.Item1) * (map.GetLength(1) - x.Item2))) + (GScore(x) * 10);
+            int GScore((int, int) x) => gScore.TryGetValue(x, out var gscore) ? gscore : 100_000_000;
+            int h((int, int) x) => (((map.GetLength(0) - x.Item1) * (map.GetLength(1) - x.Item2))) + (GScore(x) * 100000);
 
             Dictionary<(int col, int row), int> fScore = new();
             fScore.Add(start, h(start));
