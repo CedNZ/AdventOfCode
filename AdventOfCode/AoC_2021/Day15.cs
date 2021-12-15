@@ -46,7 +46,7 @@ namespace AoC_2021
             int h((int, int) x) => (((map.GetLength(0) - x.Item1) * (map.GetLength(1) - x.Item2))) + (GScore(x) * 10);
 
             Dictionary<(int col, int row), int> fScore = new();
-            fScore.Add(start, 0);
+            fScore.Add(start, h(start));
 
 
             while (openSet.Count > 0)
