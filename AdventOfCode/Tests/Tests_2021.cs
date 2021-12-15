@@ -55,7 +55,7 @@ namespace Tests
             yield return new object[] { "9", () => new Day9(), 15, true };
             yield return new object[] { "9", () => new Day9(), 1134, false };
             yield return new object[] { "10", () => new Day10(), 26397, true };
-            yield return new object[] { "10", () => new Day10(), 288957, false };
+            yield return new object[] { "10", () => new Day10(), 288957, false }; 
             yield return new object[] { "11", () => new Day11(), 1656, true };
             yield return new object[] { "11", () => new Day11(), 195, false };/*
             yield return new object[] { "12", () => new Day12(), 10, true };
@@ -68,6 +68,9 @@ namespace Tests
             yield return new object[] { "14", () => new Day14(), 1588, true };
             yield return new object[] { "14", () => new Day14(), 2188189693529, false };
             yield return new object[] { "15", () => new Day15(), 40, true };
+            yield return new object[] { "15.1", () => new Day15(), 40, true };
+            yield return new object[] { "15.2", () => new Day15(), 10, true };
+            yield return new object[] { "15.3", () => new Day15(), 12, true };
             yield return new object[] { "15", () => new Day15(), 0, false };
         }
 

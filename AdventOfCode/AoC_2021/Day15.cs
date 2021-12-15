@@ -7,66 +7,107 @@ using AdventOfCodeCore;
 
 namespace AoC_2021
 {
-    public class Day15 : IDay<int>
+    public class Day15 : IDay<List<int>>
     {
         int[,] map;
-        int sideLength;
 
-        public long A(List<int> inputs)
+        public long A(List<List<int>> inputs)
         {
-            sideLength = (int)Math.Sqrt(inputs.Count);
-
-            map = new int[sideLength, sideLength];
-            int index = 0;
-            for (int col = 0; col < sideLength; col++)
+            map = new int[inputs.Count, inputs.First().Count];
+            var c = 0;
+            var r = 0;
+            foreach (var row in inputs)
             {
-                for (int row = 0; row < sideLength; row++)
+                foreach (var cell in row)
                 {
-                    map[col, row] = inputs[index++];
+                    map[r, c++] = cell;
+                }
+                c = 0;
+                r++;
+            }
+
+            return AstarFind();
+        }
+
+        public int AstarFind()
+        {
+            var start = (0, 0);
+            var end = (map.GetLength(1) - 1, map.GetLength(0) - 1);
+
+            List<(int col, int row)> openSet = new();
+            openSet.Add(start);
+
+            Dictionary<(int col, int row), (int col, int row)> cameFrom = new();
+
+            Dictionary<(int col, int row), int> gScore = new();
+            gScore.Add(start, 0);
+
+            int GScore((int, int) x) => gScore.TryGetValue(x, out var gscore) ? gscore : 1000000;
+            int h((int, int) x) => (((map.GetLength(0) - x.Item1) * (map.GetLength(1) - x.Item2))) + (GScore(x) * 10);
+
+            Dictionary<(int col, int row), int> fScore = new();
+            fScore.Add(start, 0);
+
+
+            while (openSet.Count > 0)
+            {
+                var current = openSet.OrderBy(n => fScore[n]).First();
+                if (current == end)
+                {
+                    return gScore[current];
+                }
+
+                openSet.Remove(current);
+                foreach (var neighbour in Neighbours(current.col, current.row))
+                {
+                    var tentativeScore = GScore(current) + map[neighbour.row, neighbour.col];
+                    if (tentativeScore < GScore(neighbour))
+                    {
+                        cameFrom[neighbour] = current;
+                        gScore[neighbour] = tentativeScore;
+                        fScore[neighbour] = tentativeScore + h(neighbour);
+                        if (!openSet.Contains(neighbour))
+                        {
+                            openSet.Add(neighbour);
+                        }
+                    }
                 }
             }
 
-            return FindPath(0, 0) - map[0, 0];
-        }
-
-        public int FindPath(int col, int row)
-        {
-            if (col == sideLength - 1 && row == sideLength - 1)
-            {
-                return map[col, row];
-            }
-            return map[col, row] + Neighbours(col, row).Min(x => FindPath(x.col, x.row));
+            return -1;
         }
 
         public IEnumerable<(int col, int row)> Neighbours(int col, int row)
-        {
-            if (col + 1 < sideLength)
-            {
-                yield return (col + 1, row);
-            }
-            if (row + 1 < sideLength)
+        {            
+            if (row + 1 < map.GetLength(0))
             {
                 yield return (col, row + 1);
             }
-            /*
-            if (col > 1)
+
+            if (col + 1 < map.GetLength(1))
+            {
+                yield return (col + 1, row);
+            }
+
+            
+            if (col > 0)
             {
                 yield return (col - 1, row);
             }
-            if (row > 1)
+            if (row > 0)
             {
                 yield return (col, row - 1);
             }/**/
         }
 
-        public long B(List<int> inputs)
+        public long B(List<List<int>> inputs)
         {
             return default;
         }
 
-        public List<int> SetupInputs(string[] inputs)
+        public List<List<int>> SetupInputs(string[] inputs)
         {
-            return inputs.SelectMany(x => x.Select(c => int.Parse(c.ToString()))).ToList();
+            return inputs.Select(x => x.Select(c => int.Parse(c.ToString())).ToList()).ToList();
         }
     }
 }
