@@ -26,6 +26,34 @@ namespace AoC_2021
 
         public long B(List<char> inputs)
         {
+            BuildPackets(inputs, out var packet);
+
+            return HandlePacket(packet);
+        }
+
+        public long HandlePacket(Packet packet)
+        {
+            switch (packet.TypeId)
+            {
+                case 0: //sum
+                    return packet.SubPackets.Sum(HandlePacket);
+                case 1:
+                    return packet.SubPackets.Aggregate(1L, (agg, next) => agg * HandlePacket(next));
+                case 2:
+                    return packet.SubPackets.Min(HandlePacket);
+                case 3:
+                    return packet.SubPackets.Max(HandlePacket);
+                case 4:
+                    return packet.Value.GetValueOrDefault();
+                case 5:
+                    return HandlePacket(packet.SubPackets[0]) > HandlePacket(packet.SubPackets[1]) ? 1 : 0;
+                case 6:
+                    return HandlePacket(packet.SubPackets[0]) < HandlePacket(packet.SubPackets[1]) ? 1 : 0;
+                case 7:
+                    return HandlePacket(packet.SubPackets[0]) == HandlePacket(packet.SubPackets[1]) ? 1 : 0;
+                default:
+                    break;
+            }
             return default;
         }
 
@@ -34,12 +62,17 @@ namespace AoC_2021
             return inputs[0].Select(x => x).ToList();
         }
 
-        public static void BuildPackets(List<char> inputs, out Packet MainPacket)
+        public static void BuildPackets(List<char> inputs, out Packet packet)
         {
+            if (MainPacket != null)
+            {
+                packet = MainPacket;
+                return;
+            }
             BitString = string.Join(null, inputs.Select(GetBitsFromHex));
             var index = 0;
 
-            index = CreatePacket(index, out MainPacket);
+            index = CreatePacket(index, out packet);
         }
 
         private static int HandleType(int i, int type, Packet packet)

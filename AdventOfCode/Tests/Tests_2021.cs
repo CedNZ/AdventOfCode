@@ -35,6 +35,7 @@ namespace Tests
         [Fact]
         public void Day16Tests_1()
         {
+            Day16.MainPacket = null;
             Day16.BuildPackets("D2FE28".ToList(), out var packet);
 
             packet.Value.Should().Be(2021);
@@ -73,9 +74,27 @@ namespace Tests
         [InlineData("A0016C880162017C3686B18A3D4780", 31)]
         public void Day16_Tests(string input, long expected)
         {
+            Day16.MainPacket = null;
             var day = new Day16();
 
             day.A(input.ToList()).Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("C200B40A82", 3)]
+        [InlineData("04005AC33890", 54)]
+        [InlineData("880086C3E88112", 7)]
+        [InlineData("CE00C43D881120", 9)]
+        [InlineData("D8005AC2A8F0", 1)]
+        [InlineData("F600BC2D8F", 0)]
+        [InlineData("9C005AC2F8F0", 0)]
+        [InlineData("9C0141080250320F1802104A08", 1)]
+        public void Day16_PartB_Tests(string input, long expected)
+        {
+            Day16.MainPacket = null;
+            var day = new Day16();
+
+            day.B(input.ToList()).Should().Be(expected);
         }
     }
 
