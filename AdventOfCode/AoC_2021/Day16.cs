@@ -90,7 +90,7 @@ namespace AoC_2021
             }
             valueBuffer += BitString[i..(i += 4)];
 
-            packet.Value = Convert.ToInt32(valueBuffer, 2);
+            packet.Value = Convert.ToInt64(valueBuffer, 2);
             return i;
         }
 
@@ -122,7 +122,7 @@ namespace AoC_2021
         public int Version { get; set; }
         public int TypeId { get; set; }
 
-        public int? Value { get; set; }
+        public long? Value { get; set; }
 
         private List<Packet>? _subPackets;
         public List<Packet> SubPackets { get => _subPackets ??= new (); set => _subPackets = value;}
