@@ -35,12 +35,23 @@ namespace Tests
         [Fact]
         public void Day16Tests_1()
         {
-            var day = new Day16();
-
-            day.BuildPackets("D2FE28".ToList(), out var packet);
+            Day16.BuildPackets("D2FE28".ToList(), out var packet);
 
             packet.Value.Should().Be(2021);
+
         }
+
+        [Fact]
+        public void Day16Tests_2()
+        {
+            Day16.BuildPackets("38006F45291200".ToList(), out var packet);
+
+            packet.SubPackets.Should().HaveCount(2);
+
+            packet.SubPackets[0].Value.Should().Be(10);
+            packet.SubPackets[1].Value.Should().Be(20);
+        }
+
     }
 
     public class DayTestData : IEnumerable<object[]>

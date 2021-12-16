@@ -29,12 +29,12 @@ namespace AoC_2021
             return inputs[0].Select(x => x).ToList();
         }
 
-        public void BuildPackets(List<char> inputs, out Packet MainPacket)
+        public static void BuildPackets(List<char> inputs, out Packet MainPacket)
         {
             BitString = string.Join(null, inputs.Select(GetBitsFromHex));
             var index = 0;
 
-            index = CreatePacket(index, out var type, out MainPacket);
+            index = CreatePacket(index, out MainPacket);
 
 
         }
@@ -60,8 +60,8 @@ namespace AoC_2021
                 var numberOfSubpackets = Convert.ToInt32(BitString[i..(i += 11)], 2);
                 for (int n = 0; n < numberOfSubpackets; n++)
                 {
-                    i = CreatePacket(i, out int subType, out var subPacket);
-                    MainPacket.SubPackets?.Add(subPacket);
+                    i = CreatePacket(i, out var subPacket);
+                    MainPacket.SubPackets.Add(subPacket);
                 }
             }
             else //next 15 bits - total length of subpacket bits
@@ -70,8 +70,8 @@ namespace AoC_2021
                 var offset = i;
                 while (i < numberOfBits + offset)
                 {
-                    i = CreatePacket(i, out var subType, out var subPacket);
-                    MainPacket.SubPackets?.Add(subPacket);
+                    i = CreatePacket(i, out var subPacket);
+                    MainPacket.SubPackets.Add(subPacket);
                 }
             }
 
@@ -91,21 +91,24 @@ namespace AoC_2021
             return i;
         }
 
-        private static int CreatePacket(int i, out int type, out Packet packet)
+        private static int CreatePacket(int i, out Packet packet)
         {
             var version = Convert.ToInt32(BitString[i..(i += 3)], 2);
-            type = Convert.ToInt32(BitString[(i)..(i += 3)], 2);
-            packet = new Packet
+            var type = Convert.ToInt32(BitString[(i)..(i += 3)], 2);
+            
+            packet = new Packet();
+            if (MainPacket == null)
             {
-                Version = version,
-                TypeId = type,
-            };
-            HandleType(i, type, packet);
+                MainPacket = packet;
+            }
 
-            return i;
+            packet.Version = version;
+            packet.TypeId = type;
+
+            return HandleType(i, type, packet);
         }
 
-        public string GetBitsFromHex(char hex)
+        public static string GetBitsFromHex(char hex)
         {
             return Convert.ToString(BitConverter.GetBytes(int.Parse(hex.ToString(), System.Globalization.NumberStyles.HexNumber)).First(), 2).PadLeft(4, '0');
         }
@@ -118,6 +121,7 @@ namespace AoC_2021
 
         public int? Value { get; set; }
 
-        public List<Packet>? SubPackets { get; set;}
+        private List<Packet>? _subPackets;
+        public List<Packet> SubPackets { get => _subPackets ??= new (); set => _subPackets = value;}
     }
 }
