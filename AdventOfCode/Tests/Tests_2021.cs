@@ -5,6 +5,7 @@ using FluentAssertions;
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using System.Linq;
 
 namespace Tests
 {
@@ -29,6 +30,16 @@ namespace Tests
             }
 
             result.Should().Be(expectedAnswer);
+        }
+
+        [Fact]
+        public void Day16Tests_1()
+        {
+            var day = new Day16();
+
+            day.BuildPackets("D2FE28".ToList(), out var packet);
+
+            packet.Value.Should().Be(2021);
         }
     }
 
