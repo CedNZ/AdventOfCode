@@ -9,14 +9,19 @@ namespace AoC_2021
 {
     public class Day16 : IDay<char>
     {
-        static Packet MainPacket;
+        public static Packet MainPacket;
         static string BitString;
 
         public long A(List<char> inputs)
         {
-            
+            BuildPackets(inputs, out var packet);
 
-            return default;
+            return SumVersions(packet);
+        }
+
+        public long SumVersions(Packet packet)
+        {
+            return packet.Version + packet.SubPackets.Sum(SumVersions);
         }
 
         public long B(List<char> inputs)
@@ -35,8 +40,6 @@ namespace AoC_2021
             var index = 0;
 
             index = CreatePacket(index, out MainPacket);
-
-
         }
 
         private static int HandleType(int i, int type, Packet packet)
@@ -61,7 +64,7 @@ namespace AoC_2021
                 for (int n = 0; n < numberOfSubpackets; n++)
                 {
                     i = CreatePacket(i, out var subPacket);
-                    MainPacket.SubPackets.Add(subPacket);
+                    packet.SubPackets.Add(subPacket);
                 }
             }
             else //next 15 bits - total length of subpacket bits
@@ -71,7 +74,7 @@ namespace AoC_2021
                 while (i < numberOfBits + offset)
                 {
                     i = CreatePacket(i, out var subPacket);
-                    MainPacket.SubPackets.Add(subPacket);
+                    packet.SubPackets.Add(subPacket);
                 }
             }
 

@@ -44,6 +44,7 @@ namespace Tests
         [Fact]
         public void Day16Tests_2()
         {
+            Day16.MainPacket = null;
             Day16.BuildPackets("38006F45291200".ToList(), out var packet);
 
             packet.SubPackets.Should().HaveCount(2);
@@ -52,6 +53,30 @@ namespace Tests
             packet.SubPackets[1].Value.Should().Be(20);
         }
 
+        [Fact]
+        public void Day16Tests_3()
+        {
+            Day16.MainPacket = null;
+            Day16.BuildPackets("EE00D40C823060".ToList(), out var packet);
+
+            packet.SubPackets.Should().HaveCount(3);
+
+            packet.SubPackets[0].Value.Should().Be(1);
+            packet.SubPackets[1].Value.Should().Be(2);
+            packet.SubPackets[2].Value.Should().Be(3);
+        }
+
+        [Theory]
+        [InlineData("8A004A801A8002F478", 16)]
+        [InlineData("620080001611562C8802118E34", 12)]
+        [InlineData("C0015000016115A2E0802F182340", 23)]
+        [InlineData("A0016C880162017C3686B18A3D4780", 31)]
+        public void Day16_Tests(string input, long expected)
+        {
+            var day = new Day16();
+
+            day.A(input.ToList()).Should().Be(expected);
+        }
     }
 
     public class DayTestData : IEnumerable<object[]>
