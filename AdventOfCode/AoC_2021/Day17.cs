@@ -57,7 +57,29 @@ namespace AoC_2021
 
         public long B(List<string> inputs)
         {
-            return default;
+            var target = SetTarget(inputs[0]);
+            var probe = new Probe(target);
+
+            var xLB = FindLowerBound(target.x.x1);
+            var hitCount = 0;
+
+            for (var x = xLB; x <= target.x.x2; x++)
+            {
+                for (var y = target.y.y1; y <= Math.Abs(target.y.y1); y++)
+                {
+                    probe.SetProbe(x, y);
+                    while (!probe.TargetCheck().HasValue)
+                    {
+                        probe.Step();
+                    }
+                    if (probe.TargetCheck() == true)
+                    {
+                        hitCount++;
+                    }
+                }
+            }
+
+            return hitCount;
         }
 
         public List<string> SetupInputs(string[] inputs)
