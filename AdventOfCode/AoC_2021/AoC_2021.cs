@@ -38,6 +38,7 @@ namespace AoC_2021
                 15 => RunDay(dayNum, () => new Day15()),
                 16 => RunDay(dayNum, () => new Day16()),
                 17 => RunDay(dayNum, () => new Day17()),
+                18 => RunDay(dayNum, () => new Day18()),
                 _ => throw new NotImplementedException()
             };
         }
