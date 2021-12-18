@@ -96,6 +96,21 @@ namespace Tests
 
             day.B(input.ToList()).Should().Be(expected);
         }
+
+        [Theory]
+        [InlineData("[[1,2],[[3,4],5]]", 143)]
+        [InlineData("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]", 1384)]
+        [InlineData("[[[[1,1],[2,2]],[3,3]],[4,4]]", 445)]
+        [InlineData("[[[[3,0],[5,3]],[4,4]],[5,5]]", 791)]
+        [InlineData("[[[[5,0],[7,4]],[5,5]],[6,6]]", 1137)]
+        [InlineData("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]", 3488)]
+        [InlineData("[[[[6,6],[0,6]],[[6,7],[7,7]]],[[[7,7],[7,7]],[[7,8],[8,9]]]]", 3816)]
+        public void Day18_Magnitude_Tests(string input, long expected)
+        {
+            var day = new Day18();
+            var inputs = day.SetupInputs(new[] { input });
+            day.A(inputs).Should().Be(expected);
+        }
     }
 
     public class DayTestData : IEnumerable<object[]>
