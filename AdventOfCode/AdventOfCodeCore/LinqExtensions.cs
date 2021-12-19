@@ -16,5 +16,17 @@ namespace AdventOfCodeCore
                 source = source.Skip(1);
             }
         }
+
+        public static IEnumerable<List<T>> CartesianPairs<T>(this IEnumerable<T> source)
+        {
+            foreach (var item in source)
+            {
+                var others = source.Where(s => !s.Equals(item));
+                foreach (var otherItem in others)
+                {
+                    yield return new List<T>{ item, otherItem };
+                }
+            }
+        }
     }
 }

@@ -41,6 +41,38 @@ namespace AoC_2021
             return Magnitude(currentPairs.First());
         }
 
+        public long B(List<string> inputs)
+        {
+            List<List<Pair>> AllPairs = new List<List<Pair>>();
+            Pair currentPair = null;
+            List<Pair> pairs;
+            foreach (var line in inputs)
+            {
+                var expanded = Parse(line);
+                Reduce(ref expanded);
+                AllPairs.Add(expanded);
+            }
+
+            var highestMagnitude = 0L;
+            var allPairs = AllPairs.CartesianPairs();
+            foreach (var pair in allPairs)
+            {
+                currentPair = new Pair
+                {
+                    LeftPair = pair[0].First(),
+                    RightPair = pair[1].First(),
+                    Depth = 0,
+                };
+                Nest(currentPair.LeftPair);
+                Nest(currentPair.RightPair);
+
+                pairs = Parse(BuildString(currentPair));
+                Reduce(ref pairs);
+                highestMagnitude = Math.Max(highestMagnitude, Magnitude(pairs.First()));
+            }
+            return highestMagnitude;
+        }
+
         private List<Pair> Parse(string line)
         {
             int index = 0;
@@ -117,20 +149,6 @@ namespace AoC_2021
             {
                 rightPair.Parent = pair;
                 Nest(rightPair);
-            }
-        }
-
-        private void BuildList(Pair pair, ref List<Pair> pairs)
-        {
-            if (pair.LeftPair is Pair leftPair)
-            {
-                pairs.Add(leftPair);
-                BuildList(leftPair, ref pairs);
-            }
-            if (pair.RightPair is Pair rightPair)
-            {
-                pairs.Add(rightPair);
-                BuildList(rightPair, ref pairs);
             }
         }
 
@@ -287,11 +305,6 @@ namespace AoC_2021
                 return LeftMost(left);
             }
             return from;
-        }
-
-        public long B(List<string> inputs)
-        {
-            return default;
         }
 
         public List<string> SetupInputs(string[] inputs)
