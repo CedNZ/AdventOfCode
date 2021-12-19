@@ -105,6 +105,7 @@ namespace Tests
         [InlineData("[[[[5,0],[7,4]],[5,5]],[6,6]]", 1137)]
         [InlineData("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]", 3488)]
         [InlineData("[[[[6,6],[0,6]],[[6,7],[7,7]]],[[[7,7],[7,7]],[[7,8],[8,9]]]]", 3816)]
+        [InlineData("[[10,[11,12]],20]", 1321)]
         public void Day18_Magnitude_Tests(string input, long expected)
         {
             var day = new Day18();
