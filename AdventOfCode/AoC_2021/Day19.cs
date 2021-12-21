@@ -53,7 +53,7 @@ namespace AoC_2021
                     .First(s => new[] { s.ToArray()[0].BeaconPairs, s.ToArray()[1].BeaconPairs }
                                                 .CartesianProduct()
                                                     .Select(x => x.ToArray())
-                                                    .Count(x => OffsetsEqual(x[0].Offsets, x[1].Offsets)) >= 12).ToArray();
+                                                    .Count(x => Transform(x[0].Offsets, x[1].Offsets, (1,1,1)) != null) >= 12).ToArray();
 
                 var matchedScanner = mappedScanners.Contains(mappedPair[0]) ? mappedPair[1] : mappedPair[0];
                 var mappedScanner = mappedScanners.Contains(mappedPair[0]) ? mappedPair[0] : mappedPair[1];
@@ -62,25 +62,24 @@ namespace AoC_2021
 
                 var matchingBeacons = new[] { mappedScanner.BeaconPairs, matchedScanner.BeaconPairs }
                                             .CartesianProduct()
-                                            .Where(x => OffsetsEqual(x.ToArray()[0].Offsets, x.ToArray()[1].Offsets))
+                                            .Where(x => Transform(x.ToArray()[0].Offsets, x.ToArray()[1].Offsets, (0,0,0)) != null)
                                             .ToList();
 
                 var l0 = matchingBeacons.First().ToArray();
-                var l1 = matchingBeacons.Skip(1).First(mb => mb.Any(b => b.BeaconA == l0[0].BeaconA)).ToArray();
 
-                Beacon b0 = null;
-                Beacon b1 = null;
+                var offset1 = CloneOffset(l0[0].Offsets);
+                var offset2 = CloneOffset(l0[1].Offsets);
 
-                if (l0[0].BeaconA == l1[0].BeaconA)
+                foreach (var beacon in matchedScanner.Beacons)
                 {
-                    b0 = l0[0].BeaconA;
-                    b1 = l0[1].BeaconA;
+                    beacon.SetPosition(Transform(offset2, offset1, beacon.Position));
                 }
 
-                //need to figure out beacon rotation
+                var translation = new BeaconPairs(new[] { l0[0].BeaconA, l0[1].BeaconA });
 
-                var offset = new BeaconPairs(b0, b1).Offsets;
-                matchedScanner.SetOffset(offset);
+                matchedScanner.SetOffset(translation.Offsets);
+
+                 //matchedScanner.SetOffset((beaconOffset.Value.x + b0.Position.X, beaconOffset.Value.y + b0.Position.Y, beaconOffset.Value.z + b0.Position.Z));
 
                 mappedScanners.Add(matchedScanner);
                 mappedBeacons.AddRange(matchedScanner.Beacons);
@@ -91,14 +90,19 @@ namespace AoC_2021
             return mappedBeacons.Count();
         }
 
+        public (int x, int y, int z) CloneOffset((int, int, int) offset)
+        {
+            return new (offset.Item1, offset.Item2, offset.Item3);
+        }
+
         public bool OffsetsEqual((int, int, int) o1, (int, int, int) o2)
         {
-            var x1 = Math.Abs(o1.Item1);
-            var x2 = Math.Abs(o2.Item1);
-            var y1 = Math.Abs(o1.Item2);
-            var y2 = Math.Abs(o2.Item2);
-            var z1 = Math.Abs(o1.Item3);
-            var z2 = Math.Abs(o2.Item3);
+            var x1 = o1.Item1;
+            var x2 = o2.Item1;
+            var y1 = o1.Item2;
+            var y2 = o2.Item2;
+            var z1 = o1.Item3;
+            var z2 = o2.Item3;
 
             if (o1 == o2)
             {
@@ -115,6 +119,269 @@ namespace AoC_2021
             }
             return false;
         }
+
+        public (int x, int y, int z)? Transform((int x, int y, int z) l0, (int x, int y, int z) l1, (int x, int y, int z) b)
+        {
+            int? X = null, Y = null, Z = null;
+            if (l0.x == l1.x)
+            {
+                X = b.x;
+                if (l0.y == l1.y)
+                {
+                    Y = b.y;
+                    if (l0.z == l1.z)
+                    {
+                        Z = b.z;
+                    }
+                }
+                else if (l0.y == -l1.y)
+                {
+                    Y = -b.y;
+                    if (l0.z == -l1.z)
+                    {
+                        Z = -b.z;
+                    }
+                }
+                else if (l0.y == l1.z)
+                {
+                    Z = b.y;
+                    if (l0.z == -l1.y)
+                    {
+                        Y = -b.z;
+                    }
+                }
+                else if (l0.y == -l1.z)
+                {
+                    Z = b.y;
+                    if (l0.z == l1.y)
+                    {
+                        Y = b.z;
+                    }
+                }
+            }
+            else if (l0.x == -l1.x)
+            {
+                X = -b.x;
+                if (l0.y == l1.y)
+                {
+                    Y = b.y;
+                    if (l0.z == -l1.z)
+                    {
+                        Z = -b.z;
+                    }
+                }
+                else if (l0.y == -l1.y)
+                {
+                    Y = -b.y;
+                    if (l0.z == l1.z)
+                    {
+                        Z = b.z;
+                    }
+                }
+                else if (l0.y == l1.z)
+                {
+                    Z = b.y;
+                    if (l0.z == l1.y)
+                    {
+                        Y = b.z;
+                    }
+                }
+                else if (l0.y == -l1.z)
+                {
+                    Z = -b.y;
+                    if (l0.z == -l1.y)
+                    {
+                        Y = -b.z;
+                    }
+                }
+            }
+            else if (l0.x == l1.y)
+            {
+                Y = b.x;
+                if (l0.y == l1.x)
+                {
+                    X = b.y;
+                    if (l0.z == -l1.z)
+                    {
+                        Z = -b.z;
+                    }
+                }
+                else if (l0.y == -l1.x)
+                {
+                    X = -b.y;
+                    if (l0.z == l1.z)
+                    {
+                        Z = b.z;
+                    }
+                }
+                else if (l0.y == l1.z)
+                {
+                    Z = b.y;
+                    if (l0.z == l1.x)
+                    {
+                        X = b.z;
+                    }
+                }
+                else if (l0.y == -l1.z)
+                {
+                    Z = -b.y;
+                    if (l0.z == -l1.x)
+                    {
+                        X = -b.z;
+                    }
+                }
+            }
+            else if (l0.x == -l1.y)
+            {
+                Y = -b.x;
+                if (l0.y == l1.x)
+                {
+                    X = b.y;
+                    if (l0.z == l1.z)
+                    {
+                        Z = b.z;
+                    }
+                }
+                else if (l0.y == -l1.x)
+                {
+                    X = -b.y;
+                    if (l0.z == -l1.z)
+                    {
+                        Z = -b.z;
+                    }
+                }
+                else if (l0.y == l1.z)
+                {
+                    Z = b.y;
+                    if (l0.z == -l1.x)
+                    {
+                        X = -b.z;
+                    }
+                }
+                else if (l0.y == -l1.z)
+                {
+                    Z = -b.y;
+                    if (l0.z == l1.x)
+                    {
+                        X = b.z;
+                    }
+                }
+            }
+            else if (l0.x == l1.z)
+            {
+                Z = b.x;
+                if (l0.y == l1.y)
+                {
+                    Y = b.y;
+                    if (l0.z == -l1.x)
+                    {
+                        X = -b.z;
+                    }
+                }
+                else if (l0.y == -l1.y)
+                {
+                    Y = -b.y;
+                    if (l0.z == l1.x)
+                    {
+                        X = b.z;
+                    }
+                }
+                else if (l0.y == l1.x)
+                {
+                    X = b.y;
+                    if (l0.z == l1.y)
+                    {
+                        Y = b.z;
+                    }
+                }
+                else if (l0.y == -l1.x)
+                {
+                    X = -b.y;
+                    if (l0.z == -l1.y)
+                    {
+                        Y = -b.z;
+                    }
+                }
+            }
+            else if (l0.x == -l1.z)
+            {
+                Z = -b.x;
+                if (l0.y == l1.y)
+                {
+                    Y = b.y;
+                    if (l0.z == l1.x)
+                    {
+                        X = b.z;
+                    }
+                }
+                else if (l0.y == -l1.y)
+                {
+                    Y = -b.y;
+                    if (l0.z == -l1.x)
+                    {
+                        X = -b.z;
+                    }
+                }
+                else if (l0.y == l1.x)
+                {
+                    X = b.y;
+                    if (l0.z == -l1.y)
+                    {
+                        Y = -b.z;
+                    }
+                }
+                else if (l0.y == -l1.x)
+                {
+                    X = -b.y;
+                    if (l0.z == l1.y)
+                    {
+                        Y = b.z;
+                    }
+                }
+            }
+
+
+            if (X.HasValue && Y.HasValue && Z.HasValue)
+            {
+                return (X.Value, Y.Value, Z.Value);
+            }
+            return null;
+        }
+
+        List<Func<(int x, int y, int z), (int x, int y, int z), (int x, int y, int z)?>> Transformations = new() {
+            (b1, b2) =>
+            {
+                if (b1.x == b2.x && b1.y == b2.y && b1.z == b2.z)
+                {
+                    return b1;
+                }
+                return null;
+            },
+            (b1, b2) =>
+            {
+                if (b1.x == b2.x && b1.y == b2.z && b1.z == -b2.y)
+                {
+                    return (b2.x, b2.z, -b2.y);
+                }
+                return null;
+            },
+            (b1, b2) =>
+            {
+                if (b1.x == b2.x && b1.y == -b2.y && b1.z == -b2.z)
+                {
+                    return (b2.x, -b2.y, -b2.z);
+                }
+                return null;
+            },
+            (b1, b2) =>
+            {
+                if (b1.x == b2.x && b1.y == -b2.z && b1.z == b2.y)
+                {
+                    return (b2.x, -b2.z, b2.y);
+                }
+                return null;
+            },
+        };
 
         public long B(List<string> inputs)
         {
@@ -218,6 +485,24 @@ namespace AoC_2021
             Y = nums[1];
             Z = nums[2];
             Id = id;
+        }
+
+        public Beacon((int x, int y, int z)? b)
+        {
+            X = b?.x ?? 1;
+            Y = b?.y ?? 1;
+            Z = b?.z ?? 1;
+            Scanner = new Scanner();
+        }
+
+        public void SetPosition((int x, int y, int z)? pos)
+        {
+            if (pos.HasValue)
+            {
+                X = pos.Value.x;
+                Y = pos.Value.y;
+                Z = pos.Value.z;
+            }
         }
 
         public void ApplyOffset((int x, int y, int z) offset)
