@@ -53,7 +53,7 @@ namespace AoC_2021
                     .First(s => new[] { s.ToArray()[0].BeaconPairs, s.ToArray()[1].BeaconPairs }
                                                 .CartesianProduct()
                                                     .Select(x => x.ToArray())
-                                                    .Count(x => Transform(x[0].Offsets, x[1].Offsets, (1,1,1)) != null) >= 12).ToArray();
+                                                    .Count(x => Transform(x, (1,1,1)) != null) >= 13).ToArray();
 
                 var matchedScanner = mappedScanners.Contains(mappedPair[0]) ? mappedPair[1] : mappedPair[0];
                 var mappedScanner = mappedScanners.Contains(mappedPair[0]) ? mappedPair[0] : mappedPair[1];
@@ -62,7 +62,7 @@ namespace AoC_2021
 
                 var matchingBeacons = new[] { mappedScanner.BeaconPairs, matchedScanner.BeaconPairs }
                                             .CartesianProduct()
-                                            .Where(x => Transform(x.ToArray()[0].Offsets, x.ToArray()[1].Offsets, (0,0,0)) != null)
+                                            .Where(x => Transform(x.ToArray(), (1,1,1)) != null)
                                             .ToList();
 
                 var l0 = matchingBeacons.First().ToArray();
@@ -118,6 +118,15 @@ namespace AoC_2021
                 return true;
             }
             return false;
+        }
+
+        public (int x, int y, int z)? Transform(BeaconPairs[] pairs, (int x, int y, int z) b)
+        {
+            if (pairs[0].Length == pairs[1].Length)
+            {
+                return Transform(pairs[0].Offsets, pairs[1].Offsets, b);
+            }
+            return null;
         }
 
         public (int x, int y, int z)? Transform((int x, int y, int z) l0, (int x, int y, int z) l1, (int x, int y, int z) b)
@@ -348,41 +357,6 @@ namespace AoC_2021
             return null;
         }
 
-        List<Func<(int x, int y, int z), (int x, int y, int z), (int x, int y, int z)?>> Transformations = new() {
-            (b1, b2) =>
-            {
-                if (b1.x == b2.x && b1.y == b2.y && b1.z == b2.z)
-                {
-                    return b1;
-                }
-                return null;
-            },
-            (b1, b2) =>
-            {
-                if (b1.x == b2.x && b1.y == b2.z && b1.z == -b2.y)
-                {
-                    return (b2.x, b2.z, -b2.y);
-                }
-                return null;
-            },
-            (b1, b2) =>
-            {
-                if (b1.x == b2.x && b1.y == -b2.y && b1.z == -b2.z)
-                {
-                    return (b2.x, -b2.y, -b2.z);
-                }
-                return null;
-            },
-            (b1, b2) =>
-            {
-                if (b1.x == b2.x && b1.y == -b2.z && b1.z == b2.y)
-                {
-                    return (b2.x, -b2.z, b2.y);
-                }
-                return null;
-            },
-        };
-
         public long B(List<string> inputs)
         {
 
@@ -406,6 +380,7 @@ namespace AoC_2021
         public Scanner()
         {
             Beacons = new List<Beacon>();
+            BeaconPairs = new();
         }
 
         public void SetOffset((int x, int y, int z) offset)
@@ -460,6 +435,8 @@ namespace AoC_2021
         }
 
         public (int, int, int) Offsets => (BeaconA.X - BeaconB.X, BeaconA.Y - BeaconB.Y, BeaconA.Z - BeaconB.Z);
+
+        public double Length => Math.Sqrt((Math.Pow(BeaconA.X - BeaconB.X, 2) + Math.Pow(BeaconA.Y - BeaconB.Y, 2) + Math.Pow(BeaconA.Z - BeaconB.Z, 2)));
 
         public override string ToString()
         {
