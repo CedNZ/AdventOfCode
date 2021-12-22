@@ -152,7 +152,7 @@ namespace Tests
             yield return new object[] { "15", () => new Day15(), 40, true };
             yield return new object[] { "15.1", () => new Day15(), 40, true };
             yield return new object[] { "15.2", () => new Day15(), 10, true };
-            yield return new object[] { "15.3", () => new Day15(), 12, true };/**/
+            yield return new object[] { "15.3", () => new Day15(), 12, true };/*
             yield return new object[] { "15", () => new Day15(), 315, false };
             yield return new object[] { "17", () => new Day17(), 45, true };
             yield return new object[] { "17", () => new Day17(), 112, false };
@@ -160,7 +160,8 @@ namespace Tests
             yield return new object[] { "18", () => new Day18(), 3993, false };
             yield return new object[] { "19", () => new Day19(), 79, true };
             //yield return new object[] { "19.1", () => new Day19(), 3, true }; // count >= 3
-            yield return new object[] { "19", () => new Day19(), 3621, false };
+            yield return new object[] { "19", () => new Day19(), 3621, false }; /**/
+            yield return new object[] { "20", () => new Day20(), 35, true };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
