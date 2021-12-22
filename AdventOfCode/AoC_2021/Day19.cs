@@ -10,8 +10,20 @@ namespace AoC_2021
     public class Day19 : IDay<string>
     {
         List<Scanner> _scanners;
+        List<Scanner> _mappedScanners;
+        List<Beacon> _beacons;
 
         public long A(List<string> inputs)
+        {
+            if (_scanners == null || _beacons == null)
+            {
+                MapScanners(inputs);
+            }
+
+            return _beacons.Count();
+        }
+
+        private void MapScanners(List<string> inputs)
         {
             _scanners = new List<Scanner>();
             Scanner scanner = null;
@@ -42,27 +54,27 @@ namespace AoC_2021
             mainScanner.Y = 0;
             mainScanner.Z = 0;
 
-            var mappedScanners = new List<Scanner> { mainScanner };
-            var mappedBeacons = mainScanner.Beacons.ToList();
+            _mappedScanners = new List<Scanner> { mainScanner };
+            _beacons = mainScanner.Beacons.ToList();
             _scanners.Remove(mainScanner);
 
             while (_scanners.Any())
             {
-                var mappedPair = new[] { _scanners, mappedScanners }
+                var mappedPair = new[] { _scanners, _mappedScanners }
                     .CartesianProduct()
                     .First(s => new[] { s.ToArray()[0].BeaconPairs, s.ToArray()[1].BeaconPairs }
                                                 .CartesianProduct()
                                                     .Select(x => x.ToArray())
-                                                    .Count(x => Transform(x, (1,1,1)) != null) >= 13).ToArray();
+                                                    .Count(x => Transform(x, (1, 1, 1)) != null) >= 13).ToArray();
 
-                var matchedScanner = mappedScanners.Contains(mappedPair[0]) ? mappedPair[1] : mappedPair[0];
-                var mappedScanner = mappedScanners.Contains(mappedPair[0]) ? mappedPair[0] : mappedPair[1];
+                var matchedScanner = _mappedScanners.Contains(mappedPair[0]) ? mappedPair[1] : mappedPair[0];
+                var mappedScanner = _mappedScanners.Contains(mappedPair[0]) ? mappedPair[0] : mappedPair[1];
 
                 _scanners.Remove(matchedScanner);
 
                 var matchingBeacons = new[] { mappedScanner.BeaconPairs, matchedScanner.BeaconPairs }
                                             .CartesianProduct()
-                                            .Where(x => Transform(x.ToArray(), (1,1,1)) != null)
+                                            .Where(x => Transform(x.ToArray(), (1, 1, 1)) != null)
                                             .ToList();
 
                 var l0 = matchingBeacons.First().ToArray();
@@ -79,15 +91,13 @@ namespace AoC_2021
 
                 matchedScanner.SetOffset(translation.Offsets);
 
-                 //matchedScanner.SetOffset((beaconOffset.Value.x + b0.Position.X, beaconOffset.Value.y + b0.Position.Y, beaconOffset.Value.z + b0.Position.Z));
+                //matchedScanner.SetOffset((beaconOffset.Value.x + b0.Position.X, beaconOffset.Value.y + b0.Position.Y, beaconOffset.Value.z + b0.Position.Z));
 
-                mappedScanners.Add(matchedScanner);
-                mappedBeacons.AddRange(matchedScanner.Beacons);
+                _mappedScanners.Add(matchedScanner);
+                _beacons.AddRange(matchedScanner.Beacons);
 
-                mappedBeacons = mappedBeacons.GroupBy(x => x.Position).Select(g => g.First()).ToList();
+                _beacons = _beacons.GroupBy(x => x.Position).Select(g => g.First()).ToList();
             }
-
-            return mappedBeacons.Count();
         }
 
         public (int x, int y, int z) CloneOffset((int, int, int) offset)
@@ -359,8 +369,23 @@ namespace AoC_2021
 
         public long B(List<string> inputs)
         {
+            if (_scanners == null || _beacons == null)
+            {
+                MapScanners(inputs);
+            }
 
-            return default;
+            var maxDistance = 0L;
+
+            foreach (var scannerPair in _mappedScanners.CartesianPairs())
+            {
+                var s1 = scannerPair[0];
+                var s2 = scannerPair[1];
+
+                var distance = (s1.X - s2.X) + (s1.Y - s2.Y) + (s1.Z - s2.Z);
+                maxDistance = Math.Max(maxDistance, distance);
+            }
+
+            return maxDistance;
         }
 
         public List<string> SetupInputs(string[] inputs)

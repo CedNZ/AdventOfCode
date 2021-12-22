@@ -160,6 +160,7 @@ namespace Tests
             yield return new object[] { "18", () => new Day18(), 3993, false };
             yield return new object[] { "19", () => new Day19(), 79, true };
             //yield return new object[] { "19.1", () => new Day19(), 3, true }; // count >= 3
+            yield return new object[] { "19", () => new Day19(), 3621, false };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
