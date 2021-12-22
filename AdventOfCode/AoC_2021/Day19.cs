@@ -161,7 +161,7 @@ namespace AoC_2021
                 }
                 else if (l0.y == -l1.z)
                 {
-                    Z = b.y;
+                    Z = -b.y;
                     if (l0.z == l1.y)
                     {
                         Y = b.z;
