@@ -72,11 +72,11 @@ namespace AoC_2021
             {
                 for (int j = pixel.X - 1; j <= pixel.X + 1; j++)
                 {
-                    if (_litPixels.Any(p => p.X == j && p.Y == i)) //another flag here for pass 2
+                    if (_litPixels.Any(p => p.X == j && p.Y == i))
                     {
                         num += 1 << position;
                     }
-                    else if (evenPass && _imageEnhancement[0] == '#'  && ((i < 2 || j < 2) || (i > maxY - 2 || j > maxX - 2)))
+                    else if (evenPass && _imageEnhancement[0] == '#' && ((i < 2 || j < 2) || (i > maxY - 2 || j > maxX - 2)))
                     {
                         num += 1 << position;
                     }
@@ -115,7 +115,27 @@ namespace AoC_2021
 
         public long B(List<string> inputs)
         {
-            return default;
+            _imageEnhancement = inputs[0];
+            _litPixels = new();
+
+            for (int i = 2; i < inputs.Count; i++)
+            {
+                for (int j = 0; j < inputs[i].Count(); j++)
+                {
+                    if (inputs[i][j] == '#')
+                    {
+                        _litPixels.Add(new Pixel(j, i - 2));
+                    }
+                }
+            }
+
+            for (int i = 0; i < 50; i++)
+            {
+                _litPixels = Enhance();
+                Console.WriteLine($"Pass {i}/50 complete    {i*2}%");
+            }
+
+            return _litPixels.Count();
         }
 
         public List<string> SetupInputs(string[] inputs)
