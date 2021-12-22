@@ -79,8 +79,42 @@ namespace AoC_2021
 
         public long B(List<string> inputs)
         {
-            return default;
+            _player1Position = int.Parse(inputs.First().Last().ToString());
+            _player2Position = int.Parse(inputs.Last().Last().ToString());
+
+            Dictionary<int, (long, int)> player1 = new ();
+            Dictionary<int, (long, int)> player2 = new ();
+
+            player1.Add(0, (1, _player1Position));
+            player2.Add(0, (1, _player2Position));
+
+            while (player1.Max(p => p.Key) < 21 && player2.Max(p => p.Key) < 21)
+            {
+
+            }
         }
+
+
+        //dictionary: Score, (Universes, Position)
+        public Dictionary<int, (long, int)> RollQuantumDice(Dictionary<int, (long, int)> player)
+        {
+            Dictionary<int, (long, int)> newPositions = new();
+            foreach (var item in player)
+            {
+                
+            }
+        }
+
+        /*********************
+         Steps -> Count
+         3  ->  1
+         4  ->  3
+         5  ->  6
+         6  ->  7
+         7  ->  6
+         8  ->  3
+         9  ->  1
+         *********************/
 
         public List<string> SetupInputs(string[] inputs)
         {
