@@ -29,7 +29,14 @@ namespace Tests
                 result = day.B(inputs);
             }
 
-            result.Should().Be(expectedAnswer);
+            if (result is long r && expectedAnswer is long e)
+            {
+                (r.ToString("N")).Should().Be(e.ToString("N"));
+            }
+            else
+            {
+                result.Should().Be(expectedAnswer);
+            }
         }
 
         [Fact]

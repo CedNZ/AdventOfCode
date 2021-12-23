@@ -82,43 +82,16 @@ namespace AoC_2021
             _player1Position = int.Parse(inputs.First().Last().ToString());
             _player2Position = int.Parse(inputs.Last().Last().ToString());
 
-            Dictionary<int, (long universeCount, int position)> player1 = new ();
-            Dictionary<int, (long universeCount, int position)> player2 = new ();
+            Dictionary<Game, long> games = new ();
 
-            player1.Add(0, (1, _player1Position));
-            player2.Add(0, (1, _player2Position));
+            games.Add(new Game(_player1Position, _player2Position), 1);
 
             var player1Wins = 0L;
             var player2Wins = 0L;
 
-            bool player1Turn = true;
-
-            while (player1.Any() || player2.Any())
+            while (games.Any())
             {
-                if (player1Turn)
-                {
-                    player1 = RollQuantumDice(player1);
-                    foreach (var item in player1)
-                    {
-                        if (item.Key >= 21)
-                        {
-                            player1Wins += item.Value.universeCount;
-                        }
-                    }
-                }
-                else
-                {
-                    player2 = RollQuantumDice(player2);
-                    foreach (var item in player2)
-                    {
-                        if (item.Key >= 21)
-                        {
-                            player2Wins += item.Value.universeCount;
-                        }
-                    }
-                }
-
-                player1Turn = !player1Turn;
+                games = RollQuantumDice(games, ref player1Wins, ref player2Wins);
             }
 
             return Math.Max(player1Wins, player2Wins);
@@ -126,18 +99,14 @@ namespace AoC_2021
 
 
         //dictionary: Score, (Universes, Position)
-        public Dictionary<int, (long universeCount, int position)> RollQuantumDice(Dictionary<int, (long universeCount, int position)> player)
+        public Dictionary<Game, long> RollQuantumDice(Dictionary<Game, long> games, ref long playerOneWins, ref long playerTwoWins)
         {
-            Dictionary<int, (long universeCount, int position)> newPositions = new();
-            foreach (var item in player)
+            Dictionary<Game, long> newGames = new();
+            foreach (var game in games)
             {
-                if (item.Key >= 21)
+                foreach (var roll in GetRolls(game.Value, game.Key.PlayerOnePosition))
                 {
-                    continue;
-                }
-                foreach (var roll in GetRolls(item.Value))
-                {
-                    var score = item.Key;
+                    var score = game.Key.PlayerOneScore;
                     var newPosition = roll.position;
                     if (newPosition > 10)
                     {
@@ -150,30 +119,59 @@ namespace AoC_2021
 
                     score += newPosition;
 
-                    if (newPositions.ContainsKey(score))
+                    if (score >= 21)
                     {
-                        var value = newPositions[score];
-                        newPositions[score] = (value.universeCount * roll.universeCount, roll.position);
+                        playerOneWins += roll.universeCount;
+                        continue;
                     }
-                    else
+
+                    foreach (var player2Roll in GetRolls(roll.universeCount, game.Key.PlayerTwoPosition))
                     {
-                        newPositions.Add(score, (roll.universeCount, newPosition));
+                        var score2 = game.Key.PlayerTwoScore;
+                        var newPosition2 = player2Roll.position;
+                        if (newPosition2 > 10)
+                        {
+                            newPosition2 %= 10;
+                            if (newPosition2 == 0)
+                            {
+                                newPosition2 = 10;
+                            }
+                        }
+
+                        score2 += newPosition2;
+
+                        if (score2 >= 21)
+                        {
+                            playerTwoWins += player2Roll.universeCount;
+                            continue;
+                        }
+
+                        var newGame = game.Key with { PlayerOnePosition = newPosition, PlayerOneScore = score, PlayerTwoPosition = newPosition2, PlayerTwoScore = score2 };
+
+                        if (newGames.ContainsKey(newGame))
+                        {
+                            newGames[newGame] += player2Roll.universeCount;
+                        }
+                        else
+                        {
+                            newGames.Add(newGame, player2Roll.universeCount);
+                        }
                     }
                 }
             }
 
-            return newPositions;
+            return newGames;
         }
 
-        public IEnumerable<(long universeCount, int position)> GetRolls((long universeCount, int position) playerPostion)
+        public IEnumerable<(long universeCount, int position)> GetRolls(long universeCount, int position)
         {
-            yield return (playerPostion.universeCount * 1, playerPostion.position + 3);
-            yield return (playerPostion.universeCount * 3, playerPostion.position + 4);
-            yield return (playerPostion.universeCount * 6, playerPostion.position + 5);
-            yield return (playerPostion.universeCount * 7, playerPostion.position + 6);
-            yield return (playerPostion.universeCount * 6, playerPostion.position + 7);
-            yield return (playerPostion.universeCount * 3, playerPostion.position + 8);
-            yield return (playerPostion.universeCount * 1, playerPostion.position + 9);
+            yield return (universeCount * 1, position + 3);
+            yield return (universeCount * 3, position + 4);
+            yield return (universeCount * 6, position + 5);
+            yield return (universeCount * 7, position + 6);
+            yield return (universeCount * 6, position + 7);
+            yield return (universeCount * 3, position + 8);
+            yield return (universeCount * 1, position + 9);
         }
 
         /*********************
@@ -191,5 +189,21 @@ namespace AoC_2021
         {
             return inputs.ToList();
         }
+    }
+
+    public readonly struct Game
+    {
+        public Game(int pos1, int pos2)
+        {
+            PlayerOnePosition = pos1;
+            PlayerTwoPosition = pos2;
+            PlayerOneScore = 0;
+            PlayerTwoScore = 0;
+        }
+
+        public int PlayerOneScore { get; init; }
+        public int PlayerTwoScore { get; init; }
+        public int PlayerOnePosition { get; init; }
+        public int PlayerTwoPosition { get; init; }
     }
 }
