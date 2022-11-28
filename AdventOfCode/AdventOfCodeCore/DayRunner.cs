@@ -1,14 +1,55 @@
 ﻿using System.Diagnostics;
+using System.Net;
+using System.Net.Mime;
 
 namespace AdventOfCodeCore
 {
     public class DayRunner
     {
+        private HttpClient _httpClient;
+        private int _year;
+
+        public DayRunner(HttpClient httpClient, int year)
+        {
+            _httpClient = httpClient;
+            _year = year;
+        }
+
+        public async Task DownloadInput(int day)
+        {
+            if (Directory.Exists($@".\Input\{_year}") is false)
+            {
+                Directory.CreateDirectory($@".\Input\{_year}");
+            }
+
+            if (File.Exists($@".\Input\{_year}\day{day}.txt") is false)
+            {
+                var response = await _httpClient.GetStringAsync($"https://adventofcode.com/{_year}/day/{day}/input");
+                File.WriteAllText($@".\Input\{_year}\day{day}.txt", response);
+            }
+        }
+
+        public async Task SubmitAnswer(DayResult dayResult)
+        {
+            var content = new MultipartFormDataContent
+            {
+                { new StringContent(dayResult.Day.ToString()), "level" },
+            };
+            if (dayResult.OutputB == default)
+            {
+                content.Add(new StringContent(dayResult.OutputA.ToString()), "answer");
+            }
+
+            var response = await _httpClient.PostAsync($"https://adventofcode.com/{_year}/day/{dayResult.Day}/answer", content);
+            var body = await response.Content.ReadAsStringAsync();
+
+        }
+
         public DayResult RunDay<TIn, TOut>(int dayNum, Func<IDayOut<TIn, TOut>> GetDay)
         {
             IDayOut<TIn, TOut> day = GetDay();
 
-            var inputsA = day.SetupInputs(File.ReadAllLines($".\\Input\\day{dayNum}.txt"));
+            var inputsA = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{dayNum}.txt"));
             var inputsB = inputsA.ToList();
 
             var stopwatch = Stopwatch.StartNew();
