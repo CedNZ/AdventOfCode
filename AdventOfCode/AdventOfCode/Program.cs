@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AdventOfCodeCore;
+using AoC_2022;
 
 namespace AdventOfCode
 {
@@ -29,7 +30,8 @@ namespace AdventOfCode
                 {
                     2018 => new AoC_2018.AoC_2018(new DayRunner(httpClient, yearNum)),
                     2021 => new AoC_2021.AoC_2021(new DayRunner(httpClient, yearNum)),
-                    _ => new AoC_2021.AoC_2021(new DayRunner(httpClient, yearNum)),
+                    2022 => new AoC_2022.AoC_2022(new DayRunner(httpClient, yearNum)),
+                    _ => new AoC_2022.AoC_2022(new DayRunner(httpClient, yearNum)),
                 };
 
                 Console.WriteLine("Enter day number: ");
