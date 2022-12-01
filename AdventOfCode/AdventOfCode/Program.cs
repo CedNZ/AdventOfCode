@@ -14,7 +14,7 @@ namespace AdventOfCode
                 new Cookie
                 (
                     "session",
-                    "",
+                    "53616c7465645f5f3e6b8ab2e5cae1b8817808907c869343934d17a8adf484a8f16d56e025d9e8b63ea01e494434c23cb102972d7387707c06a77f48a6aaacb0",
                     "/",
                     "adventofcode.com"
                 ));

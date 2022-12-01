@@ -11,13 +11,11 @@ namespace AoC_2022
 
         public override async Task<DayResult> RunDayAsync(int day)
         {
-            //var dayFunc = day switch
-            //{
-            //    1 => () => day,
-            //    _ => () => day
-            //};
-            //return RunDay(day, null);
-            throw new NotImplementedException();
+            return day switch
+            {
+                1 => await RunDayAsync(day, () => new Day1()),
+                _ => await RunDayAsync(day, () => new Day1()),
+            };
         }
     }
 }
