@@ -14,6 +14,8 @@ namespace AoC_2022
             return day switch
             {
                 1 => await RunDayAsync(day, () => new Day1()),
+                2 => await RunDayAsync(day, () => new Day2()),
+                3 => await RunDayAsync(day, () => new Day3()),
                 _ => await RunDayAsync(day, () => new Day1()),
             };
         }

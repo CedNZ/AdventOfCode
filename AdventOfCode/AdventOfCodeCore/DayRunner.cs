@@ -24,8 +24,18 @@ namespace AdventOfCodeCore
 
             if (File.Exists($@".\Input\{_year}\day{day}.txt") is false)
             {
-                var response = await _httpClient.GetStringAsync($"https://adventofcode.com/{_year}/day/{day}/input");
-                File.WriteAllText($@".\Input\{_year}\day{day}.txt", response);
+                var request = new HttpRequestMessage() 
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://adventofcode.com/{_year}/day/{day}/input"),
+                };
+                request.Headers.UserAgent.ParseAdd($".NET 7.0 (+via https://github.com/CedNZ/AdventOfCode by cbourneville@gmail.com)");
+
+                var response = await _httpClient.SendAsync(request);
+
+                var body = await response.Content.ReadAsStringAsync();
+
+                File.WriteAllText($@".\Input\{_year}\day{day}.txt", body);
             }
         }
 
@@ -40,8 +50,8 @@ namespace AdventOfCodeCore
                 content.Add(new StringContent(dayResult.OutputA.ToString()), "answer");
             }
 
-            var response = await _httpClient.PostAsync($"https://adventofcode.com/{_year}/day/{dayResult.Day}/answer", content);
-            var body = await response.Content.ReadAsStringAsync();
+            //var response = await _httpClient.PostAsync($"https://adventofcode.com/{_year}/day/{dayResult.Day}/answer", content);
+            //var body = await response.Content.ReadAsStringAsync();
 
         }
 
