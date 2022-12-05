@@ -67,19 +67,33 @@ namespace AdventOfCodeCore
             var outputA = day.A(inputsA);
             var runtimeA = stopwatch.Elapsed;
 
-            var outputB = day.B(inputsB);
-            var runtimeB = stopwatch.Elapsed - runtimeA;
-
-            stopwatch.Stop();
-
-            return new DayResult
+            try
             {
-                Day = dayNum,
-                OutputA = outputA,
-                OutputB = outputB,
-                RuntimeA = runtimeA,
-                RuntimeB = runtimeB
-            };
+                var outputB = day.B(inputsB);
+                var runtimeB = stopwatch.Elapsed - runtimeA;
+
+                return new DayResult
+                {
+                    Day = dayNum,
+                    OutputA = outputA,
+                    OutputB = outputB,
+                    RuntimeA = runtimeA,
+                    RuntimeB = runtimeB
+                };
+            } catch (NotImplementedException)
+            {
+
+                return new DayResult
+                {
+                    Day = dayNum,
+                    OutputA = outputA,
+                    RuntimeA = runtimeA,
+                };
+            }
+            finally
+            {
+                stopwatch.Stop();
+            }
         }
     }
 
