@@ -7,33 +7,28 @@ namespace AoC_2022
         public long A(List<string> inputs)
         {
             var line = inputs[0];
-            var i = 4;
-            for (; i < line.Length; i++)
+            return FindIndex(line, 4);
+        }
+
+        public int FindIndex(string input, int size)
+        {
+            var i = 0;
+            for (; i < input.Length - size; i++)
             {
-                if (line[i] != line[i - 1] && line[i - 1] != line[i - 2] && line[i - 2] != line[i - 3]
-                    && line[i] != line[i - 2] && line[i] != line[i -3]
-                    && line[i - 1] != line[i - 3])
+                var chars = input.Skip(i).Take(size).Distinct();
+                if (chars.Count() == size)
                 {
                     break;
                 }
             }
-            return i + 1;
+            return i + size;
         }
 
         public long B(List<string> inputs)
         {
             var line = inputs[0];
 
-            var i = 0;
-            for (; i < line.Length - 14; i++)
-            {
-                var chars = line.Skip(i).Take(14).Distinct();
-                if (chars.Count() == 14)
-                {
-                    break;
-                }
-            }
-            return i + 14;
+            return FindIndex(line, 14);
         }
 
         public List<string> SetupInputs(string[] inputs)
