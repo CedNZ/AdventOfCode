@@ -30,12 +30,12 @@ namespace AoC_2022
                     }
                     else if (line[1] == "ls")
                     {
-                        i++;
-                        while (inputs[i][0] != "$")
+                        while (i < inputs.Count-1 && inputs[i+1][0] != "$")
                         {
+                            i++;
                             if (inputs[i][0] == "dir")
                             {
-                                if (CurrentDir.Files.Any(f => f.Name == inputs[i][1]))
+                                if (CurrentDir.Files.All(f => f.Name != inputs[i][1]))
                                 {
                                     var file = new File
                                     {
@@ -44,11 +44,12 @@ namespace AoC_2022
                                         Name = inputs[i][1]
                                     };
                                     CurrentDir.Files.Add(file);
+                                    AllFiles.Add(file);
                                 }
                             }
                             else
                             {
-                                if (CurrentDir.Files.Any(f => f.Name == inputs[i][1]))
+                                if (CurrentDir.Files.All(f => f.Name != inputs[i][1]))
                                 {
                                     var file = new File
                                     {
@@ -58,9 +59,9 @@ namespace AoC_2022
                                         Size = int.Parse(inputs[i][0])
                                     };
                                     CurrentDir.Files.Add(file);
+                                    AllFiles.Add(file);
                                 }
                             }
-                            i++;
                         }
                     }
                 }
@@ -106,6 +107,15 @@ namespace AoC_2022
             public List<File> Files { get; set; }
 
             public int TotalSize() => Size > 0 ? Size : Files.Sum(f => f.TotalSize());
+
+            public override string ToString()
+            {
+                if (Files is null)
+                {
+                    return $"{Size} {Name}";
+                }
+                return $"dir {Name} {TotalSize()}";
+            }
         }
     }
 }
