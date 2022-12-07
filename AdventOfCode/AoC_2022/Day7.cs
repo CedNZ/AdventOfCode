@@ -1,4 +1,5 @@
-﻿using AdventOfCodeCore;
+﻿using System.Drawing;
+using AdventOfCodeCore;
 
 namespace AoC_2022
 {
@@ -12,16 +13,68 @@ namespace AoC_2022
 
                 if (line[0] == "$")
                 {
-                    if ()
+                    if (line[1] == "cd")
+                    {
+                        if (line[2] == "/")
+                        {
+                            CurrentDir = _root;
+                        }
+                        else if (line[2] == "..")
+                        {
+                            CurrentDir = CurrentDir.Folder;
+                        }
+                        else
+                        {
+                            CurrentDir = CurrentDir.Files.Find(f => f.Name == line[2]);
+                        }
+                    }
+                    else if (line[1] == "ls")
+                    {
+                        i++;
+                        while (inputs[i][0] != "$")
+                        {
+                            if (inputs[i][0] == "dir")
+                            {
+                                if (CurrentDir.Files.Any(f => f.Name == inputs[i][1]))
+                                {
+                                    var file = new File
+                                    {
+                                        Files = new(),
+                                        Folder = CurrentDir,
+                                        Name = inputs[i][1]
+                                    };
+                                    CurrentDir.Files.Add(file);
+                                }
+                            }
+                            else
+                            {
+                                if (CurrentDir.Files.Any(f => f.Name == inputs[i][1]))
+                                {
+                                    var file = new File
+                                    {
+                                        Files = null,
+                                        Folder = CurrentDir,
+                                        Name = inputs[i][1],
+                                        Size = int.Parse(inputs[i][0])
+                                    };
+                                    CurrentDir.Files.Add(file);
+                                }
+                            }
+                            i++;
+                        }
+                    }
                 }
                 else
                 {
-
+                    System.Diagnostics.Debugger.Break();
                 }
             }
+
+            var limit = 100000;
+            return AllFiles.Where(f => f.TotalSize() < limit && f.Size == 0).Sum(f => f.TotalSize());
         }
 
-        File root = new File
+        static File _root = new File
         {
             Files = new(),
             Name = "root",
@@ -29,9 +82,13 @@ namespace AoC_2022
             Folder = null,
         };
 
-        public long B(List<string> inputs)
+        File CurrentDir { get; set; } = _root;
+
+        List<File> AllFiles { get; set; } = new();
+
+        public long B(List<string[]> inputs)
         {
-            throw new NotImplementedException();
+            return default;
         }
 
         public List<string[]> SetupInputs(string[] inputs)
@@ -47,6 +104,8 @@ namespace AoC_2022
             public File Folder { get; set; }
 
             public List<File> Files { get; set; }
+
+            public int TotalSize() => Size > 0 ? Size : Files.Sum(f => f.TotalSize());
         }
     }
 }
