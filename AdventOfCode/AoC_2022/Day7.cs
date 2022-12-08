@@ -7,6 +7,14 @@ namespace AoC_2022
     {
         public long A(List<string[]> inputs)
         {
+            BuildFS(inputs);
+
+            var limit = 100000;
+            return AllFiles.Where(f => f.TotalSize() < limit && f.Size == 0).Sum(f => f.TotalSize());
+        }
+
+        internal void BuildFS(List<string[]> inputs)
+        {
             for (int i = 0; i < inputs.Count(); i++)
             {
                 var line = inputs[i];
@@ -30,7 +38,7 @@ namespace AoC_2022
                     }
                     else if (line[1] == "ls")
                     {
-                        while (i < inputs.Count-1 && inputs[i+1][0] != "$")
+                        while (i < inputs.Count - 1 && inputs[i + 1][0] != "$")
                         {
                             i++;
                             if (inputs[i][0] == "dir")
@@ -70,9 +78,6 @@ namespace AoC_2022
                     System.Diagnostics.Debugger.Break();
                 }
             }
-
-            var limit = 100000;
-            return AllFiles.Where(f => f.TotalSize() < limit && f.Size == 0).Sum(f => f.TotalSize());
         }
 
         static File _root = new File
@@ -85,11 +90,40 @@ namespace AoC_2022
 
         File CurrentDir { get; set; } = _root;
 
-        List<File> AllFiles { get; set; } = new();
+        private static List<File> _allFiles;
+        List<File> AllFiles 
+        { 
+            get => _allFiles ??= new List<File>(); 
+            set
+            {
+                if (value is not null)
+                {
+                    _allFiles = value;
+                }
+            }
+        }
 
         public long B(List<string[]> inputs)
         {
-            return default;
+            if (AllFiles.Count == 0)
+            {
+                BuildFS(inputs);
+            }
+
+            var totalAvailable = 70_000_000;
+            var need = 30_000_000;
+
+            var taken = _root.TotalSize();
+            var unused = totalAvailable - taken;
+
+            var missing = need - unused;
+
+            var toDelete = AllFiles
+                .Where(x => x.Files != null)
+                .OrderBy(x => x.TotalSize())
+                .FirstOrDefault(x => x.TotalSize() > missing);
+
+            return toDelete.TotalSize();
         }
 
         public List<string[]> SetupInputs(string[] inputs)
