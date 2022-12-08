@@ -70,11 +70,12 @@ namespace Tests
     {
         public IEnumerator<object[]> GetEnumerator()
         {/*
-            /**/
+            /*
             yield return new object[] { "5", () => new Day5(), "CMZ", true };
             yield return new object[] { "5", () => new Day5(), "MCD", false };
             yield return new object[] { "7", () => new Day7(), 95437, true };
-            yield return new object[] { "7", () => new Day7(), 24933642, false };
+            yield return new object[] { "7", () => new Day7(), 24933642, false };/**/
+            yield return new object[] { "8", () => new Day8(), 21, true };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
