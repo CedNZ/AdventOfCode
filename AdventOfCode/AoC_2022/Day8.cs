@@ -1,4 +1,5 @@
-﻿using AdventOfCodeCore;
+﻿using System.Security.Cryptography.X509Certificates;
+using AdventOfCodeCore;
 
 namespace AoC_2022
 {
@@ -75,7 +76,60 @@ namespace AoC_2022
 
         public long B(List<int[]> inputs)
         {
-            throw new NotImplementedException();
+            var notEdge = ((int, int, int) x) => x.Item1 != 0 && x.Item1 != Rows -1
+                                                    && x.Item2 != 0 && x.Item2 != Cols -1;
+
+
+            var row = VisibleTrees.Where(notEdge).GroupBy(x => x.Item1).OrderBy(g => g.Count()).First().Key;
+            var col = VisibleTrees.Where(notEdge).GroupBy(x => x.Item2).OrderBy(g => g.Count()).First().Key;
+
+            var rowVisible = VisibleTrees.Where(notEdge).Where(x => x.Item1 == row).ToList();
+            var colVisible = VisibleTrees.Where(notEdge).Where(x => x.Item2 == col).ToList();
+
+            return rowVisible.Union(colVisible).Max(x => ScenicScore(inputs, x));
+        }
+
+        internal int ScenicScore(List<int[]> inputs, (int, int, int) tree)
+        {
+            var row = inputs[tree.Item1];
+            var col = inputs.Select(l => l[tree.Item2]).ToArray();
+
+            var (top, left, bottom, right) = (0,0,0,0);
+            for (int i = tree.Item2 + 1; i < row.Length; i++)
+            {
+                right++;
+                if (row[i] >= row[i-1])
+                {
+                    break;
+                }
+            }
+            for (int i = tree.Item2 - 1; i >= 0; i--)
+            {
+                left++;
+                if (row[i] >= row[i+1])
+                {
+                    break;
+                }
+            }
+
+            for (int i = tree.Item1 + 1; i < col.Length; i++)
+            {
+                bottom++;
+                if (col[i] >= col[i-1])
+                {
+                    break;
+                }
+            }
+            for (int i = tree.Item1 - 1; i >= 0; i--)
+            {
+                top++;
+                if (col[i] >= col[i+1])
+                {
+                    break;
+                }
+            }
+
+            return top * bottom * right * left;
         }
 
         public List<int[]> SetupInputs(string[] inputs)

@@ -76,6 +76,7 @@ namespace Tests
             yield return new object[] { "7", () => new Day7(), 95437, true };
             yield return new object[] { "7", () => new Day7(), 24933642, false };/**/
             yield return new object[] { "8", () => new Day8(), 21, true };
+            yield return new object[] { "8", () => new Day8(), 8, false };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
