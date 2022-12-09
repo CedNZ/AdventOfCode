@@ -21,6 +21,7 @@ namespace AoC_2022
                 6 => await RunDayAsync(day, () => new Day6()),
                 7 => await RunDayAsync(day, () => new Day7()),
                 8 => await RunDayAsync(day, () => new Day8()),
+                9 => await RunDayAsync(day, () => new Day9()),
                 _ => await RunDayAsync(day, () => new Day1()),
             };
         }
