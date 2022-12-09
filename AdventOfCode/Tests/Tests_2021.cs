@@ -42,7 +42,7 @@ namespace Tests
         [Fact]
         public void Day16Tests_1()
         {
-            Day16.MainPacket = null;
+            Day16.MainPacket = null!;
             Day16.BuildPackets("D2FE28".ToList(), out var packet);
 
             packet.Value.Should().Be(2021);
@@ -64,7 +64,7 @@ namespace Tests
         [Fact]
         public void Day16Tests_3()
         {
-            Day16.MainPacket = null;
+            Day16.MainPacket = null!;
             Day16.BuildPackets("EE00D40C823060".ToList(), out var packet);
 
             packet.SubPackets.Should().HaveCount(3);

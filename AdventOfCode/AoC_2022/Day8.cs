@@ -76,29 +76,17 @@ namespace AoC_2022
 
         public long B(List<int[]> inputs)
         {
-            var max = 0;
-            for (int i = 1; i < inputs.Count - 1; i++)
-            {
-                for (int j = 1; j < inputs[i].Length; j++)
-                {
-                    var score = ScenicScore(inputs, (i, j, inputs[i][j]));
-                    max = Math.Max(max, score);
-                }
-            }
-
-            return max;
-
-            //var notEdge = ((int, int, int) x) => x.Item1 != 0 && x.Item1 != Rows -1
-            //                                        && x.Item2 != 0 && x.Item2 != Cols -1;
+            var notEdge = ((int, int, int) x) => x.Item1 != 0 && x.Item1 != Rows - 1
+                                                    && x.Item2 != 0 && x.Item2 != Cols - 1;
 
 
-            //var row = VisibleTrees.Where(notEdge).GroupBy(x => x.Item1).OrderBy(g => g.Count()).First().Key;
-            //var col = VisibleTrees.Where(notEdge).GroupBy(x => x.Item2).OrderBy(g => g.Count()).First().Key;
+            var row = VisibleTrees.Where(notEdge).GroupBy(x => x.Item1).OrderBy(g => g.Count()).First().Key;
+            var col = VisibleTrees.Where(notEdge).GroupBy(x => x.Item2).OrderBy(g => g.Count()).First().Key;
 
-            //var rowVisible = VisibleTrees.Where(notEdge).Where(x => x.Item1 == row).ToList();
-            //var colVisible = VisibleTrees.Where(notEdge).Where(x => x.Item2 == col).ToList();
+            var rowVisible = VisibleTrees.Where(notEdge).Where(x => x.Item1 == row).ToList();
+            var colVisible = VisibleTrees.Where(notEdge).Where(x => x.Item2 == col).ToList();
 
-            //return rowVisible.Union(colVisible).Max(x => ScenicScore(inputs, x));
+            return rowVisible.Union(colVisible).Max(x => ScenicScore(inputs, x));
         }
 
         internal int ScenicScore(List<int[]> inputs, (int, int, int) tree)

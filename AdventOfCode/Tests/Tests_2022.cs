@@ -12,7 +12,7 @@ namespace Tests
     {
         [Theory]
         [ClassData(typeof(DayTestData_2022))]
-        public void DayTest<TIn, TOut>(string inputFile, Func<IDayOut<TIn, TOut>> GetDay, TOut expectedAnswer, bool partOne)
+        public void DayTest<TIn, TOut>(object inputFile, Func<IDayOut<TIn, TOut>> GetDay, TOut expectedAnswer, bool partOne)
         {
             IDayOut<TIn, TOut> day = GetDay();
 
@@ -21,7 +21,7 @@ namespace Tests
             TOut result;
             if (partOne)
             {
-                result = day.A(inputs);
+                result = day!.A(inputs!);
             }
             else
             {
@@ -77,7 +77,9 @@ namespace Tests
             yield return new object[] { "7", () => new Day7(), 24933642, false };
             yield return new object[] { "8", () => new Day8(), 21, true };
             yield return new object[] { "8", () => new Day8(), 8, false };/**/
-            yield return new object[] { "9", () => new Day9(), 13, true };
+            //yield return new object[] { 9, () => new Day9(), 13, true };
+            //yield return new object[] { 9, () => new Day9(), 1, false };
+            yield return new object[] { "9B", () => new Day9(), 36, false };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
