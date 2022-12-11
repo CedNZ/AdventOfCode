@@ -1,18 +1,10 @@
-﻿using AdventOfCodeCore;
+﻿using System.Text;
+using AdventOfCodeCore;
 
 namespace AoC_2022
 {
-    public class Day10 : IDay<PCInstruction>
+    public class Day10 : IDayOut<PCInstruction, string>
     {
-        public long A(List<PCInstruction> inputs)
-        {
-            foreach (PCInstruction instruction in inputs)
-            {
-                RunInstruction(instruction);
-            }
-            return TotalSignal;
-        }
-
         public void RunInstruction(PCInstruction instruction)
         {
             int cycles = instruction.Instruction switch
@@ -39,11 +31,6 @@ namespace AoC_2022
         public static int Clock { get; set; } = 0;
         public static int X { get; set; } = 1;
 
-        public long B(List<PCInstruction> inputs)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<PCInstruction> SetupInputs(string[] inputs)
         {
             return inputs.Select(l =>
@@ -55,6 +42,57 @@ namespace AoC_2022
                     Argument = parts.Length > 1 ? int.TryParse(parts[1], out var val) ? val : null : null,
                 };
             }).ToList();
+        }
+
+        string? IDayOut<PCInstruction, string>.A(List<PCInstruction> inputs)
+        {
+            foreach (PCInstruction instruction in inputs)
+            {
+                RunInstruction(instruction);
+            }
+            return TotalSignal.ToString();
+        }
+
+        string? IDayOut<PCInstruction, string>.B(List<PCInstruction> inputs)
+        {
+            X = 1;
+            Clock = 0;
+            StringBuilder sb = new();
+            sb.AppendLine();
+            foreach (PCInstruction instruction in inputs)
+            {
+                RunInstructionB(instruction, sb);
+            }
+
+            return sb.ToString();
+        }
+
+        public void RunInstructionB(PCInstruction instruction, StringBuilder sb)
+        {
+            int cycles = instruction.Instruction switch
+            {
+                "noop" => 1,
+                "addx" => 2,
+                _ => 1
+            };
+
+            for (int i = 0; i < cycles; i++)
+            {
+                Clock++;
+                if (Math.Abs(((Clock-1) % 40) - X) <= 1)
+                {
+                    sb.Append('#');
+                }
+                else
+                {
+                    sb.Append(' ');
+                }
+                if (Clock % 40 == 0)
+                {
+                    sb.AppendLine();
+                }
+            }
+            X += instruction.Argument.GetValueOrDefault();
         }
     }
 
