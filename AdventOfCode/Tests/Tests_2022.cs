@@ -64,6 +64,26 @@ namespace Tests
 
             answer.Should().Be(expected);
         }
+
+        [Fact]
+        public void Day10_PartB_Test()
+        {
+            IDayOut<PCInstruction, string> day = new Day10();
+            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\TestInput\\2022\\day10.txt"));
+
+            var output = day.B(inputs);
+            output.Should().Be(
+                """
+
+                ##..##..##..##..##..##..##..##..##..##..
+                ###...###...###...###...###...###...###.
+                ####....####....####....####....####....
+                #####.....#####.....#####.....#####.....
+                ######......######......######......####
+                #######.......#######.......#######.....
+                """
+                );
+        }
     }
 
     public class DayTestData_2022 : IEnumerable<object[]>
@@ -79,8 +99,9 @@ namespace Tests
             yield return new object[] { "8", () => new Day8(), 8, false };/**/
             //yield return new object[] { 9, () => new Day9(), 13, true };
             //yield return new object[] { 9, () => new Day9(), 1, false };
-            yield return new object[] { "9B", () => new Day9(), 36, false };
-            yield return new object[] { 10, () => new Day10(), 13140, true };
+            //yield return new object[] { "9B", () => new Day9(), 36, false };
+            //yield return new object[] { 10, () => new Day10(), 13140, true };
+            yield return new object[] { 11, () => new Day11(), 10605, true };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
