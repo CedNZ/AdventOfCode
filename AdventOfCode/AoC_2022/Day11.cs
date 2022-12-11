@@ -39,10 +39,6 @@ namespace AoC_2022
             var monkeyItemTouchCount = new long[inputs.Count()];
             for (int i = 0; i < 10_000; i++)
             {
-                if (i % 1000 == 0)
-                {
-                    Debugger.Break();
-                }
                 foreach (var monkey in inputs)
                 {
                     while (monkey.Items.Count > 0)
@@ -133,69 +129,3 @@ namespace AoC_2022
         public override string ToString() => $"{Id}: {string.Join(", ", Items.Select(i => i.ToString()))}";
     }
 }
-
-
-
-
-/*
- * https://old.reddit.com/user/yfilipov
- * https://old.reddit.com/r/adventofcode/comments/zifqmh/2022_day_11_solutions/izrbmbn/
- * void Main()
-{
-	var input = File.ReadAllText(@"C:\Code\AdventOfCode\AdventOfCode\AdventOfCode\bin\Debug\net7.0\Input\2022\day11.txt");
-	
-	for (var part = 2; part <= 2; part++)
-	{
-		var monkeys = input.Split("\n\n").Select(m => new Monkey(m)).ToArray();
-		var superModulo = monkeys.Aggregate(1, (current, monkey) => current * monkey.Test);
-		var rounds = part == 1 ? 20 : 10_000;
-		for (var i = 0; i < rounds; i++)
-		{
-			if (i % 1000 == 0)
-			{
-				monkeys.Select(x => x.ProcessedItems).OrderDescending().Dump();
-			}
-			foreach (var monkey in monkeys)
-			{
-				while (monkey.Items.Count > 0)
-				{
-					var item = monkey.Items.Dequeue();
-					var worry = part == 1 ? monkey.EvaluateOperation(item) / 3 : monkey.EvaluateOperation(item) % superModulo;
-					var receiverIndex = worry % monkey.Test == 0 ? monkey.TestPassing : monkey.TestNotPassing;
-					monkeys[receiverIndex].Items.Enqueue(worry);
-					monkey.ProcessedItems++;
-				}
-			}
-		}
-		monkeys.Select(x => x.ProcessedItems).OrderDescending().Dump();
-		var topMonkeys = monkeys.OrderByDescending(m => m.ProcessedItems).Take(2).ToArray();
-		$"Part {part}: {topMonkeys[0].ProcessedItems * topMonkeys[1].ProcessedItems}".Dump();
-	}
-}
-
-class Monkey
-{
-	public Monkey(string input)
-	{
-		var lines = input.Split("\n");
-		lines[1].Replace("  Starting items: ", string.Empty).Replace(" ", string.Empty).Split(',').Select(long.Parse).ToList().ForEach(Items.Enqueue);
-		Operation = lines[2].Replace("  Operation: new = old ", string.Empty);
-		Test = int.Parse(lines[3].Replace("  Test: divisible by ", string.Empty));
-		TestPassing = int.Parse(lines[4].Replace("    If true: throw to monkey ", string.Empty));
-		TestNotPassing = int.Parse(lines[5].Replace("    If false: throw to monkey ", string.Empty));
-	}
-	public Queue<long> Items { get; set; } = new();
-	public string Operation { get; set; }
-	public int Test { get; set; }
-	public int TestPassing { get; set; }
-	public int TestNotPassing { get; set; }
-	public long ProcessedItems { get; set; }
-	public long EvaluateOperation(long item)
-	{
-		var op = Operation.Split(' ');
-		if (!long.TryParse(op[1], out var val)) { val = item; }
-		return op[0] == "*" ? val * item : val + item;
-	}
-}
-
- */

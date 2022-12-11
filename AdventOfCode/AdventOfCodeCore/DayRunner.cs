@@ -60,7 +60,7 @@ namespace AdventOfCodeCore
             IDayOut<TIn, TOut> day = GetDay();
 
             var inputsA = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{dayNum}.txt"));
-            var inputsB = inputsA.ToList();
+            var inputsB = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{dayNum}.txt"));
 
             var stopwatch = Stopwatch.StartNew();
 
