@@ -53,8 +53,37 @@ namespace AoC_2022
                 }
                 else
                 {
-                    var pL = itemLeft.Number.HasValue ? new Packet { Items = new() { (itemLeft.Number, null) } } : itemLeft.Packet;
-                    var pR = itemRight.Number.HasValue ? new Packet { Items = new() { (itemRight.Number, null) } } : itemRight.Packet;
+                    var pL = itemLeft.Packet;
+                    if (itemLeft.Number.HasValue)
+                    {
+                        pL = new Packet
+                        {
+                            Items = new()
+                            {
+                                (itemLeft.Number, null)
+                            }
+                        };
+                        if (i < left.Items.Count - 1 && left.Items[i + 1].Packet is Packet l)
+                        {
+                            pL.Items.Add((null, l));
+                        }
+                    }
+                    var pR = itemRight.Packet;
+                    if (itemRight.Number.HasValue)
+                    {
+                        pR = new Packet
+                        {
+                            Items = new()
+                            {
+                                (itemRight.Number, null)
+                            }
+                        };
+                        if (i < right.Items.Count - 1 && right.Items[i + 1].Packet is Packet r)
+                        {
+                            pR.Items.Add((null, r));
+                        }
+                    }
+
                     if (ComparePackets(pL, pR) is bool b)
                     {
                         return b;
@@ -66,7 +95,24 @@ namespace AoC_2022
 
         public long B(List<Packet> inputs)
         {
-            throw new NotImplementedException();
+            var div2 = BuildPacket("[[2]]");
+            var div6 = BuildPacket("[[6]]");
+
+            inputs.Add(div2);
+            inputs.Add(div6);
+
+            var packetComparer = Comparer<Packet>.Create((p1, p2) => ComparePackets(p1, p2).GetValueOrDefault() ? -1 : 1);
+
+            var ordered = inputs.OrderBy(x => x, packetComparer).ToList();
+
+            return (ordered.IndexOf(div2) + 1) * (ordered.IndexOf(div6) + 1);
+        }
+
+        public (Packet, Packet) OrderPackets(Packet left, Packet right)
+        {
+            return ComparePackets(left, right).GetValueOrDefault()
+                ? (left, right)
+                : (right, left);
         }
 
         public List<Packet> SetupInputs(string[] inputs)
