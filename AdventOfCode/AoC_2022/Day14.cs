@@ -1,4 +1,5 @@
-﻿using AdventOfCodeCore;
+﻿using Raylib_cs;
+using AdventOfCodeCore;
 
 namespace AoC_2022
 {
@@ -25,32 +26,87 @@ namespace AoC_2022
             return 0;
         }
 
-        public void Draw(List<Line> inputs)
-        {
-            int maxY = inputs.Max(l => Math.Max(l.Y1, l.Y2));
-            int maxX = inputs.Max(l => Math.Max(l.X1, l.X2));
+        static bool windowInitialised = false;
+        const int screenWidth = 800;
+        const int screenHeight = 450;
 
-            Console.Clear();
-            for (int i = 0; i < maxX; i++)
+
+        public void Draw(List<Line> lines, List<Sand> sand)
+        {
+            if (windowInitialised is false)
             {
-                for (int j = 0; j < maxY; j++)
-                {
-                    if (inputs.Any(l => l.ContainsPoint(i, j)))
-                    {
-                        Console.Write("#");
-                    }
-                    else
-                    {
-                        Console.Write(" ");
-                    }
-                }
-                Console.WriteLine();
+                Raylib.InitWindow(screenWidth, screenHeight, "AoC 2022 - Day 14");
+                windowInitialised = true;
+            }
+
+            Raylib.BeginDrawing();
+            Raylib.ClearBackground(Color.WHITE);
+
+            foreach (var line in lines)
+            {
+                Raylib.DrawRectangle(line.X1, line.Y1, line.X2 - line.X1, line.Y2 - line.Y1, Color.BLACK);
             }
         }
 
         public long B(List<Line> inputs)
         {
-            throw new NotImplementedException();
+            List<Sand> settledSand = new();
+            List<Sand> fallingSand = new()
+            {
+                new Sand(),
+            };
+
+            //HashSet<(int X, int Y, bool CanMove)> sandHash = new();
+            //sandHash.Add((500, 0, true));
+
+            //while (sandHash.Any(s => s.CanMove))
+            //{
+            //    for (int i = 0; i < sandHash; i++)
+            //    {
+
+            //    }
+            //}
+
+            var maxY = inputs.Max(l => Math.Max(l.Y1, l.Y2)) + 2;
+
+            inputs.Add(new Line
+            {
+                Y1 = maxY,
+                Y2 = maxY,
+                X1 = -1000,
+                X2 = 1000,
+            });
+
+            bool drop = true;
+
+            while (fallingSand.Count > 0)
+            {
+                for (int i = 0; i < fallingSand.Count; i++)
+                {
+                    var sand = fallingSand[i];
+                    if (sand.Move(inputs, settledSand) is false) //came to rest
+                    {
+                        fallingSand.Remove(sand);
+                        if (sand.Y > 0)
+                        {
+                            Console.WriteLine($"Landed Sand {settledSand.Count}");
+                            fallingSand.Add(new Sand());
+                        } 
+                        else
+                        {
+                            return settledSand.Count();
+                        }
+                    }
+                }
+                if (drop)
+                {
+                    Console.WriteLine($"Dropping Sand {fallingSand.Count}");
+                    fallingSand.Add(new Sand());
+                }
+                drop = !drop;
+            }
+
+            return settledSand.Count();
         }
 
         public List<Line> SetupInputs(string[] inputs)
@@ -60,6 +116,7 @@ namespace AoC_2022
                     .OverlappingSets(2)
                     .Where(x => x.Count() == 2)
                     .Select(x => new Line(x)))
+                .DistinctBy(l => new { l.X1, l.X2, l.Y1, l.Y2 })
                 .ToList();
         }
     }
@@ -68,6 +125,9 @@ namespace AoC_2022
     {
         public int X { get; set; } = 500;
         public int Y { get; set; } = 0;
+
+        public int OldX { get; set; }
+        public int OldY { get; set; }
 
         public bool Move(List<Line> lines, List<Sand> sand)
         {
@@ -103,6 +163,11 @@ namespace AoC_2022
         public int X2 { get; set; }
         public int Y2 { get; set; }
 
+        public Line()
+        {
+            
+        }
+
         public Line(IEnumerable<string> args)
         {
             var l1 = args.First().Split(',').Select(int.Parse);
@@ -113,6 +178,9 @@ namespace AoC_2022
 
             X2 = l2.First();
             Y2 = l2.Skip(1).First();
+
+            (X1, X2) = (Math.Min(X1, X2), Math.Max(X1, X2));
+            (Y1, Y2) = (Math.Min(Y1, Y2), Math.Max(Y1, Y2));
         }
 
         public bool ContainsPoint(int X, int Y)

@@ -106,7 +106,10 @@ namespace Tests
             //yield return new object[] { 12, () => new Day12(), 31, true };
             //yield return new object[] { 13, () => new Day13(), 13, true };
             //yield return new object[] { 13, () => new Day13(), 140, false };
-            yield return new object[] { 14, () => new Day14(), 24, true };
+            //yield return new object[] { 14, () => new Day14(), 24, true };
+            //yield return new object[] { 14, () => new Day14(), 93, false };
+            yield return new object[] { 15, () => new Day15(), 26, true };
+
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
