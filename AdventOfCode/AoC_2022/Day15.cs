@@ -27,22 +27,22 @@ namespace AoC_2022
                 var xDist = Math.Abs(sensor.X - beacon.X);
                 var MD = xDist + yDist;
 
-                if ((yIntercept - (sensor.Y - MD)) * ((sensor.Y + MD) - yIntercept) >= 0)
+                var ydiff = Math.Abs(yIntercept - sensor.Y);
+                var xRange = MD - ydiff;
+
+                for (int d = sensor.X - xRange; d <= sensor.X + xRange; d++)
                 {
-                    var ydiff = Math.Abs(yIntercept - sensor.Y);
-                    var xRange = MD - ydiff;
-
-                    for (int d = sensor.X - xRange; d <= sensor.X + xRange; d++)
-                    {
-                        xPositions.Add(d);
-                    }
-
+                    xPositions.Add(d);
                 }
             }
 
             foreach (var beacon in Beacons.Where(b => b.Y == yIntercept))
             {
                 xPositions.Remove(beacon.X);
+            }
+            foreach (var sensor in Sensors.Where(s => s.Y == yIntercept))
+            {
+                xPositions.Remove(sensor.X);
             }
 
             return xPositions.Count;
