@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using AdventOfCodeCore;
-using Raylib_cs;
 
 namespace AoC_2022
 {
@@ -50,7 +48,80 @@ namespace AoC_2022
 
         public long B(List<((int X, int Y) Sensor, (int X, int Y) Beacon)> inputs)
         {
-            throw new NotImplementedException();
+            Dictionary<(int X, int Y), int> validPositions = new();
+
+            void AddPosition(Dictionary<(int X, int Y), int> validPositions, (int X, int Y) pos)
+            {
+                if (validPositions.ContainsKey(pos))
+                {
+                    validPositions[pos]++;
+                }
+                else
+                {
+                    validPositions.Add(pos, 1);
+                }
+            }
+
+            bool InRange((int X, int Y) sensor, (int X, int Y) beacon, (int X, int Y) pos)
+            {
+                var yDist = Math.Abs(sensor.Y - beacon.Y);
+                var xDist = Math.Abs(sensor.X - beacon.X);
+                var MD = xDist + yDist;
+
+                yDist = Math.Abs(sensor.Y - pos.Y);
+                xDist = Math.Abs(sensor.X - pos.X);
+                var posMD = xDist + yDist;
+
+                return posMD <= MD;
+            }
+
+            foreach (var input in inputs)
+            {
+                var sensor = input.Sensor;
+                var beacon = input.Beacon;
+
+                var yDist = Math.Abs(sensor.Y - beacon.Y);
+                var xDist = Math.Abs(sensor.X - beacon.X);
+                var MD = xDist + yDist;
+                var ring = MD + 1;
+
+                for (int xdiff = -ring; xdiff <= ring; xdiff++)
+                {
+                    var ydiff = ring - Math.Abs(xdiff);
+
+                    var pos = (sensor.X + xdiff, sensor.Y + ydiff);
+
+                    AddPosition(validPositions, pos);
+
+                    if (xdiff != 0 || ydiff != 0)
+                    {
+                        pos = (sensor.X - xdiff, sensor.Y - ydiff);
+                        AddPosition(validPositions, pos);
+                    }
+
+                }
+            }
+
+            var val = validPositions.OrderByDescending(x => x.Value).First().Value;
+
+            var potentialLocations = validPositions.Where(x => x.Value >= val - 1).ToDictionary(x => x.Key, x => x.Value);
+            //var potentialLocations = validPositions;
+
+            if (potentialLocations.Count == 1)
+            {
+                var eBeacon = potentialLocations.Single().Key;
+
+                return (long)eBeacon.X * 4_000_000 + eBeacon.Y;
+            }
+
+            foreach (var pair in inputs)
+            {
+                potentialLocations = potentialLocations.Where(x => InRange(pair.Sensor, pair.Beacon, x.Key) is false).ToDictionary(x => x.Key, x => x.Value);
+            }
+
+            var emergencyBeacon = potentialLocations.Single().Key;
+
+            return (long)emergencyBeacon.X * 4_000_000 + emergencyBeacon.Y;
         }
 
         public List<((int X, int Y) Sensor, (int X, int Y) Beacon)> SetupInputs(string[] inputs)
