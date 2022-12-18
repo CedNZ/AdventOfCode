@@ -21,9 +21,10 @@ namespace AoC_2022
             {
                 var valve = TreePath(AllValves.First(v => v.Name == t[0]), t);
 
-                ValveEnumerable valves = new ValveEnumerable(valve);
+                var valves = new ValveEnumerable(valve).ToList();
+                valves.Insert(0, valve);
 
-                Func<int, (int pressure, int time)> treeFunc = (x) => (0, valves.Count() + 1);
+                Func<int, (int pressure, int time)> treeFunc = (x) => (0, valves.Count());
 
                 treeFunc = valves.Where(v => v.TotalPressue > v.Parent?.TotalPressue)
                     .Aggregate(treeFunc, (f, vNext) =>
@@ -60,16 +61,22 @@ namespace AoC_2022
                 {
                     continue;
                 }
+                var lmin = list.Min(x => x.TotalPressue);
                 var lmax = list.Max(x => x.TotalPressue);
-                list = list.Where(l => l.TotalPressue == lmax).ToList();
+                if (lmin != lmax)
+                {
+                    list = list.Where(l => l.TotalPressue > Math.Max(max, (lmax / 3 * 2))).ToList();
+                }
                 while (list.Count > 0)
                 {
                     var current = list.FirstOrDefault();
                     list.Remove(current);
-                    var valveEnumerable = new ValveEnumerable(current);
-                    if (current.Time == 0 || toOpen.All(n => valveEnumerable.Select(v => v.Name).Contains(n)))
+                    var valveEnumerable = new ValveEnumerable(current).ToList();
+                    valveEnumerable.Insert(0, current);
+                    if (current.Time == 0 || toOpen.All(n => valveEnumerable.Where(v => v.Open).Select(v => v.Name).Contains(n)))
                     {
                         max = Math.Max(max, current.TotalPressue);
+                        list = list.Where(l => l.TotalPressue > max).ToList();
                         continue;
                     }
                     foreach (var neighbour in Neighbours(current))
@@ -78,15 +85,19 @@ namespace AoC_2022
                         {
                             if (treeFuncs.TryGetValue(neighbour.Name, out var f))
                             {
-                                var r = f(current.Time);
+                                var r = f(neighbour.Time);
                                 var nvalve = neighbour with
                                 {
                                     Parent = current,
                                     TotalPressue = current.TotalPressue + r.pressure,
                                     Time = current.Time - r.time,
+                                    Open = true,
                                     Leaf = true,
                                 };
-                                timeQueue[nvalve.Time].Add(nvalve);
+                                if (nvalve.Time >= 0)
+                                {
+                                    timeQueue[nvalve.Time].Add(nvalve);
+                                }
                             }
                             else
                             {
