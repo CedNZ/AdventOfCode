@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AdventOfCodeCore\AdventOfCodeCore.csproj" />
     <ProjectReference Include="..\AoC_2021\AoC_2021.csproj" />
+    <ProjectReference Include="..\AoC_2022\AoC_2022.csproj" />
   </ItemGroup>
 
   <ItemGroup>
