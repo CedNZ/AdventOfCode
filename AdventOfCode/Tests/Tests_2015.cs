@@ -2,21 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using AdventOfCodeCore;
-using AoC_2022;
+using AoC_2015;
 using FluentAssertions;
 using Xunit;
 
 namespace Tests
 {
-    public class Tests_2022
+    public class Tests_2015
     {
         [Theory]
-        [ClassData(typeof(DayTestData_2022))]
+        [ClassData(typeof(DayTestData_2015))]
         public void DayTest<TIn, TOut>(object inputFile, Func<IDayOut<TIn, TOut>> GetDay, TOut expectedAnswer, bool partOne)
         {
             IDayOut<TIn, TOut> day = GetDay();
 
-            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\TestInput\\2022\\day{inputFile}.txt"));
+            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\TestInput\\2015\\day{inputFile}.txt"));
 
             TOut result;
             if (partOne)
@@ -37,59 +37,13 @@ namespace Tests
                 result.Should().Be(expectedAnswer);
             }
         }
-
-        [Theory]
-        [InlineData("bvwbjplbgvbhsrlpgdmjqwftvncz", 5)]
-        [InlineData("nppdvjthqldpwncqszvftbrmjlhg", 6)]
-        [InlineData("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10)]
-        [InlineData("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11)]
-        public void Day6_PartA_Tests(string line, int expected)
-        {
-            var day = new Day6();
-            var answer = day.A(new List<string> { line });
-
-            answer.Should().Be(expected);
-        }
-
-        [Theory]
-        [InlineData("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 19)]
-        [InlineData("bvwbjplbgvbhsrlpgdmjqwftvncz", 23)]
-        [InlineData("nppdvjthqldpwncqszvftbrmjlhg", 23)]
-        [InlineData("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 29)]
-        [InlineData("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 26)]
-        public void Day6_PartB_Tests(string line, int expected)
-        {
-            var day = new Day6();
-            var answer = day.B(new List<string> { line });
-
-            answer.Should().Be(expected);
-        }
-
-        [Fact]
-        public void Day10_PartB_Test()
-        {
-            IDayOut<PCInstruction, string> day = new Day10();
-            var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\TestInput\\2022\\day10.txt"));
-
-            var output = day.B(inputs);
-            output.Should().Be(
-                """
-
-                ##..##..##..##..##..##..##..##..##..##..
-                ###...###...###...###...###...###...###.
-                ####....####....####....####....####....
-                #####.....#####.....#####.....#####.....
-                ######......######......######......####
-                #######.......#######.......#######.....
-                """
-                );
-        }
     }
 
-    public class DayTestData_2022 : IEnumerable<object[]>
+    public class DayTestData_2015 : IEnumerable<object[]>
     {
         public IEnumerator<object[]> GetEnumerator()
-        {/*
+        {
+            yield return new object[] { 2, () => new Day2(), 101, true };
             /*
             yield return new object[] { "5", () => new Day5(), "CMZ", true };
             yield return new object[] { "5", () => new Day5(), "MCD", false };
@@ -113,7 +67,7 @@ namespace Tests
 
             //yield return new object[] { 16, () => new Day16(), 1651, true };
 
-            yield return new object[] { 20, () => new Day20(), 3, true };
+            //yield return new object[] { 20, () => new Day20(), 3, true };
 
         }
 

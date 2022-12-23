@@ -28,6 +28,7 @@ namespace AdventOfCode
                 var yearNum = int.TryParse(Console.ReadLine(), out var num) ? num : DateTime.Now.Year;
                 Year? year = yearNum switch
                 {
+                    2015 => new AoC_2015.AoC_2015(new DayRunner(httpClient, yearNum)),
                     2018 => new AoC_2018.AoC_2018(new DayRunner(httpClient, yearNum)),
                     2021 => new AoC_2021.AoC_2021(new DayRunner(httpClient, yearNum)),
                     2022 => new AoC_2022.AoC_2022(new DayRunner(httpClient, yearNum)),

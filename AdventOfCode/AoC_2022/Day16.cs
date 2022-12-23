@@ -47,13 +47,13 @@ namespace AoC_2022
             priorityQueue.Enqueue(start, -start.TotalPressue);
 
             int max = 0;
-            Dictionary<int, List<Valve>> timeQueue = new();
+            Dictionary<int, PriorityQueue<Valve, int>> timeQueue = new();
             for (int i = 0; i <= 30; i++)
             {
-                timeQueue[i] = new List<Valve>();
+                timeQueue[i] = new ();
             }
 
-            timeQueue[start.Time].Add(start);
+            timeQueue[start.Time].Enqueue(start, -HeuristicScore(start, 30));
             for (int time = start.Time; time >= 0; time--)
             {
                 var list = timeQueue[time];
@@ -61,22 +61,25 @@ namespace AoC_2022
                 {
                     continue;
                 }
-                var lmin = list.Min(x => x.TotalPressue);
-                var lmax = list.Max(x => x.TotalPressue);
-                if (lmin != lmax)
-                {
-                    list = list.Where(l => l.TotalPressue > Math.Max(max, (lmax / 3 * 2))).ToList();
-                }
+                //var lmin = list.Min(x => x.TotalPressue);
+                //var lmax = list.Max(x => x.TotalPressue);
+                //if (lmin != lmax)
+                //{
+                //    //var timePercent = (30.0 - time) / 30;
+                //    //timePercent *= 2;
+                //    //list = list.Where(l => l.TotalPressue > timePercent * lmax).ToList();
+                //    list = list.OrderByDescending(l => l.TotalPressue).Take((list.Count / 4) * 3).ToList();
+                //}
                 while (list.Count > 0)
                 {
-                    var current = list.FirstOrDefault();
-                    list.Remove(current);
+                    var current = list.Dequeue();
+                    //list.Remove(current);
                     var valveEnumerable = new ValveEnumerable(current).ToList();
                     valveEnumerable.Insert(0, current);
                     if (current.Time == 0 || toOpen.All(n => valveEnumerable.Where(v => v.Open).Select(v => v.Name).Contains(n)))
                     {
                         max = Math.Max(max, current.TotalPressue);
-                        list = list.Where(l => l.TotalPressue > max).ToList();
+                        //list = list.Where(l => l.TotalPressue > max).ToList();
                         continue;
                     }
                     foreach (var neighbour in Neighbours(current))
@@ -96,12 +99,12 @@ namespace AoC_2022
                                 };
                                 if (nvalve.Time >= 0)
                                 {
-                                    timeQueue[nvalve.Time].Add(nvalve);
+                                    timeQueue[nvalve.Time].Enqueue(nvalve, -HeuristicScore(nvalve, nvalve.Time));
                                 }
                             }
                             else
                             {
-                                timeQueue[neighbour.Time].Add(neighbour);
+                                timeQueue[neighbour.Time].Enqueue(neighbour, -HeuristicScore(neighbour, neighbour.Time));
                             }
                         }
                     }
@@ -135,6 +138,28 @@ namespace AoC_2022
                 previous = current;
             }
             return null;
+        }
+
+        private int HeuristicScore(Valve valve, int time)
+        {
+            Queue<string> toVisit = new();
+            toVisit.Enqueue(valve.Name);
+            HashSet<string> visited = new ();
+            int score = valve.Open ? 0 : valve.FlowRate * (time - 1);
+            int depth = 1;
+            while (toVisit.Count > 0)
+            {
+                depth++;
+                var current = toVisit.Dequeue();
+                visited.Add(current);
+                var paths = Tunnels[current].Except(visited);
+                foreach (var item in paths)
+                {
+                    score += AllValves.Find(v => v.Name == item)?.FlowRate * (time - depth) ?? 0;
+                    toVisit.Enqueue(item);
+                }
+            }
+            return score;
         }
 
         private List<string> GetTree(string leaf, string parent = "")

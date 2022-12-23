@@ -4,7 +4,7 @@ namespace AoC_2022
 {
     public class AoC_2022 : Year
     {
-        public AoC_2022(DayRunner dayRunner) 
+        public AoC_2022(DayRunner dayRunner)
             : base(dayRunner)
         {
         }
@@ -29,6 +29,8 @@ namespace AoC_2022
                 14 => await RunDayAsync(day, () => new Day14()),
                 15 => await RunDayAsync(day, () => new Day15()),
                 16 => await RunDayAsync(day, () => new Day16()),
+
+                20 => await RunDayAsync(day, () => new Day20()),
                 _ => new DayResult { OutputA = "Add the day to the year Dumbass"},
             };
         }
