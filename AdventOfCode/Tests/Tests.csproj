@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
@@ -28,6 +28,7 @@
     <ProjectReference Include="..\AoC_2018\AoC_2018.csproj" />
     <ProjectReference Include="..\AoC_2021\AoC_2021.csproj" />
     <ProjectReference Include="..\AoC_2022\AoC_2022.csproj" />
+    <ProjectReference Include="..\AoC_2023\AoC_2023.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,10 @@
     <None Update="TestInput\day3.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestInput\2023\" />
   </ItemGroup>
 
 </Project>

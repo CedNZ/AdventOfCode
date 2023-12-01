@@ -29,7 +29,7 @@ namespace AdventOfCodeCore
                     Method = HttpMethod.Get,
                     RequestUri = new Uri($"https://adventofcode.com/{_year}/day/{day}/input"),
                 };
-                request.Headers.UserAgent.ParseAdd($".NET 7.0 (+via https://github.com/CedNZ/AdventOfCode by cbourneville@gmail.com)");
+                request.Headers.UserAgent.ParseAdd($".NET 8.0 (+via https://github.com/CedNZ/AdventOfCode by cbourneville@gmail.com)");
 
                 var response = await _httpClient.SendAsync(request);
 
