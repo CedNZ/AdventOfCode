@@ -9,6 +9,7 @@ namespace AoC_2023
             return day switch
             {
                 1 => await RunDayAsync(day, () => new Day1()),
+                2 => await RunDayAsync(day, () => new Day2()),
                 _ => new DayResult { OutputA = "Add the day to the year Dumbass" },
             };
         }

@@ -14,7 +14,7 @@ namespace AoC_2023
             return inputs.Sum(x => GetFirstNumber(x) * 10 + GetLastNumber(x));
         }
 
-        public int GetFirstNumber(string s)
+        public static int GetFirstNumber(string s)
         {
             int? num = null;
             var index = 0;
@@ -25,7 +25,7 @@ namespace AoC_2023
             return num.Value;
         }
 
-        public int GetLastNumber(string s)
+        public static int GetLastNumber(string s)
         {
             int? num = null;
             var index = s.Length - 1;
@@ -36,7 +36,7 @@ namespace AoC_2023
             return num.Value;
         }
 
-        public int? GetNumber(string s)
+        public static int? GetNumber(string s)
         {
             if (char.IsDigit(s[0]))
             {
