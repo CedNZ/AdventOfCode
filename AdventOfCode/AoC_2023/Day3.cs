@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AdventOfCodeCore;
+﻿using AdventOfCodeCore;
 
 namespace AoC_2023
 {
@@ -29,13 +28,34 @@ namespace AoC_2023
                 x.Number,
                 x.Line,
             }).ToList();
-            
+
             return parts.Select(p => p.Number).Sum();
         }
 
         public long B(List<Line> inputs)
         {
-            throw new NotImplementedException();
+            long gearSum = 0;
+            for (int i = 0; i < inputs.Count; i++)
+            {
+                foreach (var symbol in inputs[i].Symbols.Where(s => s.Character == '*'))
+                {
+                    List<Part> parts = [];
+                    if (i > 0)
+                    {
+                        parts.AddRange(inputs[i - 1].Parts.Where(p => p.Indexes.Contains(symbol.Index)));
+                    }
+                    parts.AddRange(inputs[i].Parts.Where(p => p.Indexes.Contains(symbol.Index)));
+                    if (i + 1 < inputs.Count)
+                    {
+                        parts.AddRange(inputs[i + 1].Parts.Where(p => p.Indexes.Contains(symbol.Index)));
+                    }
+                    if (parts.Count == 2)
+                    {
+                        gearSum += parts[0].Number * parts[1].Number;
+                    }
+                }
+            }
+            return gearSum;
         }
 
         public List<Line> SetupInputs(string[] inputs)
@@ -50,18 +70,21 @@ namespace AoC_2023
                 List<int> numIndexes = [];
                 while (l.Length > 0 && index++ < l.Length)
                 {
-                    if (index == l.Length && parsingInt)
+                    if (index == l.Length)
                     {
-                        numIndexes.Add(index);
-                        line.Parts.Add(new Part
+                        if (parsingInt)
                         {
-                            Number = int.Parse(num),
-                            Indexes = [.. numIndexes],
-                            Line = i,
-                        });
-                        numIndexes = [];
-                        num = "";
-                        parsingInt = false;
+                            numIndexes.Add(index);
+                            line.Parts.Add(new Part
+                            {
+                                Number = int.Parse(num),
+                                Indexes = [.. numIndexes],
+                                Line = i,
+                            });
+                            numIndexes = [];
+                            num = "";
+                            parsingInt = false;
+                        }
                         continue;
                     }
 
@@ -72,6 +95,7 @@ namespace AoC_2023
                     }
                     catch (IndexOutOfRangeException)
                     {
+                        continue;
                     }
                     if (c == '.' && parsingInt is false)
                     {
