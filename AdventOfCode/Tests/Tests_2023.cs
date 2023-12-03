@@ -69,6 +69,7 @@ namespace Tests
             yield return new object[] { 1, () => new Day1(), 281, false };
             yield return new object[] { 2, () => new Day2(), 8, true };
             yield return new object[] { 2, () => new Day2(), 2286, false };
+            yield return new object[] { 3, () => new Day3(), 4361, true };
 
         }
 
