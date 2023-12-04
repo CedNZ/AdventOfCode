@@ -12,12 +12,12 @@ namespace AoC_2023
 
         public long B(List<Ticket> inputs)
         {
-            FrozenDictionary<int, int> scores = inputs.ToFrozenDictionary(x => x.Id, x => x.Numbers.Count(n => x.Chosen.Contains(n)));
+            var scores = inputs.Select(x => x.Numbers.Count(n => x.Chosen.Contains(n))).ToArray();
             int[] tickets = Enumerable.Repeat(1, inputs.Count).ToArray();
             for (int i = 0; i < inputs.Count; i++)
             {
                 var item = inputs[i];
-                var score = scores[item.Id];
+                var score = scores[item.Id - 1];
                 for (int j = 1; j <= score; j++)
                 {
                     tickets[i + j] += tickets[i];
