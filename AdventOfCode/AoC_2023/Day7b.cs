@@ -2,18 +2,18 @@
 
 namespace AoC_2023
 {
-    public class Day7 : IDay<Day7.Hand>
+    public class Day7b : IDay<Day7b.Hand>
     {
         public long A(List<Hand> inputs)
         {
-            return inputs.OrderDescending()
-                .Select((x, i) => x.Bid * (i + 1))
-                .Sum();
+            return 0;
         }
 
         public long B(List<Hand> inputs)
         {
-            throw new NotImplementedException();
+            return inputs.OrderDescending()
+                .Select((x, i) => x.Bid * (i + 1))
+                .Sum();
         }
 
         public List<Hand> SetupInputs(string[] inputs)
@@ -55,7 +55,22 @@ namespace AoC_2023
                 Cards = cards;
                 Bid = bid;
 
-                var groups = cards.Order().GroupBy(c => c);
+                var noj = cards.Where(c => c != Day7b.Cards.J);
+                var js = cards.Where(c => c == Day7b.Cards.J);
+
+                if (noj.Count() == 0)
+                {
+                    Type = Type.FiveOfAKind;
+                    return;
+                }
+
+                var groups = noj.GroupBy(c => c)
+                    .OrderByDescending(g => g.Count())
+                    .Select(g => g.ToList())
+                    .ToList();
+
+                groups.First().AddRange(js);
+
                 var groupCount = groups.Count();
                 if (groupCount == 1)
                 {
@@ -116,7 +131,6 @@ namespace AoC_2023
             A,
             K,
             Q,
-            J,
             T,
             C9,
             C8,
@@ -126,6 +140,7 @@ namespace AoC_2023
             C4,
             C3,
             C2,
+            J,
         }
 
         public enum Type

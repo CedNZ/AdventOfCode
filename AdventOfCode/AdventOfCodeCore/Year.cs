@@ -9,14 +9,14 @@
             _runner = dayRunner;
         }
 
-        public async Task<DayResult> RunDayAsync<TIn, TOut>(int dayNum, Func<IDayOut<TIn, TOut>> getDayFunc)
+        public async Task<DayResult> RunDayAsync<TIn, TOut>(double dayNum, Func<IDayOut<TIn, TOut>> getDayFunc)
         {
-            await _runner.DownloadInput(dayNum);
+            await _runner.DownloadInput((int)dayNum);
             var dayresult = _runner.RunDay(dayNum, getDayFunc);
             await _runner.SubmitAnswer(dayresult);
             return dayresult;
         }
 
-        public abstract Task<DayResult> RunDayAsync(int day);
+        public abstract Task<DayResult> RunDayAsync(double day);
     }
 }

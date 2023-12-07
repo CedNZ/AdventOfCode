@@ -4,7 +4,7 @@ namespace AoC_2023
 {
     public class AoC_2023(DayRunner dayRunner) : Year(dayRunner)
     {
-        public override async Task<DayResult> RunDayAsync(int day)
+        public override async Task<DayResult> RunDayAsync(double day)
         {
             return day switch
             {
@@ -15,6 +15,7 @@ namespace AoC_2023
                 5 => await RunDayAsync(day, () => new Day5()),
                 6 => await RunDayAsync(day, () => new Day6()),
                 7 => await RunDayAsync(day, () => new Day7()),
+                7.1 => await RunDayAsync(day, () => new Day7b()),
                 _ => new DayResult { OutputA = "Add the day to the year Dumbass" },
             };
         }

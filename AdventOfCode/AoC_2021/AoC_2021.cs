@@ -9,7 +9,7 @@ namespace AoC_2021
         {
         }
 
-        public override async Task<DayResult> RunDayAsync(int dayNum)
+        public override async Task<DayResult> RunDayAsync(double dayNum)
         {
             return dayNum switch
             {

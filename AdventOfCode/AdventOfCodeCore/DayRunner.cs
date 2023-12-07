@@ -55,12 +55,12 @@ namespace AdventOfCodeCore
 
         }
 
-        public DayResult RunDay<TIn, TOut>(int dayNum, Func<IDayOut<TIn, TOut>> GetDay)
+        public DayResult RunDay<TIn, TOut>(double dayNum, Func<IDayOut<TIn, TOut>> GetDay)
         {
             IDayOut<TIn, TOut> day = GetDay();
 
-            var inputsA = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{dayNum}.txt"));
-            var inputsB = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{dayNum}.txt"));
+            var inputsA = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{(int)dayNum}.txt"));
+            var inputsB = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{(int)dayNum}.txt"));
 
             var stopwatch = Stopwatch.StartNew();
 
@@ -99,7 +99,7 @@ namespace AdventOfCodeCore
 
     public class DayResult
     {
-        public int Day;
+        public double Day;
         public object? OutputA;
         public object? OutputB;
         public TimeSpan RuntimeA;

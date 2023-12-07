@@ -62,11 +62,11 @@ namespace AdventOfCode
                         2021 => new AoC_2021.AoC_2021(new DayRunner(httpClient, yearNum)),
                         2022 => new AoC_2022.AoC_2022(new DayRunner(httpClient, yearNum)),
                         2023 => new AoC_2023.AoC_2023(new DayRunner(httpClient, yearNum)),
-                        _ => new AoC_2022.AoC_2022(new DayRunner(httpClient, yearNum)),
+                        _ => new AoC_2023.AoC_2023(new DayRunner(httpClient, yearNum)),
                     };
 
                     Console.WriteLine("Enter day number: ");
-                    var dayNum = int.Parse(Console.ReadLine()!);
+                    var dayNum = double.Parse(Console.ReadLine()!);
 
                     var result = await year.RunDayAsync(dayNum);
 

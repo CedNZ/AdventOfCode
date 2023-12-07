@@ -9,7 +9,7 @@ namespace AoC_2018
         {
         }
 
-        public override async Task<DayResult> RunDayAsync(int day)
+        public override async Task<DayResult> RunDayAsync(double day)
         {
             return day switch
             {
