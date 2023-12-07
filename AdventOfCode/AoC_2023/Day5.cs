@@ -1,5 +1,4 @@
-﻿using System.Collections.Frozen;
-using AdventOfCodeCore;
+﻿using AdventOfCodeCore;
 
 namespace AoC_2023
 {
@@ -7,51 +6,113 @@ namespace AoC_2023
     {
         public long A(List<Maps> inputs)
         {
-            var map = inputs.Single();
+            var min = long.MaxValue;
+            var maps = inputs[0];
+            foreach (var seed in maps.Seeds)
+            {
+                var soil = GetMapping(seed, maps.SeedToSoil);
+                var fertilizer = GetMapping(soil, maps.SoilToFertilizer);
+                var water = GetMapping(fertilizer, maps.FertilizerToWater);
+                var light = GetMapping(water, maps.WaterToLight);
+                var temperature = GetMapping(light, maps.LightToTemperature);
+                var humidity = GetMapping(temperature, maps.TemperatureToHumidity);
+                var location = GetMapping(humidity, maps.HumidityToLocation);
 
-            return map.Seeds.Min(s =>
-                map.HumidityToLocation[
-                    map.TemperatureToHumidity[
-                        map.LightToTemperature[
-                            map.WaterToLight[
-                                map.FertilizerToWater[
-                                    map.SoilToFertilizer[
-                                        map.SeedToSoil[s]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            );
+                min = Math.Min(min, location);
+            }
+            return min;
+        }
+
+        private long GetMapping(long num, List<Map> map)
+        {
+            try
+            {
+                var m = map.First(x => num >= x.RangeStart && num < x.RangeEnd);
+                return num - m.Diff;
+            } catch
+            {
+                return num;
+            }
         }
 
         public long B(List<Maps> inputs)
         {
-            throw new NotImplementedException();
+            var min = long.MaxValue;
+            var maps = inputs[0];
+            foreach (var seedChunk in maps.Seeds.Chunk(2))
+            {
+                var seeds = new List<(long start, long end)>
+                {
+                    (seedChunk[0], seedChunk[0] + seedChunk[1] - 1)
+                };
+
+                var soils = seeds.Select(s => RunMap(s.start, s.end, maps.SeedToSoil))
+                    .SelectMany(x => x)
+                    .ToList();
+                var fertilizers = soils.Select(s => RunMap(s.start, s.end, maps.SoilToFertilizer))
+                    .SelectMany(x => x)
+                    .ToList();
+                var waters = fertilizers.Select(s => RunMap(s.start, s.end, maps.FertilizerToWater))
+                    .SelectMany(x => x)
+                    .ToList();
+                var lights = waters.Select(s => RunMap(s.start, s.end, maps.WaterToLight))
+                    .SelectMany(x => x)
+                    .ToList();
+                var temps = lights.Select(s => RunMap(s.start, s.end, maps.LightToTemperature))
+                    .SelectMany(x => x)
+                    .ToList();
+                var humidities = temps.Select(s => RunMap(s.start, s.end, maps.TemperatureToHumidity))
+                    .SelectMany(x => x)
+                    .ToList();
+                var locations = humidities.Select(s => RunMap(s.start, s.end, maps.HumidityToLocation))
+                    .SelectMany(x => x)
+                    .ToList();
+
+                min = Math.Min(min, locations.Min(x => x.start));
+            }
+            return min;
+        }
+
+        private IEnumerable<(long start, long end)> RunMap(long start, long end, List<Map> mapping)
+        {
+            var map = mapping.FirstOrDefault(x => x.RangeStart <= start && start <= x.RangeEnd);
+            if (map is null)
+            {
+                yield return (start, end);
+            }
+            else
+            {
+                if (end <= map.RangeEnd)
+                {
+                    yield return (start - map.Diff, end - map.Diff);
+                }
+                else
+                {
+                    yield return (start - map.Diff, map.RangeEnd - map.Diff);
+                    foreach (var element in RunMap(map.RangeEnd + 1, end, mapping.Except([map]).ToList()))
+                    {
+                        yield return element;
+                    }
+                }
+            }
         }
 
         public List<Maps> SetupInputs(string[] inputs)
         {
-            Func<string, Dictionary<long, long>> dictBuilder = x =>
+            Func<string, Map> dictBuilder = x =>
             {
                 var nums = x.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToArray();
-                var (dest, source, length) = (nums[0], nums[1], nums[2]);
-                Dictionary<long, long> dict = [];
-                for (long i = 0; i < length; i++)
-                {
-                    dict.Add(source + i, dest + i);
-                }
-                return dict;
+                return new Map(nums[0], nums[1], nums[2]);
             };
 
-            Func<string, FrozenDictionary<long, long>> mapBuilder = x =>
+            Func<string, List<Map>> mapBuilder = x =>
             {
                 return inputs.SkipWhile(i => i.StartsWith(x) is false)
                     .Skip(1)
                     .TakeWhile(i => i != "")
-                    .SelectMany(dictBuilder)
-                    .ToFrozenDictionary(d => d.Key, d => d.Value);
+                    .Select(dictBuilder)
+                    .OrderBy(x => x.RangeStart)
+                    .ToList();
             };
 
             var map = new Maps
@@ -72,13 +133,27 @@ namespace AoC_2023
     public class Maps
     {
         public List<long> Seeds { get; set; } = [];
-        public FrozenDictionary<long, long> SeedToSoil { get; set; } = null!;
-        public FrozenDictionary<long, long> SoilToFertilizer { get; set; } = null!;
-        public FrozenDictionary<long, long> FertilizerToWater { get; set; } = null!;
-        public FrozenDictionary<long, long> WaterToLight { get; set; } = null!;
-        public FrozenDictionary<long, long> LightToTemperature { get; set; } = null!;
-        public FrozenDictionary<long, long> TemperatureToHumidity { get; set; } = null!;
-        public FrozenDictionary<long, long> HumidityToLocation { get; set; } = null!;
+        public List<Map> SeedToSoil { get; set; } = null!;
+        public List<Map> SoilToFertilizer { get; set; } = null!;
+        public List<Map> FertilizerToWater { get; set; } = null!;
+        public List<Map> WaterToLight { get; set; } = null!;
+        public List<Map> LightToTemperature { get; set; } = null!;
+        public List<Map> TemperatureToHumidity { get; set; } = null!;
+        public List<Map> HumidityToLocation { get; set; } = null!;
 
+    }
+
+    public record Map
+    {
+        public long RangeStart { get; init; }
+        public long RangeEnd { get; init; }
+        public long Diff { get; init; }
+
+        public Map(long dest, long source, long range)
+        {
+            RangeStart = source;
+            RangeEnd = source + range - 1;
+            Diff = source - dest;
+        }
     }
 }
