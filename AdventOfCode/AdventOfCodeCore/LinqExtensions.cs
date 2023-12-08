@@ -50,5 +50,32 @@ namespace AdventOfCodeCore
                 }
             }
         }
+
+        public static long CalculateLCM(this IEnumerable<long> numbers)
+        {
+            return numbers.Aggregate(LCM);
+        }
+
+        public static long LCM(long a, long b)
+        {
+            if (a == 0 && b == 0)
+            {
+                return 0;
+            }
+            // Calculate LCM using the formula: LCM(a, b) = |a * b| / GCD(a, b)
+            return Math.Abs(a * b) / GCD(a, b);
+        }
+
+        public static long GCD(long a, long b)
+        {
+            // Calculate GCD using Euclidean algorithm
+            while (b != 0)
+            {
+                long temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
     }
 }
