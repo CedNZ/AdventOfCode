@@ -40,8 +40,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TestInput\2023\" />
-  </ItemGroup>
-
 </Project>
