@@ -59,8 +59,8 @@ namespace AoC_2021
             {
                 currentPair = new Pair
                 {
-                    LeftPair = pair[0].First(),
-                    RightPair = pair[1].First(),
+                    LeftPair = pair.Item1.First(),
+                    RightPair = pair.Item2.First(),
                     Depth = 0,
                 };
                 Nest(currentPair.LeftPair);

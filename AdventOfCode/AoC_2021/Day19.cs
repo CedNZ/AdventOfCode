@@ -87,7 +87,7 @@ namespace AoC_2021
                     beacon.SetPosition(Transform(offset2, offset1, beacon.Position));
                 }
 
-                var translation = new BeaconPairs(new[] { l0[0].BeaconA, l0[1].BeaconA });
+                var translation = new BeaconPairs((l0[0].BeaconA, l0[1].BeaconA));
 
                 matchedScanner.SetOffset(translation.Offsets);
 
@@ -378,8 +378,7 @@ namespace AoC_2021
 
             foreach (var scannerPair in _mappedScanners.CartesianPairs())
             {
-                var s1 = scannerPair[0];
-                var s2 = scannerPair[1];
+                var (s1, s2) = scannerPair;
 
                 var distance = (s1.X - s2.X) + (s1.Y - s2.Y) + (s1.Z - s2.Z);
                 maxDistance = Math.Max(maxDistance, distance);
@@ -430,7 +429,7 @@ namespace AoC_2021
 
         public List<BeaconPairs> BuildPairs()
         {
-            BeaconPairs = Beacons.Pairs().Select(x => new BeaconPairs(x)).ToList();
+            BeaconPairs = Beacons.Pairs().Select(x => new BeaconPairs((x.Item1, x.Item2))).ToList();
 
             return BeaconPairs;
         }
@@ -446,11 +445,9 @@ namespace AoC_2021
         public Beacon BeaconA { get; set; }
         public Beacon BeaconB { get; set; }
 
-        public BeaconPairs(IEnumerable<Beacon> beacons)
+        public BeaconPairs((Beacon a, Beacon b) beacons)
         {
-            var b = beacons.ToList();
-            BeaconA = b[0];
-            BeaconB = b[1];
+            (BeaconA, BeaconB) = beacons;
         }
 
         public BeaconPairs(Beacon a, Beacon b)

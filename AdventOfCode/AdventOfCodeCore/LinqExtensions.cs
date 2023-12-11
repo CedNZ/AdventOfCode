@@ -17,13 +17,13 @@ namespace AdventOfCodeCore
             }
         }
 
-        public static IEnumerable<T[]> Pairs<T>(this IEnumerable<T> source)
+        public static IEnumerable<Tuple<T, T>> Pairs<T>(this IEnumerable<T> source)
         {
             for (int i = 0; i < source.Count(); i++)
             {
                 for (int j = i + 1; j < source.Count(); j++)
                 {
-                    yield return new[] { source.Skip(i).Take(1).Single(), source.Skip(j).Take(1).Single() };
+                    yield return new (source.Skip(i).Take(1).Single(), source.Skip(j).Take(1).Single());
                 }
             }
         }
@@ -39,14 +39,14 @@ namespace AdventOfCodeCore
                 select accseq.Concat(new[] { item }));
         }
 
-        public static IEnumerable<List<T>> CartesianPairs<T>(this IEnumerable<T> source)
+        public static IEnumerable<Tuple<T, T>> CartesianPairs<T>(this IEnumerable<T> source)
         {
             foreach (var item in source)
             {
                 var others = source.Where(s => !s.Equals(item));
                 foreach (var otherItem in others)
                 {
-                    yield return new List<T>{ item, otherItem };
+                    yield return new (item, otherItem);
                 }
             }
         }
