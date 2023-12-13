@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,6 +50,38 @@ namespace AdventOfCodeCore
                     yield return new (item, otherItem);
                 }
             }
+        }
+
+        public static List<List<T>> ClusterWhile<T>(this IEnumerable<T> source,  Func<T, bool> predicate, bool? orderDescending = null) 
+        {
+            return ClusterWhile(source, x => x, (x, _) => predicate(x), orderDescending);
+        }
+
+        public static List<List<T>> ClusterWhile<T, Tx>(this IEnumerable<T> source, Func<T, Tx> selector, Func<Tx, Tx, bool> clusterPredicate, bool? orderDescending = null)
+        {
+            List<List<T>> clusters = [];
+            int clusterCount() => clusters.Sum(c => c.Count);
+            List<T> items = orderDescending switch
+            {
+                true => [.. source.OrderByDescending(selector)],
+                false => [.. source.OrderBy(selector)],
+                null => [.. source]
+            };
+
+            while (clusterCount() != source.Count())
+            {
+                clusters.Add(
+                    items.Skip(clusterCount())
+                    .TakeWhile((x, i) => i == 0 || clusterPredicate(selector(x), selector(items[i - 1])))
+                    .ToList());
+            }
+            return clusters;
+        }
+
+        public static bool HasOnlyOneBitSet(this int number)
+        {
+            // Check if number is a power of two
+            return (number != 0) && ((number & (number - 1)) == 0);
         }
 
         public static long CalculateLCM(this IEnumerable<long> numbers)

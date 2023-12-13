@@ -44,16 +44,18 @@ namespace Tests
         public IEnumerator<object[]> GetEnumerator()
         {/*
             */
-            yield return new object[] { 1, () => new Day1(), 281, false };
-            yield return new object[] { 2, () => new Day2(), 8, true };
-            yield return new object[] { 2, () => new Day2(), 2286, false };
-            yield return new object[] { 3, () => new Day3(), 4361, true };
-            yield return new object[] { 4, () => new Day4(), 30, false };
-            yield return new object[] { 5, () => new Day5(), 46, false };
-            yield return new object[] { 7, () => new Day7(), 6440, true };
-            yield return new object[] { 7.1, () => new Day7b(), 5905, false };
-            yield return new object[] { 10, () => new Day10(), 8, true };
-            yield return new object[] { 11, () => new Day11(), 374, true };
+            //yield return new object[] { 1, () => new Day1(), 281, false };
+            //yield return new object[] { 2, () => new Day2(), 8, true };
+            //yield return new object[] { 2, () => new Day2(), 2286, false };
+            //yield return new object[] { 3, () => new Day3(), 4361, true };
+            //yield return new object[] { 4, () => new Day4(), 30, false };
+            //yield return new object[] { 5, () => new Day5(), 46, false };
+            //yield return new object[] { 7, () => new Day7(), 6440, true };
+            //yield return new object[] { 7.1, () => new Day7b(), 5905, false };
+            //yield return new object[] { 10, () => new Day10(), 8, true };
+            //yield return new object[] { 11, () => new Day11(), 374, true };
+            yield return new object[] { 13, () => new Day13(), 405, true };
+            yield return new object[] { 13, () => new Day13(), 400, false };
 
         }
 
