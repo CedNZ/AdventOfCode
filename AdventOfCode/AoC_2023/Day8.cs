@@ -2,16 +2,16 @@
 
 namespace AoC_2023
 {
-    public class Day8 : IDay<(string map, HashSet<Node> nodes)>
+    public class Day8 : IDay<(string map, HashSet<NetworkNode> nodes)>
     {
-        public long A(List<(string map, HashSet<Node> nodes)> inputs)
+        public long A(List<(string map, HashSet<NetworkNode> nodes)> inputs)
         {
             var (map, nodes) = inputs[0];
             var startNode = nodes.First(n => n.Id == "AAA");
             return GetSteps(map, startNode, "ZZZ");
         }
 
-        private static long GetSteps(string map, Node startNode, string endNode)
+        private static long GetSteps(string map, NetworkNode startNode, string endNode)
         {
             var steps = 0;
             var mapIndex = 0;
@@ -34,7 +34,7 @@ namespace AoC_2023
             return steps;
         }
 
-        public long B(List<(string map, HashSet<Node> nodes)> inputs)
+        public long B(List<(string map, HashSet<NetworkNode> nodes)> inputs)
         {
             var (map, nodes) = inputs[0];
             var starting = nodes.Where(x => x.Id.EndsWith('A')).ToList();
@@ -44,9 +44,9 @@ namespace AoC_2023
             return lcm;
         }
 
-        public List<(string map, HashSet<Node> nodes)> SetupInputs(string[] inputs)
+        public List<(string map, HashSet<NetworkNode> nodes)> SetupInputs(string[] inputs)
         {
-            HashSet<Node> nodes = new();
+            HashSet<NetworkNode> nodes = new();
             var map = inputs[0];
 
             foreach (var input in inputs.Skip(2))
@@ -61,21 +61,21 @@ namespace AoC_2023
                     .ToArray();
 
                 var node = nodes.FirstOrDefault(n => n.Id == id)
-                    ?? new Node
+                    ?? new NetworkNode
                     {
                         Id = id,
                     };
                 nodes.Add(node);
 
                 var left = nodes.FirstOrDefault(n => n.Id == children[0])
-                    ?? new Node
+                    ?? new NetworkNode
                     {
                         Id = children[0],
                     };
                 nodes.Add(left);
 
                 var right = nodes.FirstOrDefault(n => n.Id == children[1])
-                    ?? new Node
+                    ?? new NetworkNode
                     {
                         Id = children[1],
                     };
@@ -90,12 +90,12 @@ namespace AoC_2023
         }
     }
 
-    public class Node
+    public class NetworkNode
     {
         public string Id { get; init; }
 
-        public Node LeftChild { get; set; }
-        public Node RightChild { get; set; }
+        public NetworkNode LeftChild { get; set; }
+        public NetworkNode RightChild { get; set; }
 
         public override string ToString()
         {
