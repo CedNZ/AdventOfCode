@@ -105,7 +105,7 @@ namespace AoC_2023
                 if (loops.TryGetValue((oldScore, score), out loopStart))
                 {
                     loopLength = i - loopStart;
-                    Console.WriteLine($"Loop found at i: {i} - start: {loopStart} length: {loopLength}");
+                    //Console.WriteLine($"Loop found at i: {i} - start: {loopStart} length: {loopLength}");
                     break;
                 }
                 loops.Add((oldScore, score), i);

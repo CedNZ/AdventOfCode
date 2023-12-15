@@ -23,6 +23,7 @@ namespace AoC_2023
                 12 => await RunDayAsync(day, () => new Day12()),
                 13 => await RunDayAsync(day, () => new Day13()),
                 14 => await RunDayAsync(day, () => new Day14()),
+                15 => await RunDayAsync(day, () => new Day15()),
                 _ => new DayResult { OutputA = "Add the day to the year Dumbass" },
             };
         }
