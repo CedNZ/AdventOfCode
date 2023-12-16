@@ -12,25 +12,6 @@ namespace AoC_2023
         public long A(List<Mirror> inputs)
         {
             var grid = inputs.ToDictionary(m => (m.X, m.Y), m => m);
-            Dictionary<Direction, (int dx, int dy)> deltas = new()
-            {
-                {
-                    Direction.Up,
-                    (0, -1)
-                },
-                {
-                    Direction.Down,
-                    (0, 1)
-                },
-                {
-                    Direction.Left,
-                    (-1, 0)
-                },
-                {
-                    Direction.Right,
-                    (1, 0)
-                },
-            };
 
             var maxX = inputs.Max(s => s.X);
             var maxY = inputs.Max(s => s.Y);
@@ -50,34 +31,6 @@ namespace AoC_2023
 
             while (queue.TryDequeue(out var light))
             {
-                //for (int y = 0; y <= maxY; y++)
-                //{
-                //    for (int x = 0; x <= maxX; x++)
-                //    {
-                //        if (grid.TryGetValue((x, y), out var m))
-                //        {
-                //            Console.Write(m.C);
-                //        }
-                //        else
-                //        {
-                //            var v = visited.FirstOrDefault(c => c.X == x && c.Y == y);
-                //            if (v is not null)
-                //            {
-                //                Console.Write("X");
-                //            }
-                //            else
-                //            {
-                //                Console.Write(" ");
-                //            }
-                //        }
-
-                //    }
-                //    Console.WriteLine();
-                //}
-
-                //Console.WriteLine();
-                //Console.WriteLine();
-
                 if (visited.Contains(light))
                 {
                     continue;
@@ -133,9 +86,148 @@ namespace AoC_2023
             return visited.DistinctBy(v => new { v.X, v.Y }).Count();
         }
 
+        Dictionary<Direction, (int dx, int dy)> deltas = new()
+        {
+            {
+                Direction.Up,
+                (0, -1)
+            },
+            {
+                Direction.Down,
+                (0, 1)
+            },
+            {
+                Direction.Left,
+                (-1, 0)
+            },
+            {
+                Direction.Right,
+                (1, 0)
+            },
+        };
+
         public long B(List<Mirror> inputs)
         {
-            throw new NotImplementedException();
+            var grid = inputs.ToDictionary(m => (m.X, m.Y), m => m);
+
+            var maxX = inputs.Max(s => s.X);
+            var maxY = inputs.Max(s => s.Y);
+            Light start;
+            int maxEnergized = 0;
+            int energized;
+
+            for (int y = 0; y <= maxY; y++)
+            {
+                start = new Light
+                {
+                    X = 0,
+                    Y = y,
+                    Direction = Direction.Right,
+                };
+                energized = GetEnergized(start, grid, maxX, maxY);
+                //Console.WriteLine($"{start.X}, {start.Y} = {energized}");
+                maxEnergized = Math.Max(maxEnergized, energized);
+
+                start = new Light
+                {
+                    X = maxX,
+                    Y = y,
+                    Direction = Direction.Left,
+                };
+                energized = GetEnergized(start, grid, maxX, maxY);
+                //Console.WriteLine($"{start.X}, {start.Y} = {energized}");
+                maxEnergized = Math.Max(maxEnergized, energized);
+            }
+
+            for (int x = 0; x <= maxX; x++)
+            {
+                start = new Light
+                {
+                    X = x,
+                    Y = 0,
+                    Direction = Direction.Down,
+                };
+                energized = GetEnergized(start, grid, maxX, maxY);
+                //Console.WriteLine($"{start.X}, {start.Y} = {energized}");
+                maxEnergized = Math.Max(maxEnergized, energized);
+
+                start = new Light
+                {
+                    X = x,
+                    Y = maxY,
+                    Direction = Direction.Up,
+                };
+                energized = GetEnergized(start, grid, maxX, maxY);
+                //Console.WriteLine($"{start.X}, {start.Y} = {energized}");
+                maxEnergized = Math.Max(maxEnergized, energized);
+            }
+
+            return maxEnergized;
+        }
+
+        private int GetEnergized(Light start, Dictionary<(int X, int Y), Mirror>? grid, int maxX, int maxY)
+        {
+            Queue<Light> queue = new Queue<Light>();
+
+            HashSet<Light> visited = new HashSet<Light>();
+
+            queue.Enqueue(start);
+
+            while (queue.TryDequeue(out var light))
+            {
+                if (visited.Contains(light))
+                {
+                    continue;
+                }
+                visited.Add(light);
+                if (grid.TryGetValue((light.X, light.Y), out var mirror))
+                {
+                    var steps = mirror.GetDirections(light.Direction);
+                    var (dx, dy) = deltas[steps.Item1];
+                    var newLight = light with
+                    {
+                        X = light.X + dx,
+                        Y = light.Y + dy,
+                        Direction = steps.Item1,
+                    };
+                    if (newLight.X >= 0 && newLight.Y >= 0
+                        && newLight.X <= maxX && newLight.Y <= maxY)
+                    {
+                        queue.Enqueue(newLight);
+                    }
+                    if (steps.Item2 is not null)
+                    {
+                        (dx, dy) = deltas[steps.Item2.Value];
+                        newLight = light with
+                        {
+                            X = light.X + dx,
+                            Y = light.Y + dy,
+                            Direction = steps.Item2.Value,
+                        };
+                        if (newLight.X >= 0 && newLight.Y >= 0
+                            && newLight.X <= maxX && newLight.Y <= maxY)
+                        {
+                            queue.Enqueue(newLight);
+                        }
+                    }
+                }
+                else
+                {
+                    var (dx, dy) = deltas[light.Direction];
+                    var newLight = light with
+                    {
+                        X = light.X + dx,
+                        Y = light.Y + dy,
+                    };
+                    if (newLight.X >= 0 && newLight.Y >= 0
+                        && newLight.X <= maxX && newLight.Y <= maxY)
+                    {
+                        queue.Enqueue(newLight);
+                    }
+                }
+            }
+
+            return visited.DistinctBy(v => new { v.X, v.Y }).Count();
         }
 
         public List<Mirror> SetupInputs(string[] inputs)
