@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.1" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AdventOfCodeCore\AdventOfCodeCore.csproj" />
   </ItemGroup>
 

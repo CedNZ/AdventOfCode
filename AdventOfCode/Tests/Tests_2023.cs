@@ -12,7 +12,7 @@ namespace Tests
     {
         [Theory]
         [ClassData(typeof(DayTestData_2023))]
-        public void DayTest<TIn, TOut>(int inputFile, Func<IDayOut<TIn, TOut>> GetDay, TOut expectedAnswer, bool partOne)
+        public void DayTest<TIn, TOut>(double inputFile, Func<IDayOut<TIn, TOut>> GetDay, TOut expectedAnswer, bool partOne)
         {
             IDayOut<TIn, TOut> day = GetDay();
 
@@ -59,6 +59,7 @@ namespace Tests
             yield return new object[] { 14, () => new Day14(), 136, true };
             yield return new object[] { 15, () => new Day15(), 145, false };
             yield return new object[] { 16, () => new Day16(), 46, true };
+            yield return new object[] { 18.1, () => new Day18_1(), 952408144115, false };
 
         }
 
