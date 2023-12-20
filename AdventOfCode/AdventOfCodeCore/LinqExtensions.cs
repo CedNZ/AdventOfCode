@@ -52,6 +52,36 @@ namespace AdventOfCodeCore
             }
         }
 
+        public static IEnumerable<T> SkipUntil<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            bool found = false;
+            foreach (var item in source)
+            {
+                if (found is false && predicate(item))
+                {
+                    found = true;
+                }
+                if (found)
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        public static IEnumerable<T> TakeUntil<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            bool found = false;
+            foreach (var item in source)
+            {
+                if (found is false && predicate(item))
+                {
+                    found = true;
+                    break;
+                }
+                yield return item;
+            }
+        }
+
         public static List<List<T>> ClusterWhile<T>(this IEnumerable<T> source,  Func<T, bool> predicate, bool? orderDescending = null) 
         {
             return ClusterWhile(source, x => x, (x, _) => predicate(x), orderDescending);

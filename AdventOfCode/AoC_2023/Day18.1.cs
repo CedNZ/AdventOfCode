@@ -12,6 +12,25 @@ namespace AoC_2023
 
         public long B(List<Pixel> inputs)
         {
+            //calculate area of polygon using shoelace formula
+            //https://en.wikipedia.org/wiki/Shoelace_formula
+            long area = 0;
+            for (int i = 0; i < inputs.Count; i++)
+            {
+                if (i == inputs.Count - 1)
+                {
+                    area += inputs[i].X * inputs[0].Y;
+                    area -= inputs[0].X * inputs[i].Y;
+                    continue;
+                }
+                area += inputs[i].X * inputs[i + 1].Y;
+                area -= inputs[i + 1].X * inputs[i].Y;
+            }
+            area = Math.Abs(area / 2);
+
+
+            //return (long)area + (inputs.Count / 2) - 1;
+
             var geoFactory = new GeometryFactory(new PrecisionModel(PrecisionModels.Fixed));
 
             var coords = inputs.ConvertAll(p => new Coordinate
@@ -22,7 +41,7 @@ namespace AoC_2023
 
             coords.Add(coords[0]);
 
-            var poly = geoFactory.CreatePolygon([..coords]);
+            var poly = geoFactory.CreatePolygon([.. coords]);
 
             return (long)(poly.Area + (poly.Length / 2) + 1);
         }
