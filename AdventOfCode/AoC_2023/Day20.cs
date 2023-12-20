@@ -42,11 +42,11 @@ namespace AoC_2023
         {
             Queue<(string to, bool pulse, string from)> pulses = [];
 
-            var lx = inputs.First(x => x.Name == "lx");
+            var lx = inputs.First(x => x.Outputs.Contains("rx"));
             var lxInputs = lx.Inputs.ToDictionary(x => x, _ => 0L);
 
             long count = 0;
-            while (true)
+            do
             {
                 count++;
                 pulses.Enqueue(("roadcaster", false, "button"));
@@ -54,12 +54,7 @@ namespace AoC_2023
                 {
                     var (to, pulse, from) = p;
 
-                    if (!pulse && to == "rx")
-                    {
-                        return count;
-                    }
-
-                    if (pulse && to == "lx")
+                    if (pulse && to == lx.Name)
                     {
                         lxInputs[from] = count;
                         if (lxInputs.All(x => x.Value > 0))
@@ -79,11 +74,8 @@ namespace AoC_2023
                         pulses.Enqueue((output, result.Value, to));
                     }
                 }
-                if (lxInputs.All(x => x.Value > 0))
-                {
-                    break;
-                }
             }
+            while (lxInputs.Any(x => x.Value == 0));
 
             return lxInputs.Values.CalculateLCM();
         }
