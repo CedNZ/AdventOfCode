@@ -9,8 +9,8 @@ namespace AoC_2024
             return day switch
             {
                 1 => await RunDayAsync(day, () => new Day1()),
-                //2 => await RunDayAsync(day, () => new Day2()),
-                //3 => await RunDayAsync(day, () => new Day3()),
+                2 => await RunDayAsync(day, () => new Day2()),
+                3 => await RunDayAsync(day, () => new Day3()),
                 //4 => await RunDayAsync(day, () => new Day4()),
                 //5 => await RunDayAsync(day, () => new Day5()),
                 //6 => await RunDayAsync(day, () => new Day6()),
