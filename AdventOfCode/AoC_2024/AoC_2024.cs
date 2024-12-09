@@ -1,4 +1,4 @@
-﻿using AdventOfCodeCore;
+using AdventOfCodeCore;
 
 namespace AoC_2024
 {
@@ -16,6 +16,7 @@ namespace AoC_2024
                 6 => await RunDayAsync(day, () => new Day6()),
                 7 => await RunDayAsync(day, () => new Day7()),
                 8 => await RunDayAsync(day, () => new Day8()),
+                9 => await RunDayAsync(day, () => new Day9()),
                 _ => new DayResult { OutputA = "Add the day to the year Dumbass" },
             };
         }
