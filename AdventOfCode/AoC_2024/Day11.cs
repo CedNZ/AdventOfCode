@@ -23,7 +23,6 @@ namespace AoC_2024
                     if (num == 0)
                     {
                         next = [1];
-                        return Recurse(depth + 1, 1);
                     }
                     else if (num.ToString().Length % 2 == 0)
                     {
@@ -71,7 +70,6 @@ namespace AoC_2024
                     if (num == 0)
                     {
                         next = [1];
-                        return Recurse(depth + 1, 1);
                     }
                     else if (num.ToString().Length % 2 == 0)
                     {

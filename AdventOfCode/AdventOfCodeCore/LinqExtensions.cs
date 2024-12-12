@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -104,6 +104,32 @@ namespace AdventOfCodeCore
                     items.Skip(clusterCount())
                     .TakeWhile((x, i) => i == 0 || clusterPredicate(selector(x), selector(items[i - 1])))
                     .ToList());
+            }
+            return clusters;
+        }
+
+        public static List<List<T>> Cluster<T, Tx>(this IEnumerable<T> source, Func<T, Tx> selector, Func<Tx, Tx, bool> predicate)
+        {
+            List<List<T>> clusters = [];
+            List<T> items = [.. source];
+            while (items.Count != 0)
+            {
+                var cluster = new List<T> { items[0] };
+                items = items.Skip(1).ToList();
+                while (items.Count != 0)
+                {
+                    var i = items.FindIndex(x => cluster.Any(c => predicate(selector(x), selector(c))));
+                    if (i >= 0)
+                    {
+                        cluster.Add(items[i]);
+                        items.RemoveAt(i);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                clusters.Add(cluster);
             }
             return clusters;
         }
