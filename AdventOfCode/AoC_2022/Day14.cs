@@ -40,11 +40,11 @@ namespace AoC_2022
             }
 
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.WHITE);
+            Raylib.ClearBackground(Color.White);
 
             foreach (var line in lines)
             {
-                Raylib.DrawRectangle(line.X1, line.Y1, line.X2 - line.X1, line.Y2 - line.Y1, Color.BLACK);
+                Raylib.DrawRectangle(line.X1, line.Y1, line.X2 - line.X1, line.Y2 - line.Y1, Color.Black);
             }
         }
 
