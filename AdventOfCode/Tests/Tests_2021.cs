@@ -1,7 +1,7 @@
 using AdventOfCodeCore;
 using AoC_2021;
 using Xunit;
-using FluentAssertions;
+using Shouldly;
 using System.Collections.Generic;
 using System;
 using System.Collections;
@@ -31,11 +31,11 @@ namespace Tests
 
             if (result is long r && expectedAnswer is long e)
             {
-                (r.ToString("N")).Should().Be(e.ToString("N"));
+                (r.ToString("N")).ShouldBe(e.ToString("N"));
             }
             else
             {
-                result.Should().Be(expectedAnswer);
+                result.ShouldBe(expectedAnswer);
             }
         }
 
@@ -45,7 +45,7 @@ namespace Tests
             Day16.MainPacket = null!;
             Day16.BuildPackets("D2FE28".ToList(), out var packet);
 
-            packet.Value.Should().Be(2021);
+            packet.Value.ShouldBe(2021);
 
         }
 
@@ -55,10 +55,10 @@ namespace Tests
             Day16.MainPacket = null;
             Day16.BuildPackets("38006F45291200".ToList(), out var packet);
 
-            packet.SubPackets.Should().HaveCount(2);
+            packet.SubPackets.Count.ShouldBe(2);
 
-            packet.SubPackets[0].Value.Should().Be(10);
-            packet.SubPackets[1].Value.Should().Be(20);
+            packet.SubPackets[0].Value.ShouldBe(10);
+            packet.SubPackets[1].Value.ShouldBe(20);
         }
 
         [Fact]
@@ -67,11 +67,11 @@ namespace Tests
             Day16.MainPacket = null!;
             Day16.BuildPackets("EE00D40C823060".ToList(), out var packet);
 
-            packet.SubPackets.Should().HaveCount(3);
+            packet.SubPackets.Count.ShouldBe(3);
 
-            packet.SubPackets[0].Value.Should().Be(1);
-            packet.SubPackets[1].Value.Should().Be(2);
-            packet.SubPackets[2].Value.Should().Be(3);
+            packet.SubPackets[0].Value.ShouldBe(1);
+            packet.SubPackets[1].Value.ShouldBe(2);
+            packet.SubPackets[2].Value.ShouldBe(3);
         }
 
         [Theory]
@@ -84,7 +84,7 @@ namespace Tests
             Day16.MainPacket = null;
             var day = new Day16();
 
-            day.A(input.ToList()).Should().Be(expected);
+            day.A(input.ToList()).ShouldBe(expected);
         }
 
         [Theory]
@@ -101,7 +101,7 @@ namespace Tests
             Day16.MainPacket = null;
             var day = new Day16();
 
-            day.B(input.ToList()).Should().Be(expected);
+            day.B(input.ToList()).ShouldBe(expected);
         }
 
         [Theory]
@@ -117,7 +117,7 @@ namespace Tests
         {
             var day = new Day18();
             var inputs = day.SetupInputs(new[] { input });
-            day.A(inputs).Should().Be(expected);
+            day.A(inputs).ShouldBe(expected);
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using AdventOfCodeCore;
 using AoC_2022;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace Tests
@@ -30,11 +30,11 @@ namespace Tests
 
             if (result is long r && expectedAnswer is long e)
             {
-                (r.ToString("N")).Should().Be(e.ToString("N"));
+                (r.ToString("N")).ShouldBe(e.ToString("N"));
             }
             else
             {
-                result.Should().Be(expectedAnswer);
+                result.ShouldBe(expectedAnswer);
             }
         }
 
@@ -48,7 +48,7 @@ namespace Tests
             var day = new Day6();
             var answer = day.A(new List<string> { line });
 
-            answer.Should().Be(expected);
+            answer.ShouldBe(expected);
         }
 
         [Theory]
@@ -62,7 +62,7 @@ namespace Tests
             var day = new Day6();
             var answer = day.B(new List<string> { line });
 
-            answer.Should().Be(expected);
+            answer.ShouldBe(expected);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Tests
             var inputs = day.SetupInputs(System.IO.File.ReadAllLines($"..\\..\\..\\TestInput\\2022\\day10.txt"));
 
             var output = day.B(inputs);
-            output.Should().Be(
+            output.ShouldBe(
                 """
 
                 ##..##..##..##..##..##..##..##..##..##..
