@@ -29,7 +29,7 @@ namespace AdventOfCodeCore
                     Method = HttpMethod.Get,
                     RequestUri = new Uri($"https://adventofcode.com/{_year}/day/{day}/input"),
                 };
-                request.Headers.UserAgent.ParseAdd($".NET 8.0 (+via https://github.com/CedNZ/AdventOfCode by cbourneville@gmail.com)");
+                request.Headers.UserAgent.ParseAdd($".NET 10.0 (+via https://github.com/CedNZ/AdventOfCode by cbourneville@gmail.com)");
 
                 var response = await _httpClient.SendAsync(request);
 
@@ -59,13 +59,15 @@ namespace AdventOfCodeCore
         {
             IDayOut<TIn, TOut> day = GetDay();
 
-            var inputsA = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{(int)dayNum}.txt"));
-            var inputsB = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{(int)dayNum}.txt"));
-
             var stopwatch = Stopwatch.StartNew();
 
+            var inputsA = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{(int)dayNum}.txt"));
+            var inputsParsedA = stopwatch.Elapsed;
+            var inputsB = day.SetupInputs(File.ReadAllLines($".\\Input\\{_year}\\day{(int)dayNum}.txt"));
+            var inputsParsedB = stopwatch.Elapsed - inputsParsedA;
+
             var outputA = day.A(inputsA);
-            var runtimeA = stopwatch.Elapsed;
+            var runtimeA = stopwatch.Elapsed - inputsParsedB;
 
             try
             {
@@ -78,16 +80,20 @@ namespace AdventOfCodeCore
                     OutputA = outputA,
                     OutputB = outputB,
                     RuntimeA = runtimeA,
-                    RuntimeB = runtimeB
+                    RuntimeB = runtimeB,
+                    InputsParsedA = inputsParsedA,
+                    InputsParsedB = inputsParsedB,
                 };
-            } catch (NotImplementedException)
+            } 
+            catch (NotImplementedException)
             {
-
                 return new DayResult
                 {
                     Day = dayNum,
                     OutputA = outputA,
                     RuntimeA = runtimeA,
+                    InputsParsedA = inputsParsedA,
+                    InputsParsedB = inputsParsedB,
                 };
             }
             finally
@@ -104,10 +110,18 @@ namespace AdventOfCodeCore
         public object? OutputB;
         public TimeSpan RuntimeA;
         public TimeSpan RuntimeB;
+        public TimeSpan InputsParsedA;
+        public TimeSpan InputsParsedB;
 
         public override string ToString()
         {
-            return $"{Day} A: {OutputA}\t{RuntimeA}{Environment.NewLine}{Day} B: {OutputB}\t{RuntimeB}";
+            return
+                $"""
+                 {Day} 
+                 Inputs parsed: {(InputsParsedA + InputsParsedB) / 2}
+                 A: {OutputA}      in {RuntimeA}
+                 B: {OutputB}      in {RuntimeB}
+                 """;
         }
     }
 }
