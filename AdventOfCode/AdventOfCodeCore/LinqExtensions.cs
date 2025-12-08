@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdventOfCodeCore
+﻿namespace AdventOfCodeCore
 {
     public static class LinqExtensions
     {
@@ -106,6 +99,17 @@ namespace AdventOfCodeCore
                     .ToList());
             }
             return clusters;
+        }
+
+        public static long EuclideanDistance<T>(this Tuple<T, T> tuple, params List<Func<T, long>> selectors)
+        {
+            var squared = 0L;
+            foreach (var selector in selectors)
+            {
+                squared += (long)Math.Pow(selector(tuple.Item1) - selector(tuple.Item2), 2);
+            }
+
+            return (long)Math.Sqrt(squared);
         }
 
         public static bool HasOnlyOneBitSet(this int number)

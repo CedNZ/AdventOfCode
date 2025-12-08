@@ -15,7 +15,7 @@ namespace AoC_2025
                 5 => await RunDayAsync(day, () => new Day5()),
                 6 => await RunDayAsync(day, () => new Day6()),
                 7 => await RunDayAsync(day, () => new Day7()),
-                //8 => await RunDayAsync(day, () => new Day8()),
+                8 => await RunDayAsync(day, () => new Day8()),
                 //9 => await RunDayAsync(day, () => new Day9()),
                 //10 => await RunDayAsync(day, () => new Day10()),
                 //11 => await RunDayAsync(day, () => new Day11()),
