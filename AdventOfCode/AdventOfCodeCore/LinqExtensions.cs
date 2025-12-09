@@ -112,6 +112,17 @@
             return (long)Math.Sqrt(squared);
         }
 
+        public static long ManhattanDistance<T>(this Tuple<T, T> tuple, params List<Func<T, long>> selectors)
+        {
+            var distance = 0L;
+            foreach (var selector in selectors)
+            {
+                distance += Math.Abs(selector(tuple.Item1) - selector(tuple.Item2));
+            }
+
+            return distance;
+        }
+
         public static bool HasOnlyOneBitSet(this int number)
         {
             // Check if number is a power of two
