@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Linq.Expressions;
+using System.Net;
+using System.Reflection;
 using AdventOfCodeCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,7 +72,38 @@ namespace AdventOfCode
                     Console.WriteLine("Enter day number: ");
                     var dayNum = double.Parse(Console.ReadLine()!);
 
-                    var result = await year.RunDayAsync(dayNum);
+                    var dayType = typeof(AoC_2025.AoC_2025)
+                        .Assembly
+                        .ExportedTypes
+                        .FirstOrDefault(x => x.Name == $"Day{dayNum}")
+                        ?? throw new Exception("Failed to find day");
+
+                    var interfaceType = dayType.GetInterfaces()
+                        .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDayOut<,>))
+                        ?? throw new Exception("Failed to find interface");
+
+                    var genericArgs = interfaceType.GetGenericArguments();
+                    var tIn = genericArgs[0];
+                    var tOut = genericArgs[1];
+
+                    var ctor = dayType.GetConstructor(Type.EmptyTypes) ?? throw new Exception("Can't find day ctor");
+                    var newEpr = Expression.New(ctor);
+                    var castExpr = Expression.Convert(newEpr, interfaceType);
+                    var funcType = typeof(Func<>).MakeGenericType(interfaceType);
+                    var lambda = Expression.Lambda(funcType, castExpr);
+                    var dayFunc = lambda.Compile();
+
+                    var runOpen = year.GetType()
+                        .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
+                        .FirstOrDefault(m =>
+                            m is { Name: "RunDayAsync", IsGenericMethodDefinition: true }
+                            && m.GetGenericArguments().Length == 2)
+                        ?? throw new Exception("Can't make run method");
+
+                    var runner = runOpen.MakeGenericMethod(tIn, tOut);
+
+                    var task = runner.Invoke(year, [dayNum, dayFunc]);
+                    var result = await ((Task<DayResult>)task!).ConfigureAwait(false);
 
                     Console.WriteLine(result);
                     Console.WriteLine("\nRerun? y/N");

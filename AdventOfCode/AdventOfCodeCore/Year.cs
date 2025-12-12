@@ -13,10 +13,8 @@
         {
             await _runner.DownloadInput((int)dayNum);
             var dayresult = _runner.RunDay(dayNum, getDayFunc);
-            await _runner.SubmitAnswer(dayresult);
+            //await _runner.SubmitAnswer(dayresult);
             return dayresult;
         }
-
-        public abstract Task<DayResult> RunDayAsync(double day);
     }
 }
